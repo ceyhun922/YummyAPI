@@ -17,6 +17,7 @@ namespace YummyAPI.DTOs.GroupOrganizationDTO
         public DateOnly Date { get; set; }
         public TimeOnly Time { get; set; }
 
-        List<int> ChefIds { get; set; }
+        public List<int>? ChefIds { get; set; }
+
     }
 }

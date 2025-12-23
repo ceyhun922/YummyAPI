@@ -73,7 +73,6 @@ namespace YummyAPI.Controllers
                 _context.SaveChanges();
             }
             return Ok(new { message = "Eklendi", id = mapper.GroupOrganizationId });
-
         }
     }
 }

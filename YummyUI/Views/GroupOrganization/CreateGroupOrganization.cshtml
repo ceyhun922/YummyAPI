@@ -1,0 +1,60 @@
+@using YummyUI.DTOs.GroupOrganizationDTO
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model CreateGroupOrganizationDto
+
+<form asp-action="CreateGroupOrganization" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="All" style="color:red"></div>
+
+    <div>
+        <label asp-for="OrganizationId">Organizasyon </label>
+        <select asp-for="OrganizationId" asp-items="@(ViewBag.Organizations as SelectList)">
+            <option value="">Seçiniz</option>
+        </select>
+        <span asp-validation-for="OrganizationId"></span>
+    </div>
+
+    <div>
+        <label asp-for="GroupPriority">Öncelik</label>
+        <input asp-for="GroupPriority" type="number" min="1" max="3" />
+        <span asp-validation-for="GroupPriority"></span>
+    </div>
+
+    <input asp-for="PersonCount" type="hidden" value="50" />
+
+    <div>
+        <label asp-for="ParticipantCount">Katılımcı sayısı (kişi)</label>
+        <input asp-for="ParticipantCount" type="number" min="0" max="50" />
+        <span asp-validation-for="ParticipantCount"></span>
+    </div>
+
+    <div>
+        <label asp-for="Date">Tarih</label>
+        <input asp-for="Date" type="date" />
+        <span asp-validation-for="Date"></span>
+    </div>
+
+    <div>
+        <label asp-for="Time">Saat</label>
+        <input asp-for="Time" type="time" />
+        <span asp-validation-for="Time"></span>
+    </div>
+
+    <div>
+        <label>Görevli Şefler</label>
+
+        @foreach (var c in (IEnumerable<SelectListItem>)ViewBag.Chefs)
+        {
+            var isChecked = Model?.ChefIds?.Contains(int.Parse(c.Value)) == true;
+
+            <label style="display:block">
+                <input type="checkbox" name="ChefIds" value="@c.Value" @(isChecked ? "checked" : "") />
+                @c.Text
+            </label>
+        }
+
+        <span asp-validation-for="ChefIds"></span>
+    </div>
+
+    <button type="submit">Yarat</button>
+</form>

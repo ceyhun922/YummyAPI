@@ -12,14 +12,35 @@ namespace YummyAPI.Entities
         public GroupPriority GroupPriority { get; set; }
         public double? Price { get; set; }
         public string? Description { get; set; }
-        public int PersonCount { get; set; } = 50;
-        public int ParticipantCount { get; set; } =0;
+
+        private int _personCount = 50;
+
+        public int PersonCount
+        {
+            get => _personCount;
+            set
+            {
+                if (value > 50)
+                    _personCount = 50;
+                else if (value < 0)
+                    _personCount = 0;
+                else
+                    _personCount = value;
+            }
+        }
+
+
+        public int ParticipantCount { get; set; } = 0;
         public int ParticipationRate
         {
             get
             {
                 if (PersonCount <= 0) return 0;
-                return (int) Math.Round((double)ParticipantCount *100) / PersonCount;
+                var rate = (int)Math.Round((double)ParticipantCount * 100) / PersonCount;
+                if (rate > 100) return 100;
+                if (rate < 0) return 0;
+
+                return rate;
 
             }
         }

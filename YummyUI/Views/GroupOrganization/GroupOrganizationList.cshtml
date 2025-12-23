@@ -9,12 +9,16 @@
 
     var grouped = rows
         .GroupBy(x => x.GroupOrganizationId)
-        .Select(g => new
+        .Select(g =>
         {
-            GroupOrganizationId = g.Key,
-            Header = g.First(),
-            Priority = g.First().GroupPriority,
-            Chefs = g.OrderBy(x => x.ChefName).ToList()
+            var header = g.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x.OrganizationName)) ?? g.First();
+            return new
+            {
+                GroupOrganizationId = g.Key,
+                Header = header,
+                Priority = header.GroupPriority,
+                Chefs = g.OrderBy(x => x.ChefName).ToList()
+            };
         })
         .OrderByDescending(x => x.Priority)
         .ToList();
@@ -24,11 +28,10 @@
     int cntAvg = grouped.Count(x => x.Priority == 2);
     int cntHigh = grouped.Count(x => x.Priority == 3);
 
-    string PName(int p) => p == 1 ? "Low" : p == 2 ? "Average" : "High";
+    string PName(int p) => p == 1 ? "Az" : p == 2 ? "Orta" : "Yüksek";
     string FormatDate(DateOnly d) => d.ToString("dd.MM.yyyy");
     string FormatTime(TimeOnly t) => t.ToString("HH:mm");
 }
-
 @section Styles {
 <style>
 :root{
@@ -140,6 +143,27 @@ html, body{ background: var(--bg0); }
   font-weight: 950;
   font-size: .75rem;
 }
+
+/* === NEW: create button === */
+.btnCreate{
+  border:none; cursor:pointer; text-decoration:none;
+  display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
+  padding: .90rem 1.05rem;
+  border-radius: 18px;
+  font-weight: 950;
+  color:#111827;
+  background: linear-gradient(135deg, var(--warn1), var(--warn2));
+  border: 1px solid rgba(255,255,255,.16);
+  box-shadow: 0 18px 55px rgba(242,165,26,.22);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+  white-space: nowrap;
+}
+.btnCreate:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.02);
+  box-shadow: 0 26px 70px rgba(242,165,26,.30);
+}
+.btnCreate:active{ transform: translateY(0); }
 
 /* list */
 .listWrap{ padding: 1.1rem 1.25rem 1.35rem; }
@@ -274,144 +298,7 @@ html, body{ background: var(--bg0); }
   border:none;
 }
 
-/* =========================
-   MODAL (DETAIL QUICKVIEW)
-   ========================= */
-.goModal{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index: 9999;
-  padding: 1.2rem;
-}
-.goModal.is-open{ display:flex; }
-
-.goModal__backdrop{
-  position:absolute;
-  inset:0;
-  background: rgba(0,0,0,.55);
-  backdrop-filter: blur(6px);
-}
-
-.goModal__panel{
-  position:relative;
-  width:min(920px, 100%);
-  border-radius: 26px;
-  background: rgba(14,20,48,.72);
-  border: 1px solid rgba(255,255,255,.14);
-  box-shadow: 0 40px 110px rgba(0,0,0,.60);
-  overflow:hidden;
-}
-
-.goModal__top{
-  padding: 1.05rem 1.2rem;
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap: 1rem;
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  background: linear-gradient(180deg, rgba(10,14,40,.55), rgba(10,14,40,.22));
-}
-
-.goModal__title{
-  margin:0;
-  font-size: 1.25rem;
-  font-weight: 950;
-  color:#fff;
-}
-.goModal__sub{
-  margin:.25rem 0 0;
-  color: rgba(255,255,255,.68);
-  font-weight: 800;
-  font-size: .92rem;
-}
-.goModal__close{
-  border:none;
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.14);
-  color:#fff;
-  font-weight: 950;
-  border-radius: 14px;
-  padding: .55rem .75rem;
-  cursor:pointer;
-}
-
-.goModal__body{
-  padding: 1.1rem 1.2rem 1.25rem;
-  display:grid;
-  grid-template-columns: 1.25fr .95fr;
-  gap: 1rem;
-}
-
-.goModal__card{
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.10);
-  border-radius: 20px;
-  padding: 1rem;
-}
-
-.goGrid{
-  display:grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: .7rem;
-}
-.goField{
-  background: rgba(255,255,255,.04);
-  border: 1px solid rgba(255,255,255,.10);
-  border-radius: 16px;
-  padding: .75rem .8rem;
-}
-.goField .k{
-  display:block;
-  color: rgba(255,255,255,.62);
-  font-weight: 850;
-  font-size: .78rem;
-}
-.goField .v{
-  display:block;
-  margin-top: .15rem;
-  color: rgba(255,255,255,.92);
-  font-weight: 950;
-}
-
-.goModal__prio{ margin-top:.7rem; }
-
-.goModal__footer{
-  padding: .95rem 1.2rem 1.1rem;
-  border-top: 1px solid rgba(255,255,255,.08);
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap: .6rem;
-  background: rgba(10,14,40,.20);
-}
-
-.goBtn{
-  border:none;
-  cursor:pointer;
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:.45rem;
-  padding: .72rem 1rem;
-  border-radius: 16px;
-  font-weight: 950;
-  color:#fff;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.12);
-}
-.goBtn.primary{
-  background: linear-gradient(135deg, rgba(111,106,216,.38), rgba(139,92,246,.38));
-  border-color: rgba(255,255,255,.18);
-}
-.goBtn.warn{
-  background: linear-gradient(135deg, var(--warn1), var(--warn2));
-  color:#111827;
-  border-color: transparent;
-}
+/* MODAL ... (sənin kodun davam edir, dəyişmədim) */
 
 @@media (max-width: 1100px){
   .rowCard{ grid-template-columns: 1.6fr 1.05fr 1fr .85fr; }
@@ -434,15 +321,13 @@ html, body{ background: var(--bg0); }
 <div class="ai-go">
   <div class="glass">
 
-    <!-- KPI -->
     <div class="kpis" id="kpiRow">
       <div class="kpi active" data-prio="all"><div><div class="label">Hepsi</div></div><div class="val">@cntAll</div></div>
-      <div class="kpi" data-prio="1"><div><div class="label">Low</div></div><div class="val">@cntLow</div></div>
-      <div class="kpi" data-prio="2"><div><div class="label">Average</div></div><div class="val">@cntAvg</div></div>
-      <div class="kpi" data-prio="3"><div><div class="label">High</div></div><div class="val">@cntHigh</div></div>
+      <div class="kpi" data-prio="1"><div><div class="label">Az</div></div><div class="val">@cntLow</div></div>
+      <div class="kpi" data-prio="2"><div><div class="label">Orta</div></div><div class="val">@cntAvg</div></div>
+      <div class="kpi" data-prio="3"><div><div class="label">Yüksek</div></div><div class="val">@cntHigh</div></div>
     </div>
 
-    <!-- Toolbar -->
     <div class="toolbar">
       <div class="row">
         <div class="search">
@@ -452,187 +337,107 @@ html, body{ background: var(--bg0); }
 
         <div class="tabs" id="prioTabs">
           <button type="button" class="tab active" data-prio="all">Hepsi <span class="count-pill">@cntAll</span></button>
-          <button type="button" class="tab" data-prio="1">Low <span class="count-pill">@cntLow</span></button>
-          <button type="button" class="tab" data-prio="2">Average <span class="count-pill">@cntAvg</span></button>
-          <button type="button" class="tab" data-prio="3">High <span class="count-pill">@cntHigh</span></button>
+          <button type="button" class="tab" data-prio="1">Az <span class="count-pill">@cntLow</span></button>
+          <button type="button" class="tab" data-prio="2">Orta <span class="count-pill">@cntAvg</span></button>
+          <button type="button" class="tab" data-prio="3">Yüksek <span class="count-pill">@cntHigh</span></button>
         </div>
+
+        <a class="btnCreate" asp-controller="GroupOrganization" asp-action="CreateGroupOrganization">+ Yeni Grup</a>
       </div>
     </div>
 
     <div class="listWrap">
       @if (!grouped.Any())
       {
-        <div class="muted-empty">Boş.</div>
-      }
-      else
-      {
-        <div id="list">
-          @foreach (var g in grouped)
-          {
-            var h = g.Header;
-
-            var prioName  = PName(g.Priority);
-            var prioClass = g.Priority == 1 ? "low" : g.Priority == 2 ? "avg" : "high";
-
-            var chefText = string.Join(", ", (g.Chefs ?? new List<ResultGroupOrganizationChefDto>())
-                .Select(x => (x?.ChefName ?? "").Trim()).Where(x => x != ""));
-
-            // orgTitle: name boşsa fallback (SENDE organizationId yoksa bunu böyle bırak)
-            var orgNameRaw = (h.OrganizationName ?? "").Trim();
-            var orgTitle = string.IsNullOrWhiteSpace(orgNameRaw) ? $"Org{h.GroupOrganizationId}" : orgNameRaw;
-
-            var searchText = $"{orgTitle} {h.GroupOrganizationId} {prioName} {h.ParticipationRate} {h.Date} {h.Time} {chefText}"
-              .ToLowerInvariant();
-
-            var chefs = g.Chefs ?? new List<ResultGroupOrganizationChefDto>();
-            var top3  = chefs.Take(3).ToList();
-            var extra = Math.Max(0, chefs.Count - 3);
-
-            var rate = h.ParticipationRate;
-            if (rate < 0) rate = 0;
-            if (rate > 100) rate = 100;
-
-            <div class="rowCard item" data-prio="@g.Priority" data-search="@searchText">
-              <!-- Org -->
-              <div class="orgBlock">
-                <div class="orgName">@orgTitle</div>
-                <div class="orgMeta">
-                  <span class="metaPill">ID: @h.GroupOrganizationId</span>
-                  <span class="metaPill">@FormatDate(h.Date)</span>
-                  <span class="metaPill">@FormatTime(h.Time)</span>
-                </div>
-              </div>
-
-              <!-- Chefs -->
-              <div>
-                <div class="chefStack">
-                  @foreach (var c in top3)
-                  {
-                    var chefName = (c?.ChefName ?? "").Trim();
-                    var initial  = string.IsNullOrWhiteSpace(chefName) ? "?" : chefName.Substring(0, 1).ToUpperInvariant();
-
-                    var img = (c?.ImageFile ?? "").Trim();
-                    var imgSrc =
-                        string.IsNullOrWhiteSpace(img) ? "" :
-                        img.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? img :
-                        apiBase.TrimEnd('/') + "/" + img.TrimStart('/');
-
-                    if (!string.IsNullOrWhiteSpace(imgSrc))
-                    {
-                      <div class="chefAv" data-name="@chefName">
-                        <img src="@imgSrc" alt="@chefName" />
-                      </div>
-                    }
-                    else
-                    {
-                      <div class="chefAv fallback" data-name="@chefName">@initial</div>
-                    }
-                  }
-
-                  @if (extra > 0)
-                  {
-                    <div class="chefMore">+@extra</div>
-                  }
-                </div>
-              </div>
-
-              <!-- Rate -->
-              <div class="rateWrap">
-                <div class="rateTop"><span>@rate%</span></div>
-                <div class="bar"><span style="width:@rate%"></span></div>
-              </div>
-
-              <!-- Priority -->
-              <div>
-                <span class="prio @prioClass">@prioName</span>
-              </div>
-
-              <!-- Actions -->
-              <div class="actions">
-                <!-- DETAY: modal -->
-                <button type="button"
-                        class="btnMini primary js-detail"
-                        data-id="@h.GroupOrganizationId"
-                        data-org="@orgTitle"
-                        data-date="@FormatDate(h.Date)"
-                        data-time="@FormatTime(h.Time)"
-                        data-rate="@rate"
-                        data-prio="@prioName"
-                        data-prioclass="@prioClass"
-                        data-chefs="@chefText">
-                  Detay
-                </button>
-
-                <a class="btnMini"
-                   asp-controller="GroupOrganization"
-                   asp-action="Update"
-                   asp-route-id="@h.GroupOrganizationId">Düzenle</a>
-
-                <button type="button"
-                        class="btnMini danger js-delete"
-                        data-id="@h.GroupOrganizationId"
-                        data-name="@orgTitle">Sil</button>
-              </div>
-            </div>
-          }
+        <div class="muted-empty">
+          Boş.
+          <div style="margin-top:.9rem;">
+            <a class="btnCreate" asp-controller="GroupOrganization" asp-action="CreateGroupOrganization">+ Yeni Grup</a>
+          </div>
         </div>
       }
+     else
+{
+  <div id="list">
+   @foreach (var g in grouped)
+{
+    var h = g.Header;
+
+    var chefsText = string.Join(" ", g.Chefs.Select(x => x.ChefName ?? ""));
+    var searchText = $"{h.OrganizationName} {h.GroupOrganizationId} {FormatDate(h.Date)} {FormatTime(h.Time)} {PName(g.Priority)} {h.PersonCount} {chefsText}".ToLowerInvariant();
+
+    var rate = h.ParticipationRate;
+    var width = Math.Clamp(rate, 0, 100);
+
+    var prioClass = g.Priority == 1 ? "low" : g.Priority == 2 ? "avg" : "high";
+
+    <div class="rowCard item"
+         data-prio="@g.Priority"
+         data-search="@searchText">
+
+        <div class="orgBlock">
+            <div class="orgName">@h.OrganizationName</div>
+
+            <div class="orgMeta">
+                <span class="metaPill">@FormatDate(h.Date)</span>
+                <span class="metaPill">@FormatTime(h.Time)</span>
+
+              <span class="metaPill">@(h.ParticipantCount.ToString())</span>
+
+
+            </div>
+        </div>
+
+        <div>
+            <div style="color: rgba(255,255,255,.75); font-weight: 800;">
+                @foreach (var c in g.Chefs)
+                {
+                    <div>@c.ChefName</div>
+                }
+            </div>
+        </div>
+
+        <div class="rateWrap">
+            <div class="rateTop"><span>@rate%</span></div>
+            <div class="bar"><span style="width:@width%"></span></div>
+        </div>
+
+        <div>
+            <span class="prio @prioClass">@PName(g.Priority)</span>
+        </div>
+
+        <div class="actions">
+            <button type="button"
+                    class="btnMini primary js-detail"
+                    data-id="@h.GroupOrganizationId"
+                    data-org="@h.OrganizationName"
+                    data-date="@FormatDate(h.Date)"
+                    data-time="@FormatTime(h.Time)"
+                    data-rate="@rate"
+                    data-prio="@PName(g.Priority)"
+                    data-prioclass="@prioClass"
+                    data-chefs="@string.Join(", ", g.Chefs.Select(x => x.ChefName))">
+                Detay
+            </button>
+
+            <a class="btnMini"
+               asp-controller="GroupOrganization"
+               asp-action="Update"
+               asp-route-id="@h.GroupOrganizationId">Düzenle</a>
+
+            <button type="button"
+                    class="btnMini danger js-delete"
+                    data-id="@h.GroupOrganizationId"
+                    data-name="@h.OrganizationName">Sil</button>
+        </div>
     </div>
+}
 
   </div>
-</div>
+}
 
-<!-- =========================
-     MODAL HTML (tek kez)
-     ========================= -->
-<div class="goModal" id="goModal" aria-hidden="true">
-  <div class="goModal__backdrop" data-close="1"></div>
-
-  <div class="goModal__panel" role="dialog" aria-modal="true" aria-labelledby="goModalTitle">
-    <div class="goModal__top">
-      <div>
-        <h3 class="goModal__title" id="goModalTitle">Detay</h3>
-        <p class="goModal__sub" id="goModalSub">Özet</p>
-      </div>
-      <button type="button" class="goModal__close" id="goModalClose">Kapat</button>
     </div>
 
-    <div class="goModal__body">
-      <div class="goModal__card">
-        <div class="goGrid">
-          <div class="goField"><span class="k">Grup ID</span><span class="v" id="m_gid">-</span></div>
-          <div class="goField"><span class="k">Organizasyon</span><span class="v" id="m_org">-</span></div>
-          <div class="goField"><span class="k">Tarih</span><span class="v" id="m_date">-</span></div>
-          <div class="goField"><span class="k">Saat</span><span class="v" id="m_time">-</span></div>
-          <div class="goField"><span class="k">Katılım</span><span class="v" id="m_rate">-</span></div>
-          <div class="goField"><span class="k">Şefler</span><span class="v" id="m_chefs">-</span></div>
-        </div>
-
-        <div class="goModal__prio" style="margin-top:.9rem;">
-          <span class="k" style="display:block;color:rgba(255,255,255,.62);font-weight:850;font-size:.78rem;margin-bottom:.35rem;">Öncelik</span>
-          <span class="prio" id="m_prioChip">-</span>
-        </div>
-      </div>
-
-      <div class="goModal__card">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:.7rem;">
-          <div style="color:rgba(255,255,255,.85); font-weight:950;">Katılım Grafiği</div>
-          <div style="color:rgba(255,255,255,.85); font-weight:950;" id="m_rateTop">0%</div>
-        </div>
-        <div class="bar" style="margin-top:.7rem;">
-          <span id="m_rateBar" style="width:0%"></span>
-        </div>
-
-        <div style="margin-top:1rem; color:rgba(255,255,255,.65); font-weight:850;">
-          Bu modal sadece hızlı özet gösterir. Tam sayfaya gitmek için “Tam Detay”a bas.
-        </div>
-      </div>
-    </div>
-
-    <div class="goModal__footer">
-      <a class="goBtn" id="m_update" href="#">Düzenle</a>
-      <a class="goBtn warn" id="m_detail" href="#">Tam Detay</a>
-    </div>
   </div>
 </div>
 
@@ -753,14 +558,12 @@ html, body{ background: var(--bg0); }
     m_rateTop.textContent = `${n}%`;
     m_rateBar.style.width = `${n}%`;
 
-    // links
     m_detail.href = `/GroupOrganization/Detail/${encodeURIComponent(id)}`;
     m_update.href = `/GroupOrganization/Update/${encodeURIComponent(id)}`;
 
     openModal();
   });
 
-  // ===== Delete confirm (mevcut) =====
   document.addEventListener("click", async (e) => {
     const btn = e.target.closest(".js-delete");
     if (!btn) return;

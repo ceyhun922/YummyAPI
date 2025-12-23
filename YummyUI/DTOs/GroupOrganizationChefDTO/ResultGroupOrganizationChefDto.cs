@@ -13,6 +13,8 @@ namespace YummyUI.DTOs.GroupOrganizationChefDTO
 
         public int GroupOrganizationId { get; set; }
         public string OrganizationName { get; set; } = "";
+    public int PersonCount { get; set; }        
+    public int ParticipantCount { get; set; }  
 
         public int ParticipationRate { get; set; }
         public DateOnly Date { get; set; }

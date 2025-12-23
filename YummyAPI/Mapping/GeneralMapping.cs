@@ -107,6 +107,7 @@ namespace YummyAPI.Mapping
             CreateMap<GroupOrganization, ResultGroupOrganizationDto>().ReverseMap();
             CreateMap<GroupOrganization, GetByIdGroupOrganizationDto>().ReverseMap();
 
+
             //imagefile
             CreateMap<Product, ResultGetAllProductWithCategoryDto>().ForMember(x => x.CategoryName, y => y.MapFrom(z => z.Category.CategoryName)).ReverseMap();
             CreateMap<CreateChefDto, Chef>().ForMember(d => d.ImageFile, o => o.MapFrom(s => s.ImageFile));

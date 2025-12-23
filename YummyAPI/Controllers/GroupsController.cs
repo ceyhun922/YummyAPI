@@ -34,6 +34,7 @@ namespace YummyAPI.Controllers
                     ImageFile = x.Chef.ImageFile,
                     GroupOrganizationId = x.GroupOrganizationId,
                     OrganizationName = x.GroupOrganization.Organization.OrganizationName,
+                    ParticipantCount = x.GroupOrganization.ParticipantCount,
                     ParticipationRate = x.GroupOrganization.ParticipationRate,
                     Date = x.GroupOrganization.Date,
                     Time = x.GroupOrganization.Time,
