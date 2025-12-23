@@ -1,11 +1,8 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace YummyAPI.Entities
+namespace YummyAPI.DTOs.FooterDTO
 {
-    public class Info
+    public class UpdateFooterDto
     {
-        [Key]
-        public int InfoId { get; set; }
+        public int FooterId { get; set; }
         public string? MapLocation { get; set; }
         public string? Address { get; set; }
         public string? CallUs { get; set; }

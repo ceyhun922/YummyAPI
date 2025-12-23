@@ -15,7 +15,7 @@ namespace YummyAPI.Context
         public DbSet<Contact>? Contacts {get;set;}
         public DbSet<Feature>? Features { get; set; }
         public DbSet<Gallery>? Galleries { get; set; }
-        public DbSet<Info>? Infos { get; set; }
+        public DbSet<Footer>?  Footers { get; set; }
         public DbSet<Organization>? Organizations { get; set; }
         public DbSet<Product>? Products { get; set; }
         public DbSet<Service>? Services { get; set; }

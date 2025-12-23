@@ -12,8 +12,8 @@ using YummyAPI.Context;
 namespace YummyAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20251223035043_mig-2")]
-    partial class mig2
+    [Migration("20251223075444_mig-1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -140,6 +140,34 @@ namespace YummyAPI.Migrations
                     b.ToTable("Features");
                 });
 
+            modelBuilder.Entity("YummyAPI.Entities.Footer", b =>
+                {
+                    b.Property<int>("FooterId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FooterId"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CallUs")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailUs")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MapLocation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OpeningHours")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("FooterId");
+
+                    b.ToTable("Footers");
+                });
+
             modelBuilder.Entity("YummyAPI.Entities.Gallery", b =>
                 {
                     b.Property<int>("GalleryId")
@@ -160,34 +188,6 @@ namespace YummyAPI.Migrations
                     b.HasKey("GalleryId");
 
                     b.ToTable("Galleries");
-                });
-
-            modelBuilder.Entity("YummyAPI.Entities.Info", b =>
-                {
-                    b.Property<int>("InfoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InfoId"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CallUs")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailUs")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MapLocation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OpeningHours")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("InfoId");
-
-                    b.ToTable("Infos");
                 });
 
             modelBuilder.Entity("YummyAPI.Entities.Organization", b =>
@@ -257,12 +257,6 @@ namespace YummyAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RezervationId"));
 
-                    b.Property<DateOnly>("Clock")
-                        .HasColumnType("date");
-
-                    b.Property<TimeOnly>("Date")
-                        .HasColumnType("time");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -274,6 +268,12 @@ namespace YummyAPI.Migrations
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeOnly>("RezervationClockk")
+                        .HasColumnType("time");
+
+                    b.Property<DateOnly>("RezervationDate")
+                        .HasColumnType("date");
 
                     b.Property<bool>("RezervationStatus")
                         .HasColumnType("bit");

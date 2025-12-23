@@ -1,5 +1,15 @@
 using AutoMapper;
 using YummyAPI.DTOs.CategoryDTO;
+using YummyAPI.DTOs.ChefDTO;
+using YummyAPI.DTOs.ContactDTO;
+using YummyAPI.DTOs.FeatureDTO;
+using YummyAPI.DTOs.FooterDTO;
+using YummyAPI.DTOs.GalleryDTO;
+using YummyAPI.DTOs.OrganizationDTO;
+using YummyAPI.DTOs.ProductDTO;
+using YummyAPI.DTOs.RezervationDTO;
+using YummyAPI.DTOs.ServiceDTO;
+using YummyAPI.DTOs.TestimonialDTO;
 using YummyAPI.Entities;
 
 namespace YummyAPI.Mapping
@@ -8,9 +18,66 @@ namespace YummyAPI.Mapping
     {
         public GeneralMapping()
         {
+            //category
             CreateMap<Category, CreateCategoryDto>().ReverseMap();
-            CreateMap<Category,ResultCategoryDTOs>().ReverseMap();
+            CreateMap<Category, ResultCategoryDTOs>().ReverseMap();
             CreateMap<Category, UpdateCategoryDTOs>().ReverseMap();
+
+            //product
+            CreateMap<Product, CreateProductDto>().ReverseMap();
+            CreateMap<Product, ResultProductDto>().ReverseMap();
+            CreateMap<Product, UpdateProductDto>().ReverseMap();
+            CreateMap<Product, GetByIdProductDto>().ReverseMap();
+
+            //chef
+            CreateMap<Chef, CreateChefDto>().ReverseMap();
+            CreateMap<Chef, ResultChefDto>().ReverseMap();
+            CreateMap<Chef, UpdateChefDto>().ReverseMap();
+            CreateMap<Chef, GetByIdChefDto>().ReverseMap();
+
+            //service
+            CreateMap<Service, ResultServiceDto>().ReverseMap();
+            CreateMap<Service, CreateServiceDto>().ReverseMap();
+            CreateMap<Service, UpdateService>().ReverseMap();
+
+            //gallery
+            CreateMap<Gallery, ResultGalleryDto>().ReverseMap();
+            CreateMap<Gallery, CreateGalleryDto>().ReverseMap();
+            CreateMap<Gallery, UpdateGalleryDto>().ReverseMap();
+
+            //testimonial
+            CreateMap<Testimonial, ResultTestimonialDto>().ReverseMap();
+            CreateMap<Testimonial, CreateTestimonialDto>().ReverseMap();
+            CreateMap<Testimonial, UpdateTestimonialDto>().ReverseMap();
+
+            //orgabization
+            CreateMap<Organization, ResultOrganizationDto>().ReverseMap();
+            CreateMap<Organization, CreateOrganizationDto>().ReverseMap();
+            CreateMap<Organization, UpdateOrganizationDto>().ReverseMap();
+
+            //footer
+            CreateMap<Footer, ResultFooterDto>().ReverseMap();
+            CreateMap<Footer, CreateFooterDto>().ReverseMap();
+            CreateMap<Footer, UpdateFooterDto>().ReverseMap();
+
+            //contact
+            CreateMap<Contact, ResultContactDto>().ReverseMap();
+            CreateMap<Contact, CreateContactDto>().ReverseMap();
+            CreateMap<Contact, UpdateContactDto>().ReverseMap();
+            
+            //feature
+            CreateMap<Feature, ResultFeatureDto>().ReverseMap();
+            CreateMap<Feature, CreateFeatureDto>().ReverseMap();
+            CreateMap<Feature, UpdateFeatureDto>().ReverseMap();
+            
+            //Rezarvation
+            CreateMap<Rezervation, ResultRezervationDto>().ReverseMap();
+            CreateMap<Rezervation, CreateRezervationDto>().ReverseMap();
+            CreateMap<Rezervation, UpdateRezervationDto>().ReverseMap();
+
+
+
         }
     }
 }
+

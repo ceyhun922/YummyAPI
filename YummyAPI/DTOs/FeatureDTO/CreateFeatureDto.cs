@@ -1,0 +1,11 @@
+namespace YummyAPI.DTOs.FeatureDTO
+{
+    public class CreateFeatureDto
+    {
+        public string? FeatureTitle { get; set; }
+        public string? FeatureTitle2 { get; set; }
+        public string? FeatureDescription { get; set; }
+        public string? FeatureImageUrl { get; set; }
+        public bool FeatureStatus { get; set; }
+    }
+}

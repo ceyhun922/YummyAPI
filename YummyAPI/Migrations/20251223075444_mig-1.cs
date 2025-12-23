@@ -81,6 +81,23 @@ namespace YummyAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Footers",
+                columns: table => new
+                {
+                    FooterId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MapLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CallUs = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailUs = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OpeningHours = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Footers", x => x.FooterId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Galleries",
                 columns: table => new
                 {
@@ -93,23 +110,6 @@ namespace YummyAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Galleries", x => x.GalleryId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Infos",
-                columns: table => new
-                {
-                    InfoId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MapLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CallUs = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmailUs = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OpeningHours = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Infos", x => x.InfoId);
                 });
 
             migrationBuilder.CreateTable(
@@ -137,8 +137,8 @@ namespace YummyAPI.Migrations
                     FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Date = table.Column<TimeOnly>(type: "time", nullable: false),
-                    Clock = table.Column<DateOnly>(type: "date", nullable: false),
+                    RezervationDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    RezervationClockk = table.Column<TimeOnly>(type: "time", nullable: false),
                     PersonCount = table.Column<int>(type: "int", nullable: false),
                     RezervationStatus = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -222,10 +222,10 @@ namespace YummyAPI.Migrations
                 name: "Features");
 
             migrationBuilder.DropTable(
-                name: "Galleries");
+                name: "Footers");
 
             migrationBuilder.DropTable(
-                name: "Infos");
+                name: "Galleries");
 
             migrationBuilder.DropTable(
                 name: "Organizations");
