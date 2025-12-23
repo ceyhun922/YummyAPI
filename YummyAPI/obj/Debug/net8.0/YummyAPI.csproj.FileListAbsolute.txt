@@ -10,6 +10,8 @@
 /Users/ceyhunyusif/Documents/YummyProject/YummyAPI/bin/Debug/net8.0/Azure.Core.dll
 /Users/ceyhunyusif/Documents/YummyProject/YummyAPI/bin/Debug/net8.0/Azure.Identity.dll
 /Users/ceyhunyusif/Documents/YummyProject/YummyAPI/bin/Debug/net8.0/FluentValidation.dll
+/Users/ceyhunyusif/Documents/YummyProject/YummyAPI/bin/Debug/net8.0/FluentValidation.AspNetCore.dll
+/Users/ceyhunyusif/Documents/YummyProject/YummyAPI/bin/Debug/net8.0/FluentValidation.DependencyInjectionExtensions.dll
 /Users/ceyhunyusif/Documents/YummyProject/YummyAPI/bin/Debug/net8.0/Humanizer.dll
 /Users/ceyhunyusif/Documents/YummyProject/YummyAPI/bin/Debug/net8.0/Microsoft.AspNetCore.OpenApi.dll
 /Users/ceyhunyusif/Documents/YummyProject/YummyAPI/bin/Debug/net8.0/Microsoft.Bcl.AsyncInterfaces.dll
