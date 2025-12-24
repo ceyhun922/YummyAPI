@@ -27,3 +27,6 @@
 /Users/ceyhunyusif/Documents/YummyProject/YummyUI/obj/Debug/net8.0/YummyUI.pdb
 /Users/ceyhunyusif/Documents/YummyProject/YummyUI/obj/Debug/net8.0/YummyUI.genruntimeconfig.cache
 /Users/ceyhunyusif/Documents/YummyProject/YummyUI/obj/Debug/net8.0/ref/YummyUI.dll
+/Users/ceyhunyusif/Documents/YummyProject/YummyUI/bin/Debug/net8.0/Newtonsoft.Json.dll
+/Users/ceyhunyusif/Documents/YummyProject/YummyUI/obj/Debug/net8.0/YummyUI.csproj.AssemblyReference.cache
+/Users/ceyhunyusif/Documents/YummyProject/YummyUI/obj/Debug/net8.0/YummyUI.csproj.Up2Date
