@@ -26,7 +26,7 @@ namespace YummyAPI.Controllers
             var values = _context.Features?.ToList();
             var mapper = _mapper.Map<List<ResultFeatureDto>>(values);
 
-            return Ok(new { message = "Feature List", data = mapper });
+            return Ok(mapper);
         }
 
         [HttpPost]

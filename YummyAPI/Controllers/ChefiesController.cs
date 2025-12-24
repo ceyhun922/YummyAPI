@@ -34,7 +34,7 @@ namespace YummyAPI.Controllers
             var values = _context.Chefs?.ToList();
             var mapper = _mapper.Map<List<ResultChefDto>>(values);
 
-            return Ok(new { message = "Chef List", data = mapper });
+            return Ok(mapper );
         }
 
         [HttpPut]
