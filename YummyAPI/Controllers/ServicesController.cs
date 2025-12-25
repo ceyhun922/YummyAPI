@@ -34,7 +34,7 @@ namespace YummyAPI.Controllers
             var values = _context.Services?.ToList();
             var mapper = _mapper.Map<List<ResultServiceDto>>(values);
 
-            return Ok(new { message = "Service List", data = mapper });
+            return Ok(mapper);
         }
 
         [HttpDelete]

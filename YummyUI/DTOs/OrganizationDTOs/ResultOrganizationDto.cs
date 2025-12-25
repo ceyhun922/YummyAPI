@@ -1,12 +1,9 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace YummyAPI.Entities
+namespace YummyUI.DTOs.OrganizationDTOs
 {
-    public class Organization
+    public class ResultOrganizationDto
     {
-        [Key]
         public int OrganizationId { get; set; }
-        public string OrganizationName { get; set; }=string.Empty;
+        public string OrganizationName { get; set; } = string.Empty;
         public string? OrganizationDescription { get; set; }
         public double OrganizationPrice { get; set; }
         public string? OrganizationImage { get; set; }

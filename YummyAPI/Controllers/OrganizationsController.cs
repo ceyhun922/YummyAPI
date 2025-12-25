@@ -26,7 +26,7 @@ namespace YummyAPI.Controllers
             var values = _context.Organizations?.ToList();
             var mapper = _mapper.Map<List<ResultOrganizationDto>>(values);
 
-            return Ok(new { message = "Organization List", data = mapper });
+            return Ok(mapper);
         }
 
         [HttpPost]
