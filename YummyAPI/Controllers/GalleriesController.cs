@@ -32,7 +32,7 @@ namespace YummyAPI.Controllers
         {
             var values = _context.Galleries?.ToList();
             var mapper = _mapper.Map<List<ResultGalleryDto>>(values);
-            return Ok(new { message = "Gallery list", data = mapper });
+            return Ok(mapper);
         }
 
         [HttpPut]

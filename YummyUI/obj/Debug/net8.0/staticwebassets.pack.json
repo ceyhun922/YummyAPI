@@ -425,6 +425,34 @@
       "PackagePath": "staticwebassets/Yummy/forms/contact.php"
     },
     {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/gallery1.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/gallery1.jpg"
+    },
+    {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/gallery2.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/gallery2.jpg"
+    },
+    {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/gallery3.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/gallery3.jpg"
+    },
+    {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/gallery4.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/gallery4.jpg"
+    },
+    {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/gallery5.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/gallery5.jpg"
+    },
+    {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/image1.png",
+      "PackagePath": "staticwebassets/Yummy/images/image1.png"
+    },
+    {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/image2.webp",
+      "PackagePath": "staticwebassets/Yummy/images/image2.webp"
+    },
+    {
       "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/index.html",
       "PackagePath": "staticwebassets/Yummy/index.html"
     },
