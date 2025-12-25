@@ -33,7 +33,7 @@ namespace YummyAPI.Controllers
         {
             var values =_context.Categories?.ToList();
             var mapper = _mapper.Map<List<ResultCategoryDTOs>>(values);
-            return Ok(new {message ="Category List", data =mapper});
+            return Ok(mapper);
         }
 
         [HttpPut]
