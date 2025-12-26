@@ -22,6 +22,43 @@ namespace YummyAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("YummyAPI.Entities.About", b =>
+                {
+                    b.Property<int>("AboutId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AboutId"));
+
+                    b.Property<string>("AboutDesciription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AboutImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AboutSubTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AboutTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AboutTitleChecked1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AboutTitleChecked2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AboutTitleChecked3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AboutVideoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AboutId");
+
+                    b.ToTable("Abouts");
+                });
+
             modelBuilder.Entity("YummyAPI.Entities.Category", b =>
                 {
                     b.Property<int>("CategoryId")
