@@ -25,7 +25,7 @@ namespace YummyAPI.Controllers
             var values = _context.Footers?.ToList();
             var mapper = _mapper.Map<List<ResultFooterDto>>(values);
 
-            return Ok(new { message = "Footer List", data = mapper });
+            return Ok(mapper);
         }
 
         [HttpPost]
