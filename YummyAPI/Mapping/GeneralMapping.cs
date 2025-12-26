@@ -1,4 +1,5 @@
 using AutoMapper;
+using YummyAPI.DTOs.AboutDTO;
 using YummyAPI.DTOs.CategoryDTO;
 using YummyAPI.DTOs.ChefDTO;
 using YummyAPI.DTOs.ContactDTO;
@@ -74,6 +75,11 @@ namespace YummyAPI.Mapping
             CreateMap<Rezervation, ResultRezervationDto>().ReverseMap();
             CreateMap<Rezervation, CreateRezervationDto>().ReverseMap();
             CreateMap<Rezervation, UpdateRezervationDto>().ReverseMap();
+
+            //About
+            CreateMap<About, ResultAboutDto>().ReverseMap();
+            CreateMap<About, CreateAboutDto>().ReverseMap();
+            CreateMap<About, UpdateAboutDto>().ReverseMap();
 
 
 
