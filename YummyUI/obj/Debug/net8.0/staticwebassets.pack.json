@@ -425,6 +425,10 @@
       "PackagePath": "staticwebassets/Yummy/forms/contact.php"
     },
     {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/about.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/about.jpg"
+    },
+    {
       "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/chefs1.jpg",
       "PackagePath": "staticwebassets/Yummy/images/chefs1.jpg"
     },

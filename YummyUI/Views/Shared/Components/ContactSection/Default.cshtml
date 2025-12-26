@@ -1,16 +1,23 @@
+@using System.ComponentModel
 @using YummyUI.DTOs.FooterDTOs
-  @model ResultFooterDto
+  @model List<ResultFooterDto>
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
     <h2>Contact</h2>
     <p><span>Need Help?</span> <span class="description-title">Contact Us</span></p>
   </div><!-- End Section Title -->
 
+    @{
+       var first = Model.FirstOrDefault();
+    }
+
+@if(first != null)
+{
   <div class="container" data-aos="fade-up" data-aos-delay="100">
 
     <div class="mb-5">
       <iframe style="width: 100%; height: 400px;"
-        src="@Model.MapLocation"
+        src="@first.MapLocation"
         frameborder="0" allowfullscreen=""></iframe>
     </div><!-- End Google Maps -->
 
@@ -21,7 +28,7 @@
           <i class="icon bi bi-geo-alt flex-shrink-0"></i>
           <div>
             <h3>Address</h3>
-            <p>@Model.Address</p>
+            <p>@first.Address</p>
           </div>
         </div>
       </div><!-- End Info Item -->
@@ -31,7 +38,7 @@
           <i class="icon bi bi-telephone flex-shrink-0"></i>
           <div>
             <h3>Call Us</h3>
-            <p>@Model.CallUs</p>
+            <p>@first.CallUs</p>
           </div>
         </div>
       </div><!-- End Info Item -->
@@ -41,7 +48,7 @@
           <i class="icon bi bi-envelope flex-shrink-0"></i>
           <div>
             <h3>Email Us</h3>
-            <p>@Model.EmailUs</p>
+            <p>@first.EmailUs</p>
           </div>
         </div>
       </div><!-- End Info Item -->
@@ -57,7 +64,8 @@
       </div><!-- End Info Item -->
 
     </div>
-    @await Component.InvokeAsync("_ContactFormPartials")
+     @await Component.InvokeAsync("_ContactFormPartials");
+      </div>
 
+}
 
-  </div>
