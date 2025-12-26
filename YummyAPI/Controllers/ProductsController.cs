@@ -32,7 +32,7 @@ namespace YummyAPI.Controllers
         {
             var values = _context.Products?.ToList();
             var mapper = _mapper.Map<List<ResultProductDto>>(values);
-            return Ok(new { message = "Product list", data = mapper });
+            return Ok(mapper);
         }
 
         [HttpPut]
