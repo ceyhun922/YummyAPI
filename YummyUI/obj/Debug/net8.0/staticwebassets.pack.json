@@ -465,6 +465,22 @@
       "PackagePath": "staticwebassets/Yummy/images/image2.webp"
     },
     {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/testimonials1.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/testimonials1.jpg"
+    },
+    {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/testimonials2.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/testimonials2.jpg"
+    },
+    {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/testimonials3.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/testimonials3.jpg"
+    },
+    {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/testimonials4.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/testimonials4.jpg"
+    },
+    {
       "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/index.html",
       "PackagePath": "staticwebassets/Yummy/index.html"
     },

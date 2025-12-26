@@ -25,7 +25,7 @@ namespace YummyAPI.Controllers
             var values = _context.Testimonials?.ToList();
             var mapper = _mapper.Map<List<ResultTestimonialDto>>(values);
 
-            return Ok(new { message = "Testimonial List", data = mapper });
+            return Ok(mapper);
         }
 
         [HttpPost]
