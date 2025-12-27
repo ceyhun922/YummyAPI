@@ -132,6 +132,9 @@ namespace YummyAPI.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("GetDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
@@ -222,6 +225,34 @@ namespace YummyAPI.Migrations
                     b.HasKey("GalleryId");
 
                     b.ToTable("Galleries");
+                });
+
+            modelBuilder.Entity("YummyAPI.Entities.Notification", b =>
+                {
+                    b.Property<int>("NotificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("NotificationIcon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NotificationMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NotificationTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("NotificationId");
+
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("YummyAPI.Entities.Organization", b =>

@@ -25,7 +25,15 @@ namespace YummyAPI.Controllers
             var values = _context.Contacts?.ToList();
             var mapper = _mapper.Map<List<ResultContactDto>>(values);
 
-            return Ok(new { message = "Contact List", data = mapper });
+            return Ok(mapper);
+        }
+
+        [HttpGet("ContactListIsReadFalse")]
+        public IActionResult ContactListIsReadFalse()
+        {
+            var values =_context.Contacts?.Where(x=>x.IsRead ==false).ToList().Take(2);
+            
+            return Ok(values);
         }
 
         [HttpPost]

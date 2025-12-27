@@ -6,6 +6,7 @@ using YummyAPI.DTOs.ContactDTO;
 using YummyAPI.DTOs.FeatureDTO;
 using YummyAPI.DTOs.FooterDTO;
 using YummyAPI.DTOs.GalleryDTO;
+using YummyAPI.DTOs.NotificationDTO;
 using YummyAPI.DTOs.OrganizationDTO;
 using YummyAPI.DTOs.ProductDTO;
 using YummyAPI.DTOs.RezervationDTO;
@@ -65,12 +66,12 @@ namespace YummyAPI.Mapping
             CreateMap<Contact, ResultContactDto>().ReverseMap();
             CreateMap<Contact, CreateContactDto>().ReverseMap();
             CreateMap<Contact, UpdateContactDto>().ReverseMap();
-            
+
             //feature
             CreateMap<Feature, ResultFeatureDto>().ReverseMap();
             CreateMap<Feature, CreateFeatureDto>().ReverseMap();
             CreateMap<Feature, UpdateFeatureDto>().ReverseMap();
-            
+
             //Rezarvation
             CreateMap<Rezervation, ResultRezervationDto>().ReverseMap();
             CreateMap<Rezervation, CreateRezervationDto>().ReverseMap();
@@ -81,6 +82,12 @@ namespace YummyAPI.Mapping
             CreateMap<About, CreateAboutDto>().ReverseMap();
             CreateMap<About, UpdateAboutDto>().ReverseMap();
 
+            //Notification
+
+            CreateMap<Notification, ResultNotificationDto>().ReverseMap();
+            CreateMap<Notification, CreateNotificationDto>().ReverseMap();
+            CreateMap<Notification, UpdateNotificationDto>().ReverseMap();
+            CreateMap<Notification, ResultNotificationReadFalseDto>().ReverseMap();
 
 
         }

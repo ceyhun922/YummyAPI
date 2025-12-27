@@ -22,5 +22,6 @@ namespace YummyAPI.Context
         public DbSet<Rezervation>? Rezervations { get; set; }
         public DbSet<Testimonial>? Testimonials { get; set; }
         public DbSet<About>? Abouts { get; set; }
+        public DbSet<Notification>? Notifications { get; set; }
     }
 }
