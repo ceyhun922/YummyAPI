@@ -141,3 +141,4 @@
 /Users/ceyhunyusif/Documents/YummyProject/YummyAPI/obj/Debug/net8.0/YummyAPI.pdb
 /Users/ceyhunyusif/Documents/YummyProject/YummyAPI/obj/Debug/net8.0/YummyAPI.genruntimeconfig.cache
 /Users/ceyhunyusif/Documents/YummyProject/YummyAPI/obj/Debug/net8.0/ref/YummyAPI.dll
+/Users/ceyhunyusif/Documents/YummyProject/YummyAPI/bin/Debug/net8.0/Newtonsoft.Json.dll

@@ -36,8 +36,8 @@
                             <td>@(++count)</td>
                             <td>@category.CategoryName</td>
                             <td>@Html.Raw(category.CategoryStatus ? "<button class='btn btn-outline-danger'>Passif Et</button>" : "<button class='btn btn-outline-success'>Aktif et</button>")</td>
-                            <td><button asp-action="CategoryDelete" asp-controller="Admin" asp-route-categoryid="@category.CategoryId" class="btn btn-danger">Sil</button></td>
-                            <td><a asp-action="CategoryUpdate" asp-controller="Admin" asp-route-categoryid="@category.CategoryId" class="btn btn-warning">Güncelle</a></td>
+                            <td><a asp-action="CategoryDelete" asp-controller="Admin" asp-route-id="@category.CategoryId" class="btn btn-danger">Sil</a></td>
+                            <td><a asp-action="CategoryUpdate" asp-controller="Admin" asp-route-id="@category.CategoryId" class="btn btn-warning">Güncelle</a></td>
                           </tr>
                             }
                         </tbody>
