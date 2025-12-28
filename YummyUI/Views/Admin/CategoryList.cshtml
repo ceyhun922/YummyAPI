@@ -1,0 +1,51 @@
+@{
+    Layout="_Adminlayout";
+    
+}
+
+@using YummyUI.DTOs.CategoryDTOs
+@model List<ResultCategoryDto>
+@{
+    var count = 0;
+}
+
+ <div class="section-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4>Kategoriler</h4>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Kategori Adı</th>
+                            <th>Kategori Durumu</th>
+                            <th>Kategori Sil</th>
+                            <th>Kategori Güncelle</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var category in Model)
+                            {
+                          <tr>
+                            
+                            <td>@(++count)</td>
+                            <td>@category.CategoryName</td>
+                            <td>@Html.Raw(category.CategoryStatus ? "<button class='btn btn-outline-danger'>Passif Et</button>" : "<button class='btn btn-outline-success'>Aktif et</button>")</td>
+                            <td><button asp-action="CategoryDelete" asp-controller="Admin" asp-route-categoryid="@category.CategoryId" class="btn btn-danger">Sil</button></td>
+                            <td><a asp-action="CategoryUpdate" asp-controller="Admin" asp-route-categoryid="@category.CategoryId" class="btn btn-warning">Güncelle</a></td>
+                          </tr>
+                            }
+                        </tbody>
+                      </table>
+                      <a asp-action="CreateCategory"  asp-controller="Admin" class="btn btn-info">Yeni Kategori Girişi</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>

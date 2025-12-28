@@ -58,5 +58,19 @@ namespace YummyAPI.Controllers
             _context.SaveChanges();
             return Ok(new {message="Category Silindi"});
         }
+
+        [HttpGet("GetCategoryById")]
+        public IActionResult GetCategoryById(int id)
+        {
+            var value =_context.Categories?.Find(id);
+            if (value == null)
+            {
+                return Ok(new {message ="Bulunamadı"});
+            }
+
+            var mapper =_mapper.Map<GetCategoryByIdDto>(value);
+
+            return Ok(mapper);
+        }
     }
 }

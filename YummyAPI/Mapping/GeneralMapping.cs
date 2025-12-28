@@ -24,6 +24,7 @@ namespace YummyAPI.Mapping
             CreateMap<Category, CreateCategoryDto>().ReverseMap();
             CreateMap<Category, ResultCategoryDTOs>().ReverseMap();
             CreateMap<Category, UpdateCategoryDTOs>().ReverseMap();
+            CreateMap<Category, GetCategoryByIdDto>().ReverseMap();
 
             //product
             CreateMap<Product, CreateProductDto>().ReverseMap();
@@ -41,21 +42,27 @@ namespace YummyAPI.Mapping
             CreateMap<Service, ResultServiceDto>().ReverseMap();
             CreateMap<Service, CreateServiceDto>().ReverseMap();
             CreateMap<Service, UpdateService>().ReverseMap();
+            CreateMap<Service, GetByIdServiceDto>().ReverseMap();
 
             //gallery
             CreateMap<Gallery, ResultGalleryDto>().ReverseMap();
             CreateMap<Gallery, CreateGalleryDto>().ReverseMap();
             CreateMap<Gallery, UpdateGalleryDto>().ReverseMap();
+            CreateMap<Gallery, GetByIdGalleryDto>().ReverseMap();
 
             //testimonial
             CreateMap<Testimonial, ResultTestimonialDto>().ReverseMap();
             CreateMap<Testimonial, CreateTestimonialDto>().ReverseMap();
             CreateMap<Testimonial, UpdateTestimonialDto>().ReverseMap();
+            CreateMap<Testimonial, GetByIdTestimonialDto>().ReverseMap();
+
 
             //orgabization
             CreateMap<Organization, ResultOrganizationDto>().ReverseMap();
             CreateMap<Organization, CreateOrganizationDto>().ReverseMap();
             CreateMap<Organization, UpdateOrganizationDto>().ReverseMap();
+            CreateMap<Organization, GetByIdOrganizationDto>().ReverseMap();
+
 
             //footer
             CreateMap<Footer, ResultFooterDto>().ReverseMap();
