@@ -1,0 +1,93 @@
+@{
+  Layout = "_Adminlayout";
+
+}
+
+@using YummyUI.DTOs.CategoryDTOs
+@model List<ResultCategoryDto>
+@{
+  var count = 0;
+}
+
+<div class="section-body">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>Kategoriler</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Kategori Adı</th>
+                  <th>Kategori Durumu</th>
+                  <th>Kategori Sil</th>
+                  <th>Kategori Güncelle</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach (var category in Model)
+                {
+                  @Html.AntiForgeryToken()
+
+                  <tr>
+
+                    <td>@(++count)</td>
+                    <td>@category.CategoryName</td>
+                    <td>
+                      <button type="button"
+                        class="btn status-btn @(category.CategoryStatus ? "btn-outline-danger" : "btn-outline-success")"
+                        data-url="@Url.Action("ChangeCategoryStatus", "Admin", new { id = category.CategoryId })"
+                        data-status="@category.CategoryStatus">
+                        @(category.CategoryStatus ? "Passif Et" : "Aktif Et")
+                      </button>
+                    </td>
+                    <td><a asp-action="CategoryDelete" asp-controller="Category" asp-route-id="@category.CategoryId"
+                        class="btn btn-danger">Sil</a></td>
+                    <td><a asp-action="CategoryUpdate" asp-controller="Category" asp-route-id="@category.CategoryId"
+                        class="btn btn-warning">Güncelle</a></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+            <a asp-action="CreateCategory" asp-controller="Category" class="btn btn-info">Yeni Kategori Girişi</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script>
+  $(document).on("click", ".status-btn", function () {
+    const btn = $(this);
+    const url = btn.data("url");
+    const token = $('input[name="__RequestVerificationToken"]').val();
+
+    $.ajax({
+      url: url,
+      type: "POST",
+      headers: { "RequestVerificationToken": token },
+      success: function (res) {
+        // res: { status: true/false }
+        btn.data("status", res.status);
+
+        if (res.status === true) {
+          btn.removeClass("btn-outline-success").addClass("btn-outline-danger");
+          btn.text("Passif Et");
+        } else {
+          btn.removeClass("btn-outline-danger").addClass("btn-outline-success");
+          btn.text("Aktif Et");
+        }
+      },
+      error: function (xhr) {
+        console.log("AJAX error:", xhr.status, xhr.responseText);
+      }
+    });
+  });
+</script>
+}

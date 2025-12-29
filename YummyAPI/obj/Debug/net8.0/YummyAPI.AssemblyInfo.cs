@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("YummyAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f79e1563acbe39b26a8cbfb3d7f2b20d140542a3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+84baac27f1282b0c0145ff001334e495db8a3ea9")]
 [assembly: System.Reflection.AssemblyProductAttribute("YummyAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("YummyAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

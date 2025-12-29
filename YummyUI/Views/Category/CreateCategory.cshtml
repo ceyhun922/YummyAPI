@@ -1,12 +1,11 @@
-@model GetCategoryByIdDto
+@model CreateCategoryDto
 @{
     Layout = "_AdminLayout";
 }
 
 <div class="card-body w-25">
-    @using (Html.BeginForm("CreateCategory", "Admin", FormMethod.Post))
+    @using (Html.BeginForm("CreateCategory", "Category", FormMethod.Post))
     {
-        @Html.HiddenFor(x=>x.CategoryId)
         <div class="form-group">
             <label>Category Name</label>
             @Html.TextBoxFor(x => x.CategoryName, new { @class = "form-control" })

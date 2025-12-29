@@ -18,20 +18,8 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = /Users/ceyhunyusif/Documents/YummyProject/YummyUI
 build_property._RazorSourceGeneratorDebug = 
 
-[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Admin/CategoryList.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vQ2F0ZWdvcnlMaXN0LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Admin/CategoryUpdate.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vQ2F0ZWdvcnlVcGRhdGUuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
 [/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Admin/ChefList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vQ2hlZkxpc3QuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Admin/CreateCategory.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vQ3JlYXRlQ2F0ZWdvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Admin/Index.cshtml]
@@ -44,6 +32,18 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Admin/ProductList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUHJvZHVjdExpc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Category/CategoryList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvQ2F0ZWdvcnlMaXN0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Category/CategoryUpdate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvQ2F0ZWdvcnlVcGRhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Category/CreateCategory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvQ3JlYXRlQ2F0ZWdvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Home/Index.cshtml]
