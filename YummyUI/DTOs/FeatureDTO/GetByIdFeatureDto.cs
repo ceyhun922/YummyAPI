@@ -1,6 +1,6 @@
-namespace YummyUI.DTOs.FeatureDTOs
+namespace YummyUI.DTOs.FeatureDTO
 {
-    public class ResultFeatureDto
+    public class GetByIdFeatureDto
     {
         public int FeatureId { get; set; }
         public string? FeatureTitle { get; set; }

@@ -79,6 +79,7 @@ namespace YummyAPI.Mapping
             CreateMap<Feature, ResultFeatureDto>().ReverseMap();
             CreateMap<Feature, CreateFeatureDto>().ReverseMap();
             CreateMap<Feature, UpdateFeatureDto>().ReverseMap();
+            CreateMap<Feature, GetByIdFeatureDto>().ReverseMap();
 
             //Rezarvation
             CreateMap<Rezervation, ResultRezervationDto>().ReverseMap();
@@ -89,6 +90,7 @@ namespace YummyAPI.Mapping
             CreateMap<About, ResultAboutDto>().ReverseMap();
             CreateMap<About, CreateAboutDto>().ReverseMap();
             CreateMap<About, UpdateAboutDto>().ReverseMap();
+            CreateMap<About, GetByIdAboutDto>().ReverseMap();
 
             //Notification
 

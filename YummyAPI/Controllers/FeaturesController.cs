@@ -60,5 +60,15 @@ namespace YummyAPI.Controllers
 
             return Ok(new {message ="Yenilendi"});
         }
+
+        [HttpGet("GetByIdFeatureArea")]
+        public IActionResult GetByIdFeatureArea(int id)
+        {
+            var value =_context.Features?.Find(id);
+            if(value == null)
+                return Ok(new {message ="Tapılmadı"});
+            var mapper =_mapper.Map<GetByIdFeatureDto>(value);
+            return Ok(mapper);
+        }
     }
 }

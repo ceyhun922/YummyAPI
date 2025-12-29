@@ -1,0 +1,50 @@
+@using YummyUI.DTOs.FeatureDTO
+@model GetByIdFeatureDto
+@{
+    Layout = "_Adminlayout";
+}
+
+<div class="section">
+    <div class="section-body">
+        <div class="row">
+            <div class="col-12 md-12 col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Öne Çıkan Alan</h4>
+                    </div>
+                    <div class="card-body w-25">
+                        @using (Html.BeginForm("UpdateFeature", "Feature", FormMethod.Post))
+                        {
+                            @Html.HiddenFor(x => x.FeatureId)
+                            <div class="form-group">
+                                <label>Başlık</label>
+                                @Html.TextBoxFor(x => x.FeatureTitle, new { @class = "form-control" })
+                            </div>
+
+                            <div class="form-group">
+                                <label>Alt Başlık</label>
+                                @Html.TextBoxFor(x => x.FeatureTitle2, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label>Hakkında</label>
+                                @Html.TextAreaFor(x => x.FeatureDescription, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x => x.FeatureImageUrl, new { @class = "form-control" })
+                            </div>
+
+                            <div class="form-group">
+                                <label class="custom-switch mb-0">
+                                    @Html.CheckBoxFor(x => x.FeatureStatus, new { @class = "custom-switch-input" })
+                                    <span class="custom-switch-indicator"></span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary mt-4">Save</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using YummyUI.DTOs.FeatureDTOs;
+using YummyUI.DTOs.FeatureDTO;
 
 namespace YummyUI.ViewComponents
 {

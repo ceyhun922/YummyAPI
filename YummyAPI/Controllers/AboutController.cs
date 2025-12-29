@@ -55,5 +55,12 @@ namespace YummyAPI.Controllers
         {
             return Ok();
         }
+        [HttpGet("GetByIdAboutArea")]
+        public IActionResult GetByIdAboutArea(int id)
+        {
+            var value =_context.Abouts?.Find(id);
+            var mapper =_mapper.Map<GetByIdAboutDto>(value);
+            return Ok(mapper);
+        }
     }
 }
