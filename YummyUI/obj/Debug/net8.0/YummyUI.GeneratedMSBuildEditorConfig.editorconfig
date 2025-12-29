@@ -46,6 +46,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvQ3JlYXRlQ2F0ZWdvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Feature/FeatureArea.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRmVhdHVyZS9GZWF0dXJlQXJlYS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -104,30 +108,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Shared/Components/WhyUsSection/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0NvbXBvbmVudHMvV2h5VXNTZWN0aW9uL0RlZmF1bHQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Shared/Components/_AdminFootComponentPartilas/Default.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0NvbXBvbmVudHMvX0FkbWluRm9vdENvbXBvbmVudFBhcnRpbGFzL0RlZmF1bHQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Shared/Components/_AdminHeadComponentPartilas/Default.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0NvbXBvbmVudHMvX0FkbWluSGVhZENvbXBvbmVudFBhcnRpbGFzL0RlZmF1bHQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Shared/Components/_AdminMessageComponentPartilas/Default.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0NvbXBvbmVudHMvX0FkbWluTWVzc2FnZUNvbXBvbmVudFBhcnRpbGFzL0RlZmF1bHQuY3NodG1s
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Shared/Components/_AdminNavComponentPartilas/Default.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0NvbXBvbmVudHMvX0FkbWluTmF2Q29tcG9uZW50UGFydGlsYXMvRGVmYXVsdC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Shared/Components/_AdminNotificationComponentPartilas/Default.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0NvbXBvbmVudHMvX0FkbWluTm90aWZpY2F0aW9uQ29tcG9uZW50UGFydGlsYXMvRGVmYXVsdC5jc2h0bWw=
-build_metadata.AdditionalFiles.CssScope = 
-
-[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Shared/Components/_AdminSettingsComponentPartilas/Default.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0NvbXBvbmVudHMvX0FkbWluU2V0dGluZ3NDb21wb25lbnRQYXJ0aWxhcy9EZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Shared/Components/_AdminSideBarComponentPartilas/Default.cshtml]

@@ -1,20 +1,18 @@
 @using YummyUI.DTOs.FeatureDTOs
 @model List<ResultFeatureDto>
 
-
 @{
-  var feature = Model?.FirstOrDefault();
+  var first = Model.FirstOrDefault();
 }
 
-}
-@if (feature != null)
+@if (Model != null && Model.Any())
 {
   <div class="container">
 
     <div class="row gy-4 justify-content-center justify-content-lg-between">
       <div class="col-lg-5 order-2 order-lg-1 d-flex flex-column justify-content-center">
-        <h1 data-aos="fade-up">@feature.FeatureTitle<br>@feature.FeatureTitle2</h1>
-        <p data-aos="fade-up" data-aos-delay="100">@feature.FeatureDescription</p>
+        <h1 data-aos="fade-up">@first.FeatureTitle<br>@first.FeatureTitle2</h1>
+        <p data-aos="fade-up" data-aos-delay="100">@first.FeatureDescription</p>
         <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
           <a href="#book-a-table" class="btn-get-started">Booka a Table</a>
           <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8"
@@ -23,7 +21,7 @@
         </div>
       </div>
       <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out">
-        <img src="@feature.FeatureImageUrl" class="img-fluid animated" alt="">
+        <img src="@first.FeatureImageUrl" class="img-fluid animated" alt="">
       </div>
     </div>
   </div>

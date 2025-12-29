@@ -4061,6 +4061,10 @@
       "PackagePath": "staticwebassets/Yummy/images/image2.webp"
     },
     {
+      "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/menyu.jpg",
+      "PackagePath": "staticwebassets/Yummy/images/menyu.jpg"
+    },
+    {
       "Id": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/testimonials1.jpg",
       "PackagePath": "staticwebassets/Yummy/images/testimonials1.jpg"
     },

@@ -1,0 +1,65 @@
+@using YummyUI.DTOs.FeatureDTO
+@model List<ResultFeatureDto>
+@{
+    Layout = "_AdminLayout";
+}
+
+
+<div class="section">
+    <div class="section-body">
+
+        <div class="row">
+            <div class="col-12 md-12 lg-col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Öne Çıkan Alan</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Başlık</th>
+                                        <th>Başlık2</th>
+                                        <td>Foto</td>
+                                        <th>Kategori Sil</th>
+                                        <th>Kategori Güncelle</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@item.FeatureTitle</td>
+                                            <td>@item.FeatureTitle2</td>
+                                            <td>
+                                                <img src="@item.FeatureImageUrl" width="80" alt="@item.FeatureTitle"></td>
+
+                                            <td><a asp-action="FeatureDelete" asp-controller="Feature"
+                                                    asp-route-id="@item.FeatureId" class="btn btn-danger">Sil</a></td>
+                                            <td><a asp-action="FeatureUpdate" asp-controller="Feature"
+                                                    asp-route-id="@item.FeatureId" class="btn btn-warning">Güncelle</a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            @if (Model.Count == 1)
+                            {
+                                <button class="btn btn-warning" onclick="return false">
+                                    <i data-feather="alert-triangle"></i> Mövcud
+                                </button>
+                            }
+                            else
+                            {
+                                <a asp-action="CreateFeature" asp-controller="Feature" class="btn btn-info">Yeni Alan
+                                    Girişi</a>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

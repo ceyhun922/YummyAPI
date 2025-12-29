@@ -1,70 +1,24 @@
 <aside id="sidebar-wrapper">
-  <div class="sidebar-brand">
-    <a href="index.html"> <img alt="image" src="~/Admin/assets/img/logo.png" class="header-logo" /> <span
-        class="logo-name">Otika</span>
-    </a>
-  </div>
-  <ul class="sidebar-menu">
-    <li class="dropdown active">
-      <a href="index.html" class="nav-link"><i data-feather="monitor"></i><span>Siteye Git</span></a>
-    </li>
-    <li class="dropdown active">
-      <a href="index.html" class="nav-link"><i data-feather="monitor"></i><span>Dashboard</span></a>
-    </li>
-
-    <li class="dropdown active">
-      <a asp-action="CategoryList" asp-controller="Category" class="nav-link"><i
-          data-feather="list"></i><span>Kategoriler</span></a>
-    </li>
-    <li class="dropdown active">
-      <a asp-action="ProductList" asp-controller="Product" class="nav-link"><i
-          data-feather="bi bi-fork-knife"></i><span>Ürünler</span></a>
-    </li>
-    <li class="dropdown active">
-      <a asp-action="FeatureCover" asp-controller="Feature" class="nav-link"><i data-feather="mail"></i><span>Öne Çıkan
-          Alanı</span></a>
-    </li>
-    <li class="dropdown active">
-      <a asp-action="AboutCover" asp-controller="AboutC" class="nav-link"><i data-feather="mail"></i><span>Hakkında
-          Alanı</span></a>
-    </li>
-    <li class="dropdown active">
-      <a asp-action="Home" asp-controller="#" class="nav-link"><i data-feather="mail"></i><span>Neden Yummy ?</span></a>
-    </li>
-    <li class="dropdown active">
-      <a asp-action="TestimonialList" asp-controller="Testimonial" class="nav-link"><i
-          data-feather="mail"></i><span>Müşteri Yorumları</span></a>
-    </li>
-    <li class="dropdown active">
-      <a asp-action="OrganizationList" asp-controller="Organization" class="nav-link"><i
-          data-feather="mail"></i><span>Etkinlikler</span></a>
-    </li>
-    <li class="dropdown active">
-      <a asp-action="ChefList" asp-controller="Chef" class="nav-link"><i
-          data-feather="mail"></i><span>Şeflerimiz</span></a>
-    </li>
-    <li class="dropdown active">
-      <a asp-action="RezervationList" asp-controller="Rezervation" class="nav-link"><i
-          data-feather="mail"></i><span>Rezervationlar</span></a>
-    </li>
-    <li class="dropdown active">
-      <a asp-action="GalleryList" asp-controller="Gallery" class="nav-link"><i
-          data-feather="mail"></i><span>Galeri</span></a>
-    </li>
-    <li class="dropdown active">
-      <a asp-action="FooterAbout" asp-controller="Footer" class="nav-link"><i data-feather="mail"></i><span>İletişim
-          Bilgisi</span></a>
-    </li>
-
-    <li class="dropdown active">
-      <a asp-action="MessagesList" asp-controller="Admin" class="nav-link"><i
-          data-feather="mail"></i><span>Mesajlar</span></a>
-    </li>
-
-    <li class="dropdown active">
-      <a asp-action="#" asp-controller="#" class="nav-link"><i data-feather="mail"></i><span>Çıkış Yap</span></a>
-    </li>
-
-
-  </ul>
-</aside>
+          <div class="sidebar-brand">
+            <a href="index.html"> <img alt="image" src="~/Admin/assets/img/logo.png" class="header-logo" /> <span
+                class="logo-name">Yummy Admin</span>
+            </a>
+          </div>
+          <ul class="sidebar-menu">
+             <li class="dropdown">
+              <a asp-action="Index" asp-controller="Home" class="nav-link"><i data-feather="monitor"></i><span>Siteye Git</span></a>
+            </li>
+            <li class="dropdown">
+              <a asp-action="Index" asp-controller="Admin" class="nav-link"><i data-feather="airplay"></i><span>Dashboard</span></a>
+            </li>
+            <li class="dropdown">
+              <a asp-action="CategoryList" asp-controller="Category" class="nav-link"><i data-feather="list"></i><span>Kategoriler</span></a>
+            </li>
+            <li class="dropdown">
+              <a asp-action="ProductList" asp-controller="Product" class="nav-link"><i data-feather="box"></i><span>Ürünler</span></a>
+            </li>
+            <li class="dropdown">
+              <a asp-action="FeatureArea" asp-controller="Feature" class="nav-link"><i data-feather="box"></i><span>Öne Çıkan Alan</span></a>
+            </li>
+          </ul>
+        </aside>

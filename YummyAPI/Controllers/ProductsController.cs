@@ -57,7 +57,7 @@ namespace YummyAPI.Controllers
                 return Ok(new { message = "Tapılmadı" });
             }
 
-            return Ok(new { message = "Tapıldı", data = mapper });
+            return Ok(mapper );
         }
         [HttpDelete]
         public IActionResult DeleteProduct(int id)
@@ -75,7 +75,7 @@ namespace YummyAPI.Controllers
         [HttpGet("GetAllProductWithCategory")]
         public IActionResult GetAllProductWithCategory()
         {
-            var values =_context.Products?.Where(x=>x.ProductStatus ==true).Include(x=>x.Category).ToList();
+            var values =_context.Products?.Include(x=>x.Category).ToList();
             var mapper =_mapper.Map<List<ResultGetAllProductWithCategoryDto>>(values);
             return Ok(mapper);
         }

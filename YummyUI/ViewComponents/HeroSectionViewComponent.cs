@@ -15,14 +15,14 @@ namespace YummyUI.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var client =_httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:5289/api/Features/");
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync("http://localhost:5289/api/Features");
 
             if (response.IsSuccessStatusCode)
             {
-                var jsonData =await response.Content.ReadAsStringAsync();
+                var jsonData = await response.Content.ReadAsStringAsync();
 
-                var values =JsonConvert.DeserializeObject<List<ResultFeatureDto>>(jsonData);
+                var values = JsonConvert.DeserializeObject<List<ResultFeatureDto>>(jsonData);
 
                 return View(values);
             }

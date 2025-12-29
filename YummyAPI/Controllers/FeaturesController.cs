@@ -21,10 +21,10 @@ namespace YummyAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult FeatureList()
+        public IActionResult FeatureCover()
         {
-            var values = _context.Features?.ToList();
-            var mapper = _mapper.Map<List<ResultFeatureDto>>(values);
+            var value = _context.Features?.ToList();
+            var mapper = _mapper.Map<List<ResultFeatureDto>>(value);
 
             return Ok(mapper);
         }

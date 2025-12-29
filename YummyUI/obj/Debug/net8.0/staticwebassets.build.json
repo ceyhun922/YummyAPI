@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "+aEwllkNX0fE9G16/c76SPvOhBsKNEZWyU53jkCwK0A=",
+  "Hash": "gVBBusMO/Yz0463N0ZhPFZXb+6GFxUEj/Z/bD4UPi/M=",
   "Source": "YummyUI",
   "BasePath": "_content/YummyUI",
   "Mode": "Default",
@@ -20421,6 +20421,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/Yummy/images/image2.webp"
+    },
+    {
+      "Identity": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/menyu.jpg",
+      "SourceId": "YummyUI",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/",
+      "BasePath": "_content/YummyUI",
+      "RelativePath": "Yummy/images/menyu.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/Yummy/images/menyu.jpg"
     },
     {
       "Identity": "/Users/ceyhunyusif/Documents/YummyProject/YummyUI/wwwroot/Yummy/images/testimonials1.jpg",
