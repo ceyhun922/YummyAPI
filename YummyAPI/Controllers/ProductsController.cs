@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using YummyAPI.Context;
 using YummyAPI.DTOs.ProductDTO;
 using YummyAPI.Entities;
@@ -71,7 +72,13 @@ namespace YummyAPI.Controllers
             _context.SaveChanges();
             return Ok(new { message = "Silindi" });
         }
-
+        [HttpGet("GetAllProductWithCategory")]
+        public IActionResult GetAllProductWithCategory()
+        {
+            var values =_context.Products?.Where(x=>x.ProductStatus ==true).Include(x=>x.Category).ToList();
+            var mapper =_mapper.Map<List<ResultGetAllProductWithCategoryDto>>(values);
+            return Ok(mapper);
+        }
         
     }
 }

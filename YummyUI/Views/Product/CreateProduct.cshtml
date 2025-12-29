@@ -1,0 +1,53 @@
+@model CreateProductDto
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="section">
+    <div class="section-body">
+        <div class="row">
+            <div class="col-12 md-12 lg-col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Yeni Ürün Girişi</h4>
+                    </div>
+                    <div class="card-body w-25">
+                        @using (Html.BeginForm("CreateProduct", "Product", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+                        {
+                            <div class="form-group">
+                                <label>Ürün adı</label>
+                                @Html.TextBoxFor(x => x.ProductTitle, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                @Html.DropDownListFor(
+                                    x=>x.CategoryId,
+                                    (List<SelectListItem>)ViewBag.CategoryList,"Seçin",new {@class="form-control"}
+                                )
+                        </div>
+                        <div class="form-group">
+                            <label>Ürün adı</label>
+                            @Html.TextBoxFor(x => x.ProductPrice, new { @class = "form-control", type = "number" })
+                        </div>
+                        <div class="form-group>">
+                            <label>Ürün Resmi</label>
+                            <input type="file" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>Ürün Hakkında</label>
+                            @Html.TextAreaFor(x => x.ProductPrice, new { @class = "form-control", type = "number" })
+                        </div>
+                        <div class="form-group mt-3">
+                            <label class="custom-switch mb-0">
+                                @Html.CheckBoxFor(x => x.ProductStatus, new { @class = "custom-switch-input" })
+                                <span class="custom-switch-indicator"></span>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-4">Save</button>
+                                                }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

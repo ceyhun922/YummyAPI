@@ -1,6 +1,6 @@
 namespace YummyUI.DTOs.ProductDTOs
 {
-    public class ResultProductDto
+    public class GetByIdProductDto
     {
         public int ProductId { get; set; }
         public string? ProductTitle { get; set; }
@@ -9,7 +9,5 @@ namespace YummyUI.DTOs.ProductDTOs
         public string? ProductImageUrl { get; set; }
         public bool ProductStatus { get; set; }
         public int CategoryId { get; set; }
-        public string? CategoryName { get; set; }
-
     }
 }

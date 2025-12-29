@@ -1,6 +1,6 @@
-namespace YummyUI.DTOs.ProductDTOs
+namespace YummyAPI.DTOs.ProductDTO
 {
-    public class ResultProductDto
+    public class ResultGetAllProductWithCategoryDto
     {
         public int ProductId { get; set; }
         public string? ProductTitle { get; set; }

@@ -1,0 +1,67 @@
+@model List<ResultProductDto>
+@{
+    Layout="_AdminLayout";
+    var count = 0;
+}
+
+
+<div class="section-body">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4>Kategoriler</h4>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Ürün Resmi</th>
+                  <th>Ürün Adı</th>
+                  <th>Ürün Hakkında</th>
+                  <th>Ürün Kategorisi</th>
+                  <th>Ürün Fiyatı</th>
+                  <th>Ürün Durumu</th>
+                  <th>Ürün Sil</th>
+                  <th>Ürün Güncelle</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach (var product in Model)
+                {
+                  @Html.AntiForgeryToken()
+
+                  <tr>
+
+                    <td>@(++count)</td>
+                    <td><img src="#" alt="@product.ProductTitle"></td>
+                    <td>@product.ProductTitle</td>
+                    <td>@product.ProductDescription</td>
+                    <td>@product.CategoryName</td>
+                    <td>@product.ProductPrice.ToString(new System.Globalization.CultureInfo("Tr-tr"))</td>
+
+                    <td>
+                      <button type="button"
+                        class="btn status-btn @(product.ProductStatus ? "btn-outline-danger" : "btn-outline-success")"
+                        data-url="@Url.Action("ChangeCategoryStatus", "Admin", new { id = product.ProductId })"
+                        data-status="@product.ProductStatus">
+                        @(product.ProductStatus ? "Passif Et" : "Aktif Et")
+                      </button>
+                    </td>
+                    <td><a asp-action="ProductDelete" asp-controller="Product" asp-route-id="@product.ProductId"
+                        class="btn btn-danger">Sil</a></td>
+                    <td><a asp-action="ProductUpdate" asp-controller="Product" asp-route-id="@product.ProductId"
+                        class="btn btn-warning">Güncelle</a></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+            <a asp-action="CreateProduct" asp-controller="Product" class="btn btn-info">Yeni Product Girişi</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
