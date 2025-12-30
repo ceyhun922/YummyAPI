@@ -1,0 +1,53 @@
+@using YummyUI.DTOs.AboutDTO
+@model CreateAboutDto
+
+@{
+    Layout ="_AdminLayout";
+}
+
+<div class="section">
+    <div class="section-boyd">
+        <div class="row">
+            <div class="col-12 md-12 lg-col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Yeni Hakkımızda Alan Girişi</h4>
+                    </div>
+                    <div class="card-body w-25">
+                        @using(Html.BeginForm("CreateAbout","About",FormMethod.Post))
+                        {
+                            <div class="form-group">
+                                @Html.TextBoxFor(x=>x.AboutTitle, new {@class="form-control"});
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x=>x.AboutSubTitle, new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x=>x.AboutTitleChecked1, new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x=>x.AboutTitleChecked2, new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x=>x.AboutTitleChecked3, new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x=>x.AboutDesciription, new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x=>x.AboutImageUrl, new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(x=>x.AboutVideoUrl, new {@class="form-control"})
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

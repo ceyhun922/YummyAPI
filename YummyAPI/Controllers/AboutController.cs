@@ -51,9 +51,12 @@ namespace YummyAPI.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdateAbout()
+        public IActionResult UpdateAbout(UpdateAboutDto updateAboutDto)
         {
-            return Ok();
+            var values =_mapper.Map<About>(updateAboutDto);
+            _context.Abouts?.Update(values);
+            _context.SaveChanges();
+            return Ok(new {message ="Yenilendi"});
         }
         [HttpGet("GetByIdAboutArea")]
         public IActionResult GetByIdAboutArea(int id)
