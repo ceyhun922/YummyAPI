@@ -1,0 +1,44 @@
+@using System.Text.RegularExpressions
+@using YummyUI.DTOs.ServiceDTOs
+@model CreateServiceDto
+@{
+    Layout = "_AdminLayout";
+}
+
+
+
+<div class="section">
+    <div class="section-body">
+            <div class="row">
+                <div class="col md-12 lg-col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <p>Yeni Servis Girişi</p>
+                        </div>
+                        <div class="card-body w-25">
+                            @using(Html.BeginForm("CreateService","Service",FormMethod.Post))
+                            {
+                                <div class="form-group">
+                                    @Html.TextBoxFor(x=>x.ServiceTitle, new {@class="form-control"})
+                                </div>
+                                <div class="form-group">
+                                    @Html.TextBoxFor(x=>x.ServiceIcon, new {@class="form-control"})
+                                </div>
+                                <div class="form-group">
+                                    @Html.TextAreaFor(x=>x.ServiceDescription, new {@class="form-control"})
+                                </div>
+                                <div class="form-group">
+                                    @Html.CheckBoxFor(x=>x.ServiceStatus)
+                                </div>
+                                <div class="form-group">
+                                    <button style="submit" class="btn btn-success">Ekle</button>
+                                </div>
+
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

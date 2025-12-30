@@ -25,7 +25,7 @@ namespace YummyAPI.Controllers
             var mapper = _mapper.Map<Service>(createServiceDto);
             _context.Services?.Add(mapper);
             _context.SaveChanges();
-            return Ok(new { message = "Eklendi", data = mapper });
+            return Ok(mapper);
         }
 
         [HttpGet]
@@ -60,6 +60,17 @@ namespace YummyAPI.Controllers
             _context.Services?.Update(mapper);
             _context.SaveChanges();
             return Ok(new { message = "Yenilendi" });
+        }
+
+        [HttpGet("GetByIdService")]
+        public IActionResult GetByIdService(int id)
+        {
+            var value =_context.Services?.Find(id);
+            if(value == null)
+                return Ok(new {message ="Tapılmadı"});
+                
+            var mapper =_mapper.Map<GetByIdServiceDto>(value);
+            return Ok(mapper);
         }
     }
 }
