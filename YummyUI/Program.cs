@@ -1,8 +1,14 @@
+using Microsoft.Extensions.DependencyInjection;
+using YummyUI.Models.Setting;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
+
+builder.Services.Configure<ApiSetting>(
+    builder.Configuration.GetSection("ApiSetting"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

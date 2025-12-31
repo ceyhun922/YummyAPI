@@ -46,6 +46,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vUHJvZHVjdExpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/AI/CreateRecipe.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQUkvQ3JlYXRlUmVjaXBlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Category/CategoryList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvQ2F0ZWdvcnlMaXN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -56,6 +60,18 @@ build_metadata.AdditionalFiles.CssScope =
 
 [/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Category/CreateCategory.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcnkvQ3JlYXRlQ2F0ZWdvcnkuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Chef/ChefList.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hlZi9DaGVmTGlzdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Chef/CreateChef.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hlZi9DcmVhdGVDaGVmLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Chef/UpdateChef.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2hlZi9VcGRhdGVDaGVmLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [/Users/ceyhunyusif/Documents/YummyProject/YummyUI/Views/Feature/CreateFeature.cshtml]

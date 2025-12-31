@@ -1,0 +1,16 @@
+@{
+    Layout = "_AdminLayout";
+}
+
+<form method="post">
+    <label>Malzemeleri girin</label>
+    <input type="text" name="promt" class="form-control" />
+    <br />
+    <button type="submit" class="btn btn-info">Oluştur</button>
+</form>
+
+@if (ViewBag.recipe != null)
+{
+    <h5>Öneri</h5>
+    <pre>@ViewBag.recipe</pre>
+}

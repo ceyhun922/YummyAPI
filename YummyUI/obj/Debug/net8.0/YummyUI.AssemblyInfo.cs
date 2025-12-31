@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("YummyUI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+47aa11a5482d013872546fe1f797f3c675a2dfc0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a107c54750d485d67745a9152396cef9c475c74")]
 [assembly: System.Reflection.AssemblyProductAttribute("YummyUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("YummyUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
