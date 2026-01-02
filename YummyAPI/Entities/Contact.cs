@@ -10,8 +10,12 @@ namespace YummyAPI.Entities
         public string? Email { get; set; }
         public string? Subject { get; set; }
         public string? Message { get; set; }
+<<<<<<< HEAD
            public DateTime GetDate { get; set; }=DateTime.Now;
         public bool IsRead { get; set; } = false;
 
+=======
+        public bool IsRead {get;set;}
+>>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
     }
 }

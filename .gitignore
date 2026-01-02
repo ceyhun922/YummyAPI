@@ -1,3 +1,7 @@
 key.txt
 key.txt
 key.txt
+**/bin/
+**/obj/
+appsettings.json
+appsettings.*.json

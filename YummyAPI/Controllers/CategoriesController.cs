@@ -20,7 +20,11 @@ namespace YummyAPI.Controllers
         }
 
         [HttpPost]
+<<<<<<< HEAD
         public IActionResult CreateCategory([FromBody] CreateCategoryDto createCategoryDto)
+=======
+        public IActionResult CreateCategory(CreateCategoryDto createCategoryDto)
+>>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
         {
             var values = _mapper.Map<Category>(createCategoryDto);
             _context.Categories?.Add(values);
@@ -33,7 +37,11 @@ namespace YummyAPI.Controllers
         {
             var values =_context.Categories?.ToList();
             var mapper = _mapper.Map<List<ResultCategoryDTOs>>(values);
+<<<<<<< HEAD
             return Ok(mapper);
+=======
+            return Ok(new {message ="Category List", data =mapper});
+>>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
         }
 
         [HttpPut]
@@ -58,6 +66,7 @@ namespace YummyAPI.Controllers
             _context.SaveChanges();
             return Ok(new {message="Category Silindi"});
         }
+<<<<<<< HEAD
 
         [HttpGet("GetCategoryById")]
         public IActionResult GetCategoryById(int id)
@@ -72,5 +81,7 @@ namespace YummyAPI.Controllers
 
             return Ok(mapper);
         }
+=======
+>>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
     }
 }

@@ -1,4 +1,5 @@
 using AutoMapper;
+<<<<<<< HEAD
 using YummyAPI.DTOs.AboutDTO;
 using YummyAPI.DTOs.CategoryDTO;
 using YummyAPI.DTOs.ChefDTO;
@@ -12,6 +13,9 @@ using YummyAPI.DTOs.ProductDTO;
 using YummyAPI.DTOs.RezervationDTO;
 using YummyAPI.DTOs.ServiceDTO;
 using YummyAPI.DTOs.TestimonialDTO;
+=======
+using YummyAPI.DTOs.CategoryDTO;
+>>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
 using YummyAPI.Entities;
 
 namespace YummyAPI.Mapping
@@ -20,6 +24,7 @@ namespace YummyAPI.Mapping
     {
         public GeneralMapping()
         {
+<<<<<<< HEAD
             //category
             CreateMap<Category, CreateCategoryDto>().ReverseMap();
             CreateMap<Category, ResultCategoryDTOs>().ReverseMap();
@@ -104,3 +109,11 @@ namespace YummyAPI.Mapping
     }
 }
 
+=======
+            CreateMap<Category, CreateCategoryDto>().ReverseMap();
+            CreateMap<Category,ResultCategoryDTOs>().ReverseMap();
+            CreateMap<Category, UpdateCategoryDTOs>().ReverseMap();
+        }
+    }
+}
+>>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
