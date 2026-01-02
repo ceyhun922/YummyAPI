@@ -61,7 +61,7 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> UpdateFeature(int id)  
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:5289/api/Features/GetByIdFeatureArea?id=" + id);
+            var response = await client.GetAsync($"http://localhost:5289/api/Features/{id}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -86,9 +86,9 @@ namespace YummyUI.Controllers
             {
                 return RedirectToAction("FeatureArea");
             }
-
             return View();
-
         }
+
+      
     }
 }

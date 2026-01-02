@@ -24,7 +24,6 @@ namespace YummyAPI.Controllers
         {
             var values = _context.Contacts?.ToList();
             var mapper = _mapper.Map<List<ResultContactDto>>(values);
-
             return Ok(mapper);
         }
 
@@ -44,18 +43,18 @@ namespace YummyAPI.Controllers
             _context.Contacts?.Add(mapper);
             _context.SaveChanges();
 
-            return Ok(new { message = "Eklendi" });
+            return Ok(mapper);
         }
 
         [HttpDelete]
         public IActionResult ContactDelete(int id)
         {
             var value = _context.Contacts?.Find(id);
-            if (value == null) return Ok(new { message = "Tapılmadı" });
+            if (value == null) return Ok();
 
             _context.Contacts?.Remove(value);
             _context.SaveChanges();
-            return Ok(new { message = "Silindi" });
+            return Ok();
         }
 
         [HttpPut]
@@ -64,11 +63,11 @@ namespace YummyAPI.Controllers
             var mapper = _mapper.Map<Contact>(updateContactDto);
             if (mapper == null)
             {
-                return Ok(new { message = "Tapılmadı" });
+                return Ok(mapper);
             }
             _context.Contacts?.Update(mapper);
             _context.SaveChanges();
-            return Ok(new { message = "Yenilendi" });
+            return Ok(mapper);
         }
     }
 }

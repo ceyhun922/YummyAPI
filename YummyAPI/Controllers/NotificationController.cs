@@ -25,7 +25,7 @@ namespace YummyAPI.Controllers
             var notifications = _context.Notifications?.ToList();
             if (!notifications.Any())
             {
-                return Ok(new { message = "Bildirim Yok" });
+                return Ok();
             }
             var mapper = _mapper.Map<List<ResultNotificationDto>>(notifications);
 

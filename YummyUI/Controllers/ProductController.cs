@@ -37,14 +37,14 @@ namespace YummyUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync("http://localhost:5289/api/Categories");
             var jsonData = await response.Content.ReadAsStringAsync();
-            var values =JsonConvert.DeserializeObject<List<ResultCategoryDto>>(jsonData);
-            List<SelectListItem> categoryValues =(from x in values
-                                                select(new SelectListItem
-                                                {
-                                                    Text =x.CategoryName,
-                                                    Value =x.CategoryId.ToString()
-                                                })).ToList();
-            ViewBag.CategoryList =categoryValues;
+            var values = JsonConvert.DeserializeObject<List<ResultCategoryDto>>(jsonData);
+            List<SelectListItem> categoryValues = (from x in values
+                                                   select (new SelectListItem
+                                                   {
+                                                       Text = x.CategoryName,
+                                                       Value = x.CategoryId.ToString()
+                                                   })).ToList();
+            ViewBag.CategoryList = categoryValues;
             return View();
         }
         [HttpPost]
@@ -68,7 +68,6 @@ namespace YummyUI.Controllers
             return RedirectToAction("ProductList");
         }
 
-
         [HttpGet]
         public async Task<IActionResult> ProductUpdate(int id)
         {
@@ -78,32 +77,31 @@ namespace YummyUI.Controllers
             var productJson = await ProductResponse.Content.ReadAsStringAsync();
             var Product = JsonConvert.DeserializeObject<GetByIdProductDto>(productJson);
 
-            var CategoryResponse =await client.GetAsync("http://localhost:5289/api/Categories");
-            var CategoryJson =await CategoryResponse.Content.ReadAsStringAsync();
-            var Categories =JsonConvert.DeserializeObject<List<ResultCategoryDto>>(CategoryJson);
+            var CategoryResponse = await client.GetAsync("http://localhost:5289/api/Categories");
+            var CategoryJson = await CategoryResponse.Content.ReadAsStringAsync();
+            var Categories = JsonConvert.DeserializeObject<List<ResultCategoryDto>>(CategoryJson);
 
-            ViewBag.CategoryList =(from c in Categories
-                                    select(new SelectListItem
+            ViewBag.CategoryList = (from c in Categories
+                                    select (new SelectListItem
                                     {
-                                        Text =c.CategoryName,
-                                        Value =c.CategoryId.ToString()
+                                        Text = c.CategoryName,
+                                        Value = c.CategoryId.ToString()
                                     })).ToList();
-
 
             return View(Product);
         }
 
         public async Task<IActionResult> ProductUpdate(GetByIdProductDto getByIdProductDto)
         {
-            var client =_httpClientFactory.CreateClient();
-            var jsonData =JsonConvert.SerializeObject(getByIdProductDto);
-            var content =new StringContent(jsonData,Encoding.UTF8,"application/json");
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = JsonConvert.SerializeObject(getByIdProductDto);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            var response =await client.PutAsync("http://localhost:5289/api/Products",content);
+            var response = await client.PutAsync("http://localhost:5289/api/Products", content);
 
             if (!response.IsSuccessStatusCode)
                 return View(getByIdProductDto);
-            
+
             return RedirectToAction("ProductList");
         }
     }

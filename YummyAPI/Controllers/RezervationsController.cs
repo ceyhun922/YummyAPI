@@ -26,7 +26,7 @@ namespace YummyAPI.Controllers
             var values = _context.Rezervations?.ToList();
             var mapper = _mapper.Map<List<ResultRezervationDto>>(values);
 
-            return Ok(new { message = "Rezervation List", data = mapper });
+            return Ok(mapper);
         }
 
         [HttpPost]
@@ -37,7 +37,7 @@ namespace YummyAPI.Controllers
             _context.Rezervations?.Add(mapper);
             _context.SaveChanges();
 
-            return Ok(new { message = "Eklendi" });
+            return Ok(mapper);
         }
 
         [HttpDelete]
@@ -46,13 +46,13 @@ namespace YummyAPI.Controllers
             var value = _context.Rezervations?.Find(id);
             if (value == null)
             {
-                return Ok(new { message = "tapılmadı" });
+                return Ok();
             }
 
             _context.Rezervations?.Remove(value);
             _context.SaveChanges();
 
-            return Ok(new { message = "Silindi" });
+            return Ok();
 
         }
 
@@ -63,12 +63,12 @@ namespace YummyAPI.Controllers
 
             if (mapper == null)
             {
-                return Ok(new { message = "tapılmadı" });
+                return Ok(mapper);
             }
             _context.Rezervations?.Update(mapper);
             _context.SaveChanges();
 
-            return Ok(new { message = "Yenilendi" });
+            return Ok(mapper);
         }
     }
 }

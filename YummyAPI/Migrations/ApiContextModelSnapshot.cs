@@ -22,7 +22,6 @@ namespace YummyAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-<<<<<<< HEAD
             modelBuilder.Entity("YummyAPI.Entities.About", b =>
                 {
                     b.Property<int>("AboutId")
@@ -60,8 +59,6 @@ namespace YummyAPI.Migrations
                     b.ToTable("Abouts");
                 });
 
-=======
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
             modelBuilder.Entity("YummyAPI.Entities.Category", b =>
                 {
                     b.Property<int>("CategoryId")
@@ -135,12 +132,6 @@ namespace YummyAPI.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
-                    b.Property<DateTime>("GetDate")
-                        .HasColumnType("datetime2");
-
-=======
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
@@ -183,7 +174,6 @@ namespace YummyAPI.Migrations
                     b.ToTable("Features");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("YummyAPI.Entities.Footer", b =>
                 {
                     b.Property<int>("FooterId")
@@ -212,8 +202,6 @@ namespace YummyAPI.Migrations
                     b.ToTable("Footers");
                 });
 
-=======
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
             modelBuilder.Entity("YummyAPI.Entities.Gallery", b =>
                 {
                     b.Property<int>("GalleryId")
@@ -236,7 +224,6 @@ namespace YummyAPI.Migrations
                     b.ToTable("Galleries");
                 });
 
-<<<<<<< HEAD
             modelBuilder.Entity("YummyAPI.Entities.Notification", b =>
                 {
                     b.Property<int>("NotificationId")
@@ -263,34 +250,6 @@ namespace YummyAPI.Migrations
                     b.HasKey("NotificationId");
 
                     b.ToTable("Notifications");
-=======
-            modelBuilder.Entity("YummyAPI.Entities.Info", b =>
-                {
-                    b.Property<int>("InfoId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InfoId"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CallUs")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailUs")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MapLocation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OpeningHours")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("InfoId");
-
-                    b.ToTable("Infos");
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
                 });
 
             modelBuilder.Entity("YummyAPI.Entities.Organization", b =>
@@ -304,12 +263,6 @@ namespace YummyAPI.Migrations
                     b.Property<string>("OrganizationDescription")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
-                    b.Property<string>("OrganizationImage")
-                        .HasColumnType("nvarchar(max)");
-
-=======
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
                     b.Property<string>("OrganizationName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -366,15 +319,6 @@ namespace YummyAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RezervationId"));
 
-<<<<<<< HEAD
-=======
-                    b.Property<DateOnly>("Clock")
-                        .HasColumnType("date");
-
-                    b.Property<TimeOnly>("Date")
-                        .HasColumnType("time");
-
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -387,15 +331,12 @@ namespace YummyAPI.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
                     b.Property<TimeOnly>("RezervationClockk")
                         .HasColumnType("time");
 
                     b.Property<DateOnly>("RezervationDate")
                         .HasColumnType("date");
 
-=======
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
                     b.Property<bool>("RezervationStatus")
                         .HasColumnType("bit");
 
@@ -437,12 +378,6 @@ namespace YummyAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TestimonialId"));
 
-<<<<<<< HEAD
-                    b.Property<string>("TestimonialImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-=======
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
                     b.Property<string>("TestimonialMessage")
                         .HasColumnType("nvarchar(max)");
 

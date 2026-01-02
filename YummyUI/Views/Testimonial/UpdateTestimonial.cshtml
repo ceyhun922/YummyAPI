@@ -1,0 +1,46 @@
+@using YummyUI.DTOs.TestimonialDTOs
+@model GetByIdTestimonialDto
+@{
+    Layout = "_AdminLayout";
+}
+
+<div class="section">
+    <div class="section-body">
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Müşteri Görüşü Ekleme</h4>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("UpdateTestimonial", "Testimonial", FormMethod.Post))
+                        {
+                            @Html.HiddenFor(x => x.TestimonialId)
+                            <div class="form-group">
+                                <label>Başlık</label>
+                                @Html.TextBoxFor(x => x.TestimonialName, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label>Başlık</label>
+                                @Html.TextBoxFor(x => x.TestimonialTitle, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label>Başlık</label>
+                                @Html.TextAreaFor(x => x.TestimonialMessage, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label>Başlık</label>
+                                @Html.TextBoxFor(x => x.TestimonialImageUrl, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label>Başlık</label>
+                                @Html.CheckBoxFor(x => x.TestimonialStatus)
+                            </div>
+                            <button class="btn btn-success" type="submit">Ekle</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

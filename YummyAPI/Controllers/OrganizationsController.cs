@@ -25,7 +25,6 @@ namespace YummyAPI.Controllers
         {
             var values = _context.Organizations?.ToList();
             var mapper = _mapper.Map<List<ResultOrganizationDto>>(values);
-
             return Ok(mapper);
         }
 
@@ -37,7 +36,7 @@ namespace YummyAPI.Controllers
             _context.Organizations?.Add(mapper);
             _context.SaveChanges();
 
-            return Ok(new { message = "Eklendi" });
+            return Ok(mapper);
         }
 
         [HttpDelete]
@@ -46,13 +45,13 @@ namespace YummyAPI.Controllers
             var value = _context.Organizations?.Find(id);
             if (value == null)
             {
-                return Ok(new { message = "tapılmadı" });
+                return Ok();
             }
 
             _context.Organizations?.Remove(value);
             _context.SaveChanges();
 
-            return Ok(new { message = "Silindi" });
+            return Ok();
 
         }
 
@@ -63,12 +62,12 @@ namespace YummyAPI.Controllers
 
             if (mapper == null)
             {
-                return Ok(new { message = "tapılmadı" });
+                return Ok(mapper);
             }
             _context.Organizations?.Update(mapper);
             _context.SaveChanges();
 
-            return Ok(new { message = "Yenilendi" });
+            return Ok(mapper);
         }
     }
 }

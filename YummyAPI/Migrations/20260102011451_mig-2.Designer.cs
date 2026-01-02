@@ -12,8 +12,8 @@ using YummyAPI.Context;
 namespace YummyAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20251226150426_mig-4")]
-    partial class mig4
+    [Migration("20260102011451_mig-2")]
+    partial class mig2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -227,6 +227,34 @@ namespace YummyAPI.Migrations
                     b.ToTable("Galleries");
                 });
 
+            modelBuilder.Entity("YummyAPI.Entities.Notification", b =>
+                {
+                    b.Property<int>("NotificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotificationId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("NotificationIcon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NotificationMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NotificationTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("NotificationId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("YummyAPI.Entities.Organization", b =>
                 {
                     b.Property<int>("OrganizationId")
@@ -236,9 +264,6 @@ namespace YummyAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrganizationId"));
 
                     b.Property<string>("OrganizationDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationImage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationName")
@@ -355,9 +380,6 @@ namespace YummyAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TestimonialId"));
-
-                    b.Property<string>("TestimonialImageUrl")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TestimonialMessage")
                         .HasColumnType("nvarchar(max)");

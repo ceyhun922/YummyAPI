@@ -1,5 +1,5 @@
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YummyUI.DTOs.CategoryDTOs;
@@ -63,7 +63,7 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> CategoryUpdate(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:5289/api/Categories/GetCategoryById?id=" + id);
+            var response = await client.GetAsync("http://localhost:5289/api/Categories/" + id);
 
             if (response.IsSuccessStatusCode)
             {

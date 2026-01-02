@@ -20,7 +20,7 @@ namespace YummyAPI.Controllers
         }
 
         [HttpGet]
-        public IActionResult AboutList()
+        public IActionResult AboutList() 
         {
             var values =_context.Abouts?.ToList();
             var mapper =_mapper.Map<List<ResultAboutDto>>(values);
@@ -33,7 +33,7 @@ namespace YummyAPI.Controllers
             var mapper =_mapper.Map<About>(createAboutDto);
             _context.Abouts?.Add(mapper);
             _context.SaveChanges();
-            return Ok(new {message ="About added"});
+            return Ok(mapper);
         }
         
         [HttpDelete]
@@ -43,7 +43,7 @@ namespace YummyAPI.Controllers
 
             if (item == null)
             {
-                return Ok(new {message="Melumat Tapılmadı"});
+                return Ok();
             }
             _context.Abouts?.Remove(item);
             _context.SaveChanges();
@@ -56,7 +56,7 @@ namespace YummyAPI.Controllers
             var values =_mapper.Map<About>(updateAboutDto);
             _context.Abouts?.Update(values);
             _context.SaveChanges();
-            return Ok(new {message ="Yenilendi"});
+            return Ok();
         }
         [HttpGet("GetByIdAboutArea")]
         public IActionResult GetByIdAboutArea(int id)

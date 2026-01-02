@@ -29,6 +29,18 @@ namespace YummyAPI.Controllers
             return Ok(mapper);
         }
 
+         [HttpGet("{id}")]
+        public IActionResult GetByIdFeature(int id)
+        {
+            var value =_context.Features?.Find(id);
+            if (value == null)
+            {
+                return Ok(new {message ="Bulunamadı"});
+            }
+            var mapper =_mapper.Map<GetByIdFeatureDto>(value);
+            return Ok(mapper);
+        }
+
         [HttpPost]
         public IActionResult FeatureCreate(CreateFeatureDto createFeatureDto)
         {
@@ -37,7 +49,7 @@ namespace YummyAPI.Controllers
             _context.Features?.Add(mapper);
             _context.SaveChanges();
 
-            return Ok(new { message = "Eklendi" });
+            return Ok(mapper);
         }
 
         [HttpDelete]
@@ -47,28 +59,20 @@ namespace YummyAPI.Controllers
             _context.Features?.Remove(value);
             _context.SaveChanges();
 
-            return Ok(new {message ="Silindi"});
+            return Ok();
 
         }
 
         [HttpPut]
         public IActionResult FeatureUpdate(UpdateFeatureDto updateFeatureDto)
         {
-            var mapper =_mapper.Map<Feature>(updateFeatureDto);
+            var mapper = _mapper.Map<Feature>(updateFeatureDto);
             _context.Features?.Update(mapper);
             _context.SaveChanges();
 
-            return Ok(new {message ="Yenilendi"});
-        }
-
-        [HttpGet("GetByIdFeatureArea")]
-        public IActionResult GetByIdFeatureArea(int id)
-        {
-            var value =_context.Features?.Find(id);
-            if(value == null)
-                return Ok(new {message ="Tapılmadı"});
-            var mapper =_mapper.Map<GetByIdFeatureDto>(value);
             return Ok(mapper);
         }
+
+       
     }
 }

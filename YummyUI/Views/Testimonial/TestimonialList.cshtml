@@ -1,0 +1,57 @@
+@using YummyUI.DTOs.TestimonialDTOs
+@model List<ResultTestimonialDto>
+@{
+    Layout = "_AdminLayout";
+    var count = 0;
+}
+
+<div class="section">
+    <div class="section-body">
+        <div class="row">
+            <div class="col-12 md-12 lg-col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Müşteriler</h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>#</th>
+                                    <th>İsim</th>
+                                    <th>Statüsü</th>
+                                    <th>Yorumu</th>
+                                    <th>Statüsü</th>
+                                    <th>Sil</th>
+                                    <th>Güncelle</th>
+                                </tr>
+                            </tbody>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                <tr>
+                                    <td>@(++count)</td>
+                                    <td>@item.TestimonialName</td>
+                                    <td>@item.TestimonialTitle</td>
+                                    <td>@item.TestimonialMessage</td>
+                                    <td>
+                                        @Html.Raw(item.TestimonialStatus
+                                                                                ? "<button class='btn btn-danger'>Pasif Et</button>"
+                                                                                : "<button class='btn btn-success'>Aktif Et</button>")
+                                    </td>
+                                    <td><a class="btn btn-danger" asp-action="DeleteTestimonial"
+                                            asp-controller="Testimonial" asp-route-id="@item.TestimonialId">Sil</a></td>
+                                    <td><a class="btn btn-warning" asp-action="UpdateTestimonial"
+                                            asp-controller="Testimonial" asp-route-id="@item.TestimonialId">
+                                            Güncelle</a></td>
+                                </tr>
+                                                                }
+                            </tbody>
+                        </table>
+                        <a asp-action="CreateTestimonial" asp-controller="Testimonial">Yeni Müşteri Ekle</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

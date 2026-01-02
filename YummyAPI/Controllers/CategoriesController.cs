@@ -20,16 +20,12 @@ namespace YummyAPI.Controllers
         }
 
         [HttpPost]
-<<<<<<< HEAD
-        public IActionResult CreateCategory([FromBody] CreateCategoryDto createCategoryDto)
-=======
         public IActionResult CreateCategory(CreateCategoryDto createCategoryDto)
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
         {
             var values = _mapper.Map<Category>(createCategoryDto);
             _context.Categories?.Add(values);
             _context.SaveChanges();
-            return Ok(new { message = "Category Eklendi" });
+            return Ok();
         }
 
         [HttpGet]
@@ -37,11 +33,7 @@ namespace YummyAPI.Controllers
         {
             var values =_context.Categories?.ToList();
             var mapper = _mapper.Map<List<ResultCategoryDTOs>>(values);
-<<<<<<< HEAD
             return Ok(mapper);
-=======
-            return Ok(new {message ="Category List", data =mapper});
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
         }
 
         [HttpPut]
@@ -50,7 +42,7 @@ namespace YummyAPI.Controllers
             var values =_mapper.Map<Category>(updateCategoryDTOs);
             _context.Categories?.Update(values);
             _context.SaveChanges();
-            return Ok(new {message ="Yenilendi"});
+            return Ok();
         }
         [HttpDelete]
         public IActionResult DeleteCategory(int id)
@@ -59,29 +51,24 @@ namespace YummyAPI.Controllers
 
             if (value == null)
             {
-                return Ok(new {message="Category Tapılmadı"});
+                return Ok();
             }
 
             _context.Categories?.Remove(value);
             _context.SaveChanges();
-            return Ok(new {message="Category Silindi"});
+            return Ok();
         }
-<<<<<<< HEAD
 
-        [HttpGet("GetCategoryById")]
-        public IActionResult GetCategoryById(int id)
+        [HttpGet("{id}")]
+        public IActionResult GetByIdCategory(int id)
         {
             var value =_context.Categories?.Find(id);
             if (value == null)
             {
                 return Ok(new {message ="Bulunamadı"});
             }
-
             var mapper =_mapper.Map<GetCategoryByIdDto>(value);
-
             return Ok(mapper);
         }
-=======
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
     }
 }

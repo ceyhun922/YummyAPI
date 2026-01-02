@@ -9,13 +9,11 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-<<<<<<< HEAD
-  <PackageReference Include="FluentValidation" Version="11.11.0" />
-  <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
-  <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
-=======
+
     <PackageReference Include="FluentValidation" Version="12.1.1" />
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
+    <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
+
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
@@ -23,10 +21,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
-<<<<<<< HEAD
+
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-=======
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 

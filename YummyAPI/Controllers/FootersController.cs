@@ -10,7 +10,7 @@ namespace YummyAPI.Controllers
     [Route("api/[controller]")]
     public class FootersController : ControllerBase
     {
-         private readonly ApiContext _context;
+        private readonly ApiContext _context;
         private readonly IMapper _mapper;
 
         public FootersController(ApiContext context, IMapper mapper)
@@ -24,8 +24,9 @@ namespace YummyAPI.Controllers
         {
             var values = _context.Footers?.ToList();
             var mapper = _mapper.Map<List<ResultFooterDto>>(values);
-
             return Ok(mapper);
+
+
         }
 
         [HttpPost]
@@ -36,7 +37,7 @@ namespace YummyAPI.Controllers
             _context.Footers?.Add(mapper);
             _context.SaveChanges();
 
-            return Ok(new { message = "Eklendi" });
+            return Ok();
         }
 
         [HttpDelete]
@@ -46,18 +47,18 @@ namespace YummyAPI.Controllers
             _context.Footers?.Remove(value);
             _context.SaveChanges();
 
-            return Ok(new {message ="Silindi"});
+            return Ok();
 
         }
 
         [HttpPut]
         public IActionResult FooterUpdate(UpdateFooterDto updateFooterDto)
         {
-            var mapper =_mapper.Map<Footer>(updateFooterDto);
+            var mapper = _mapper.Map<Footer>(updateFooterDto);
             _context.Footers?.Update(mapper);
             _context.SaveChanges();
 
-            return Ok(new {message ="Yenilendi"});
+            return Ok(mapper);
         }
     }
 }

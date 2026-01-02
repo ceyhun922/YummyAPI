@@ -25,7 +25,7 @@ namespace YummyAPI.Controllers
             var value = _mapper.Map<Chef>(createChefDto);
             _context.Chefs?.Add(value);
             _context.SaveChanges();
-            return Ok(new { message = "Eklendi" });
+            return Ok();
         }
 
         [HttpGet]
@@ -33,9 +33,9 @@ namespace YummyAPI.Controllers
         {
             var values = _context.Chefs?.ToList();
             var mapper = _mapper.Map<List<ResultChefDto>>(values);
-
-            return Ok(mapper );
+            return Ok(mapper);
         }
+
 
         [HttpPut]
         public IActionResult UpdateChef(UpdateChefDto updateChefDto)
@@ -44,7 +44,7 @@ namespace YummyAPI.Controllers
             _context.Chefs?.Update(mapper);
             _context.SaveChanges();
 
-            return Ok(new { message = "Yenilendi" });
+            return Ok(mapper);
         }
 
         [HttpDelete]
@@ -54,12 +54,12 @@ namespace YummyAPI.Controllers
 
             if (value == null)
             {
-                return Ok(new { message = "Tapılmadı" });
+                return Ok();
             }
 
             _context.Chefs?.Remove(value);
             _context.SaveChanges();
-            return Ok(new { message = "Silindi" });
+            return Ok();
         }
 
         [HttpGet("GetOneChef")]
@@ -68,11 +68,11 @@ namespace YummyAPI.Controllers
             var value = _context.Chefs?.Find(id);
             if (value == null)
             {
-                return Ok(new { message = "Tapılmadı" });
+                return Ok();
             }
             var mapper = _mapper.Map<GetByIdChefDto>(value);
 
-            return Ok(new { message = "Tapıldu" ,data =mapper});
+            return Ok(mapper);
         }
     }
 }

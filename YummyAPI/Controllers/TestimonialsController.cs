@@ -24,7 +24,14 @@ namespace YummyAPI.Controllers
         {
             var values = _context.Testimonials?.ToList();
             var mapper = _mapper.Map<List<ResultTestimonialDto>>(values);
+            return Ok(mapper);
+        }
 
+        [HttpGet("{id}")]
+        public IActionResult GetByIdTestimonial(int id)
+        {
+            var values = _context.Testimonials?.Find(id);
+            var mapper = _mapper.Map<GetByIdTestimonialDto>(values);
             return Ok(mapper);
         }
 
@@ -36,7 +43,7 @@ namespace YummyAPI.Controllers
             _context.Testimonials?.Add(mapper);
             _context.SaveChanges();
 
-            return Ok(new { message = "Eklendi" });
+            return Ok(mapper);
         }
 
         [HttpDelete]
@@ -45,13 +52,13 @@ namespace YummyAPI.Controllers
             var value = _context.Testimonials?.Find(id);
             if (value == null)
             {
-                return Ok(new { message = "tapılmadı" });
+                return Ok();
             }
 
             _context.Testimonials?.Remove(value);
             _context.SaveChanges();
 
-            return Ok(new { message = "Silindi" });
+            return Ok();
 
         }
 
@@ -62,12 +69,12 @@ namespace YummyAPI.Controllers
 
             if (mapper == null)
             {
-                return Ok(new { message = "tapılmadı" });
+                return Ok(mapper);
             }
             _context.Testimonials?.Update(mapper);
             _context.SaveChanges();
 
-            return Ok(new { message = "Yenilendi" });
+            return Ok(mapper);
         }
     }
 }

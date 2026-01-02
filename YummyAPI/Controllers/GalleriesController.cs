@@ -25,7 +25,7 @@ namespace YummyAPI.Controllers
             var values = _mapper.Map<Gallery>(createGalleryDto);
             _context.Galleries?.Add(values);
             _context.SaveChanges();
-            return Ok(new { message = "Eklendi" });
+            return Ok();
         }
         [HttpGet]
         public IActionResult GalleryList()
@@ -33,6 +33,7 @@ namespace YummyAPI.Controllers
             var values = _context.Galleries?.ToList();
             var mapper = _mapper.Map<List<ResultGalleryDto>>(values);
             return Ok(mapper);
+            
         }
 
         [HttpPut]
@@ -41,7 +42,7 @@ namespace YummyAPI.Controllers
             var mapper = _mapper.Map<Gallery>(updateGalleryDto);
             _context.Galleries?.Update(mapper);
             _context.SaveChanges();
-            return Ok(new { message = "Yenilendi" });
+            return Ok(mapper);
         }
 
         [HttpDelete]
@@ -51,11 +52,11 @@ namespace YummyAPI.Controllers
 
             if (value == null)
             {
-                return Ok(new { message = "Tapılmadı" });
+                return Ok();
             }
             _context.Galleries?.Remove(value);
             _context.SaveChanges();
-            return Ok(new { message = "Silindi" });
+            return Ok();
         }
     }
 }

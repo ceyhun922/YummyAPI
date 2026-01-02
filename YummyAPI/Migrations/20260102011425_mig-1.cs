@@ -12,6 +12,26 @@ namespace YummyAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Abouts",
+                columns: table => new
+                {
+                    AboutId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AboutTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutSubTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutTitleChecked1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutTitleChecked2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutTitleChecked3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutDesciription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutVideoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Abouts", x => x.AboutId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
                 {
@@ -110,6 +130,23 @@ namespace YummyAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Galleries", x => x.GalleryId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    NotificationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NotificationTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NotificationMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NotificationIcon = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.NotificationId);
                 });
 
             migrationBuilder.CreateTable(
@@ -213,6 +250,9 @@ namespace YummyAPI.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Abouts");
+
+            migrationBuilder.DropTable(
                 name: "Chefs");
 
             migrationBuilder.DropTable(
@@ -226,6 +266,9 @@ namespace YummyAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Galleries");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "Organizations");

@@ -12,8 +12,8 @@ using YummyAPI.Context;
 namespace YummyAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20251227225354_mig-12")]
-    partial class mig12
+    [Migration("20260102011425_mig-1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -134,9 +134,6 @@ namespace YummyAPI.Migrations
 
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("GetDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
@@ -269,9 +266,6 @@ namespace YummyAPI.Migrations
                     b.Property<string>("OrganizationDescription")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("OrganizationImage")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("OrganizationName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -386,9 +380,6 @@ namespace YummyAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TestimonialId"));
-
-                    b.Property<string>("TestimonialImageUrl")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TestimonialMessage")
                         .HasColumnType("nvarchar(max)");

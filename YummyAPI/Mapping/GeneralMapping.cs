@@ -1,5 +1,4 @@
 using AutoMapper;
-<<<<<<< HEAD
 using YummyAPI.DTOs.AboutDTO;
 using YummyAPI.DTOs.CategoryDTO;
 using YummyAPI.DTOs.ChefDTO;
@@ -7,15 +6,12 @@ using YummyAPI.DTOs.ContactDTO;
 using YummyAPI.DTOs.FeatureDTO;
 using YummyAPI.DTOs.FooterDTO;
 using YummyAPI.DTOs.GalleryDTO;
-using YummyAPI.DTOs.NotificationDTO;
 using YummyAPI.DTOs.OrganizationDTO;
 using YummyAPI.DTOs.ProductDTO;
 using YummyAPI.DTOs.RezervationDTO;
 using YummyAPI.DTOs.ServiceDTO;
 using YummyAPI.DTOs.TestimonialDTO;
-=======
-using YummyAPI.DTOs.CategoryDTO;
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
+
 using YummyAPI.Entities;
 
 namespace YummyAPI.Mapping
@@ -24,8 +20,6 @@ namespace YummyAPI.Mapping
     {
         public GeneralMapping()
         {
-<<<<<<< HEAD
-            //category
             CreateMap<Category, CreateCategoryDto>().ReverseMap();
             CreateMap<Category, ResultCategoryDTOs>().ReverseMap();
             CreateMap<Category, UpdateCategoryDTOs>().ReverseMap();
@@ -36,7 +30,7 @@ namespace YummyAPI.Mapping
             CreateMap<Product, ResultProductDto>().ReverseMap();
             CreateMap<Product, UpdateProductDto>().ReverseMap();
             CreateMap<Product, GetByIdProductDto>().ReverseMap();
-            CreateMap<Product,ResultGetAllProductWithCategoryDto>().ForMember(x=>x.CategoryName, y=>y.MapFrom(z=>z.Category.CategoryName)).ReverseMap();
+            CreateMap<Product, ResultGetAllProductWithCategoryDto>().ForMember(x => x.CategoryName, y => y.MapFrom(z => z.Category.CategoryName)).ReverseMap();
 
             //chef
             CreateMap<Chef, CreateChefDto>().ReverseMap();
@@ -50,18 +44,25 @@ namespace YummyAPI.Mapping
             CreateMap<Service, UpdateService>().ReverseMap();
             CreateMap<Service, GetByIdServiceDto>().ReverseMap();
 
+
             //gallery
             CreateMap<Gallery, ResultGalleryDto>().ReverseMap();
             CreateMap<Gallery, CreateGalleryDto>().ReverseMap();
             CreateMap<Gallery, UpdateGalleryDto>().ReverseMap();
             CreateMap<Gallery, GetByIdGalleryDto>().ReverseMap();
 
+            //about
+            CreateMap<About, ResultAboutDto>().ReverseMap();
+            CreateMap<About, CreateAboutDto>().ReverseMap();
+            CreateMap<About, UpdateAboutDto>().ReverseMap();
+            CreateMap<About, GetByIdAboutDto>().ReverseMap();
+
+
             //testimonial
             CreateMap<Testimonial, ResultTestimonialDto>().ReverseMap();
             CreateMap<Testimonial, CreateTestimonialDto>().ReverseMap();
             CreateMap<Testimonial, UpdateTestimonialDto>().ReverseMap();
             CreateMap<Testimonial, GetByIdTestimonialDto>().ReverseMap();
-
 
             //orgabization
             CreateMap<Organization, ResultOrganizationDto>().ReverseMap();
@@ -74,6 +75,7 @@ namespace YummyAPI.Mapping
             CreateMap<Footer, ResultFooterDto>().ReverseMap();
             CreateMap<Footer, CreateFooterDto>().ReverseMap();
             CreateMap<Footer, UpdateFooterDto>().ReverseMap();
+
 
             //contact
             CreateMap<Contact, ResultContactDto>().ReverseMap();
@@ -91,29 +93,8 @@ namespace YummyAPI.Mapping
             CreateMap<Rezervation, CreateRezervationDto>().ReverseMap();
             CreateMap<Rezervation, UpdateRezervationDto>().ReverseMap();
 
-            //About
-            CreateMap<About, ResultAboutDto>().ReverseMap();
-            CreateMap<About, CreateAboutDto>().ReverseMap();
-            CreateMap<About, UpdateAboutDto>().ReverseMap();
-            CreateMap<About, GetByIdAboutDto>().ReverseMap();
-
-            //Notification
-
-            CreateMap<Notification, ResultNotificationDto>().ReverseMap();
-            CreateMap<Notification, CreateNotificationDto>().ReverseMap();
-            CreateMap<Notification, UpdateNotificationDto>().ReverseMap();
-            CreateMap<Notification, ResultNotificationReadFalseDto>().ReverseMap();
 
 
         }
     }
 }
-
-=======
-            CreateMap<Category, CreateCategoryDto>().ReverseMap();
-            CreateMap<Category,ResultCategoryDTOs>().ReverseMap();
-            CreateMap<Category, UpdateCategoryDTOs>().ReverseMap();
-        }
-    }
-}
->>>>>>> 6f2ea93 (Entities ve DTOs elave edildi)
