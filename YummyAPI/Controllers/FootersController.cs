@@ -60,5 +60,17 @@ namespace YummyAPI.Controllers
 
             return Ok(mapper);
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetByIdFooter(int id)
+        {
+            var value = _context.Footers.Find(id);
+            if (value == null)
+                return NotFound(new { message = "Bulunamadı" });
+
+            var dto = _mapper.Map<GetByIdFooterDto>(value);
+            return Ok(dto);
+        }
+
     }
 }
