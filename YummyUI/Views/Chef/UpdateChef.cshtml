@@ -1,0 +1,55 @@
+@using YummyUI.DTOs.ChefDTOs
+@model GetByIdChefDto
+@{
+    Layout="_AdminLayout";
+}
+
+<div class="section">
+    <div class="section-body">
+        <div class="row">
+            <div class="col-12 md-12 lg-col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Şef Ekle</h4>
+                    </div>
+                    <div class="card-body">
+                        @using(Html.BeginForm("UpdateChef","Chef",FormMethod.Post,new{@class="w-25"}))
+                        {
+                            @Html.HiddenFor(c=>c.ChefId)
+                            <div class="form-group">
+                                @Html.TextBoxFor(c=>c.ChefName,new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(c=>c.ChefTitle,new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(c=>c.ChefDescription,new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(c=>c.ChefImageUrl,new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(c=>c.ChefFacebookUrl,new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(c=>c.ChefInstagramUrl,new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(c=>c.ChefLinkedinUrl,new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.TextBoxFor(c=>c.ChefXUrl,new {@class="form-control"})
+                            </div>
+                            <div class="form-group">
+                                @Html.CheckBoxFor(c=>c.ChefStatus)
+                            </div>
+                            <div class="form-group">
+                                <button type="submit">Ekle</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

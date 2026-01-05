@@ -1,0 +1,407 @@
+@using YummyUI.DTOs.ChefDTOs
+@model List<ResultChefDto>
+
+@{
+    Layout = "_AdminLayout";
+    var count = 0;
+}
+
+<style>
+  /* sadece bu sayfaya özel */
+  .ai-powered-container,
+  .ai-powered-container * { box-sizing: border-box; }
+
+  .ai-powered-container{
+    height:100%;
+    min-height:0;
+    padding:1.6rem 2rem;
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+
+    /* ✅ AI gradient (Feature sayfasındaki palette) */
+    background:
+      radial-gradient(1200px 600px at 70% 80%, rgba(139, 92, 246, 0.30), transparent 60%),
+      radial-gradient(900px 500px at 15% 20%, rgba(99, 102, 241, 0.35), transparent 60%),
+      radial-gradient(800px 420px at 90% 10%, rgba(236, 72, 153, 0.25), transparent 55%),
+      linear-gradient(135deg, #0a0e27 0%, #16213e 40%, #0f1729 100%);
+  }
+
+  .grid-overlay{
+    position:absolute; inset:0;
+    pointer-events:none;
+    opacity:.15;
+    background-image:
+      linear-gradient(rgba(102,126,234,.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(102,126,234,.15) 1px, transparent 1px);
+    background-size:60px 60px;
+    animation:grid-move 20s linear infinite;
+  }
+  @@keyframes grid-move{ 0%{background-position:0 0} 100%{background-position:60px 60px} }
+
+  .orb{
+    position:absolute;
+    border-radius:999px;
+    filter:blur(100px);
+    opacity:.6;
+    pointer-events:none;
+    animation:floaty 15s ease-in-out infinite;
+  }
+  .orb.a{
+    width:520px; height:520px; left:-170px; top:-170px;
+    background:linear-gradient(135deg, rgba(139,92,246,.42), rgba(99,102,241,.30));
+  }
+  .orb.b{
+    width:460px; height:460px; right:-170px; top:90px;
+    background:linear-gradient(135deg, rgba(236,72,153,.35), rgba(139,92,246,.30));
+    animation-delay:3s;
+  }
+  .orb.c{
+    width:560px; height:560px; left:38%; bottom:-260px;
+    background:linear-gradient(135deg, rgba(99,102,241,.30), rgba(79,172,254,.25));
+    animation-delay:6s;
+  }
+  @@keyframes floaty{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(18px,-14px) scale(1.03)}
+  }
+
+  .content-wrapper{
+    position:relative;
+    z-index:5;
+    max-width:1600px;
+    width:100%;
+    margin:0 auto;
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    gap:1.2rem;
+  }
+
+  /* header */
+  .page-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    flex-shrink:0;
+    padding:.2rem 0;
+  }
+  .header-left{
+    display:flex;
+    align-items:center;
+    gap:.9rem;
+  }
+  .header-badge{
+    width:52px; height:52px;
+    border-radius:16px;
+    display:grid; place-items:center;
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow:0 8px 30px rgba(102,126,234,.6), 0 0 40px rgba(118,75,162,.3);
+    border:1px solid rgba(255,255,255,.15);
+  }
+  .header-badge span{ font-size:1.55rem; filter:drop-shadow(0 4px 8px rgba(0,0,0,.4)); }
+  .page-title{
+    margin:0;
+    font-size:2rem;
+    font-weight:850;
+    letter-spacing:.2px;
+    background:linear-gradient(135deg, #ffffff 0%, #a8b9ff 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    text-shadow:0 2px 20px rgba(102,126,234,.5);
+  }
+
+  .btn-add{
+    border:none;
+    border-radius:16px;
+    padding:1rem 1.25rem;
+    font-weight:900;
+    text-decoration:none;
+    color:#fff;
+    display:inline-flex;
+    align-items:center;
+    gap:.6rem;
+
+    background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow:0 8px 30px rgba(102,126,234,.5);
+    border:1px solid rgba(255,255,255,.15);
+    transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+  }
+  .btn-add:hover{ transform:translateY(-2px); box-shadow:0 12px 40px rgba(102,126,234,.7); }
+  .btn-add:active{ transform:translateY(0); opacity:.96; }
+
+  /* glass card wrapper */
+  .glass-card{
+    background:rgba(15,23,42,.55);
+    border:1px solid rgba(102,126,234,.30);
+    border-radius:28px;
+    backdrop-filter:blur(18px);
+    box-shadow:0 20px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
+    overflow:hidden;
+  }
+
+  /* table */
+  .table-wrap{
+    width:100%;
+    overflow:auto;
+  }
+  .table-wrap::-webkit-scrollbar{ height:10px; width:10px; }
+  .table-wrap::-webkit-scrollbar-thumb{
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    border-radius:999px;
+  }
+  .table-wrap::-webkit-scrollbar-track{ background:rgba(255,255,255,.05); border-radius:999px; }
+
+  table.ai-table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    min-width: 900px;
+  }
+
+  .ai-table thead th{
+    position:sticky;
+    top:0;
+    z-index:2;
+    text-align:left;
+    font-size:.9rem;
+    letter-spacing:.2px;
+    padding:1rem 1rem;
+    color:rgba(255,255,255,.85);
+ note:background: rgba(10,14,39,.70);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(102,126,234,.25);
+  }
+
+  .ai-table tbody td{
+    padding:1rem 1rem;
+    color:rgba(255,255,255,.78);
+    border-bottom:1px solid rgba(255,255,255,.07);
+    vertical-align:middle;
+    font-size:.95rem;
+  }
+
+  .ai-table tbody tr{
+    transition:background .15s ease, transform .15s ease;
+  }
+  .ai-table tbody tr:hover{
+    background:rgba(102,126,234,.08);
+  }
+
+  /* avatar */
+  .chef-avatar{
+    width:54px;
+    height:54px;
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid rgba(102,126,234,.35);
+    box-shadow:0 14px 35px rgba(0,0,0,.35), 0 0 30px rgba(102,126,234,.15);
+    background:rgba(255,255,255,.06);
+    display:grid;
+    place-items:center;
+  }
+  .chef-avatar img{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .chef-name{
+    font-weight:900;
+    color:#fff;
+    line-height:1.2;
+  }
+  .chef-title{
+    font-size:.85rem;
+    color:rgba(199,210,254,.9);
+  }
+  .muted{
+    color:rgba(255,255,255,.65);
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    max-width:520px;
+  }
+
+  /* social chips */
+  .socials{
+    display:flex;
+    gap:.5rem;
+    flex-wrap:wrap;
+  }
+  .s-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:.35rem;
+    padding:.45rem .65rem;
+    border-radius:999px;
+    font-size:.82rem;
+    text-decoration:none;
+    color:rgba(255,255,255,.85);
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.10);
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+  }
+  .s-chip:hover{
+    transform:translateY(-1px);
+    background:rgba(102,126,234,.12);
+    border-color:rgba(102,126,234,.35);
+  }
+
+  /* action buttons */
+  .btn{
+    border:none;
+    border-radius:14px;
+    padding:.65rem .9rem;
+    font-weight:850;
+    cursor:pointer;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:.5rem;
+    transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    color:#fff;
+    white-space:nowrap;
+  }
+  .btn:hover{ transform:translateY(-2px); box-shadow:0 14px 35px rgba(0,0,0,.35); }
+  .btn:active{ transform:translateY(0); opacity:.96; }
+
+  .btn-edit{
+    background:linear-gradient(135deg,#f59e0b 0%, #d97706 100%);
+    box-shadow:0 8px 25px rgba(245,158,11,.35);
+  }
+  .btn-del{
+    background:linear-gradient(135deg,#ef4444 0%, #dc2626 100%);
+    box-shadow:0 8px 25px rgba(239,68,68,.35);
+  }
+
+  /* responsive */
+  @@media (max-width: 900px){
+    .ai-powered-container{ padding:1.1rem; }
+    .page-title{ font-size:1.6rem; }
+  }
+</style>
+
+<div class="ai-powered-container">
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+  <div class="grid-overlay"></div>
+
+  <div class="content-wrapper">
+    <div class="page-header">
+      <div class="header-left">
+        <div class="header-badge"><span>👨‍🍳</span></div>
+        <h1 class="page-title">Şef Listesi</h1>
+      </div>
+
+      <a asp-action="CreateChef" asp-controller="Chef" class="btn-add">
+        ➕ Yeni Şef Girişi
+      </a>
+    </div>
+
+    <div class="glass-card">
+      <div class="table-wrap">
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th style="width:80px;">#</th>
+              <th style="width:90px;">Resim</th>
+              <th style="width:260px;">İsim</th>
+              <th style="width:220px;">Uzmanlığı</th>
+              <th>Açıklama</th>
+              <th style="width:220px;">Sosyal</th>
+              <th style="width:160px;">Sil</th>
+              <th style="width:170px;">Güncelle</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (Model != null && Model.Any())
+            {
+              foreach (var chef in Model)
+              {
+                <tr>
+                  <td>@(++count)</td>
+
+                  <td>
+                    <div class="chef-avatar">
+                      <img src="@chef.ChefImageUrl"
+                           alt="@chef.ChefName"
+                           loading="lazy"
+                           onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2254%22 height=%2254%22%3E%3Crect fill=%22%230a0e27%22 width=%2254%22 height=%2254%22 rx=%2216%22/%3E%3Ctext x=%2250%25%22 y=%2255%25%22 text-anchor=%22middle%22 fill=%22%23667eea%22 font-family=%22Arial%22 font-size=%2210%22%3ENo%20Img%3C/text%3E%3C/svg%3E';" />
+                    </div>
+                  </td>
+
+                  <td>
+                    <div class="chef-name">@chef.ChefName</div>
+                  </td>
+
+                  <td>
+                    <div class="chef-title">@chef.ChefTitle</div>
+                  </td>
+
+                  <td>
+                    <div class="muted">@chef.ChefDescription</div>
+                  </td>
+
+                  <td>
+                    <div class="socials">
+                      @if (!string.IsNullOrWhiteSpace(chef.ChefFacebookUrl))
+                      {
+                        <a class="s-chip" href="@chef.ChefFacebookUrl" target="_blank" rel="noopener">📘 Fb</a>
+                      }
+                      @if (!string.IsNullOrWhiteSpace(chef.ChefXUrl))
+                      {
+                        <a class="s-chip" href="@chef.ChefXUrl" target="_blank" rel="noopener">𝕏 X</a>
+                      }
+                      @if (!string.IsNullOrWhiteSpace(chef.ChefInstagramUrl))
+                      {
+                        <a class="s-chip" href="@chef.ChefInstagramUrl" target="_blank" rel="noopener">📷 Insta</a>
+                      }
+                      @if (!string.IsNullOrWhiteSpace(chef.ChefLinkedinUrl))
+                      {
+                        <a class="s-chip" href="@chef.ChefLinkedinUrl" target="_blank" rel="noopener">💼 Ln</a>
+                      }
+                    </div>
+                  </td>
+
+                  <td>
+                    <a asp-action="DeleteChef"
+                       asp-controller="Chef"
+                       asp-route-id="@chef.ChefId"
+                       class="btn btn-del">
+                      🗑️ Sil
+                    </a>
+                  </td>
+
+                  <td>
+                    <a asp-action="UpdateChef"
+                       asp-controller="Chef"
+                       asp-route-id="@chef.ChefId"
+                       class="btn btn-edit">
+                      ✏️ Güncelle
+                    </a>
+                  </td>
+                </tr>
+              }
+            }
+            else
+            {
+              <tr>
+                <td colspan="8" style="padding:1.6rem 1rem; color:rgba(255,255,255,.75);">
+                  Şef bulunamadı.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

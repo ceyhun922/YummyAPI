@@ -5,46 +5,430 @@
     Layout = "_AdminLayout";
 }
 
+<style>
+  .ai-form-container,
+  .ai-form-container * {
+    box-sizing: border-box;
+  }
 
-<div class="section">
-    <div class="section-body">
-        <div class="row">
-            <div class="col-12 md-12 col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Kategori Listesi</h4>
-                    </div>
-                    <div class="card-body w-25">
-                        @using (Html.BeginForm("CreateFeature", "Feature", FormMethod.Post))
-                        {
-                            <div class="form-group">
-                                <label>Başlık</label>
-                                @Html.TextBoxFor(x => x.FeatureTitle, new { @class = "form-control" })
-                            </div>
+  .ai-form-container {
+    height: 100%;
+    min-height: 0;
+    padding: 1.6rem 2rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 
-                            <div class="form-group">
-                                <label>Alt Başlık</label>
-                                @Html.TextBoxFor(x => x.FeatureTitle2, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                <label>Hakkında</label>
-                                @Html.TextAreaFor(x => x.FeatureDescription, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                <input type="text" asp-for="FeatureImageUrl" id="" class = "form-control" >
-                            </div>
-                            <div class="form-group">
-                                <label class="custom-switch mb-0">
-                                    @Html.CheckBoxFor(x => x.FeatureStatus, new { @class = "custom-switch-input" })
-                                    <span class="custom-switch-indicator"></span>
-                                </label>
-                            </div>
+    /* AI background */
+    background:
+      radial-gradient(1200px 600px at 70% 80%, rgba(99, 102, 241, 0.15), transparent 60%),
+      radial-gradient(900px 500px at 15% 20%, rgba(139, 92, 246, 0.18), transparent 60%),
+      radial-gradient(800px 420px at 90% 10%, rgba(79, 172, 254, 0.12), transparent 55%),
+      linear-gradient(135deg, #0a0e27 0%, #0f1435 40%, #0a1128 100%);
+  }
 
-                            <button type="submit" class="btn btn-primary mt-4">Save</button>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
+  /* grid overlay */
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.08;
+    background-image:
+      linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: grid-move 20s linear infinite;
+  }
+
+  @@keyframes grid-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 50px 50px; }
+  }
+
+  /* soft orbs */
+  .orb {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(80px);
+    opacity: 0.5;
+    animation: floaty 20s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .orb.a { 
+    width: 500px; 
+    height: 500px; 
+    left: -250px; 
+    top: -250px; 
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+  }
+  
+  .orb.b { 
+    width: 400px; 
+    height: 400px; 
+    right: -200px; 
+    bottom: -200px; 
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+    animation-delay: 5s; 
+  }
+  
+  .orb.c { 
+    width: 350px; 
+    height: 350px; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(79, 172, 254, 0.08) 0%, transparent 70%);
+    animation-delay: 10s; 
+  }
+
+  @@keyframes floaty {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(30px, -30px); }
+    66% { transform: translate(-20px, 20px); }
+  }
+
+  .content-wrapper {
+    position: relative;
+    z-index: 5;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  /* Header */
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    flex-shrink: 0;
+    padding: 0.2rem 0;
+  }
+
+  .header-badge {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: icon-pulse 2s ease-in-out infinite;
+  }
+
+  @@keyframes icon-pulse {
+    0%, 100% { 
+      transform: scale(1); 
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); 
+    }
+    50% { 
+      transform: scale(1.05); 
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); 
+    }
+  }
+
+  .header-badge span {
+    font-size: 1.6rem;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+  }
+
+  .page-header h1 {
+    margin: 0;
+    color: #e5e7eb;
+    font-size: 2rem;
+    font-weight: 850;
+    letter-spacing: 0.2px;
+    text-shadow: 0 2px 20px rgba(99, 102, 241, 0.5);
+  }
+
+  /* Form Container */
+  .form-container {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 0.8rem 0;
+  }
+
+  .form-container::-webkit-scrollbar { width: 8px; }
+  .form-container::-webkit-scrollbar-thumb { 
+    background: linear-gradient(135deg, #6366f1, #8b5cf6); 
+    border-radius: 10px; 
+  }
+  .form-container::-webkit-scrollbar-track { 
+    background: rgba(255, 255, 255, 0.05); 
+    border-radius: 10px; 
+  }
+
+  /* Form Card */
+  .form-card {
+    border-radius: 28px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    padding: 2.5rem;
+    animation: slideUp 0.6s ease forwards;
+    position: relative;
+  }
+
+  @@keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Glowing border */
+  .form-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899, #4facfe);
+    border-radius: 28px;
+    opacity: 0;
+    z-index: 0;
+    transition: opacity 0.4s ease;
+    background-size: 400% 400%;
+    animation: gradient-rotate 8s ease infinite;
+  }
+
+  @@keyframes gradient-rotate {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .form-card:hover::before {
+    opacity: 0.5;
+  }
+
+  /* Form */
+  .ai-form {
+    position: relative;
+    z-index: 1;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group label {
+    display: block;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.3px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 12px;
+    color: #e5e7eb;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: rgba(99, 102, 241, 0.6);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+
+  .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  /* Custom Switch */
+  .custom-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .custom-switch-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .custom-switch-indicator {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .custom-switch-indicator::before {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    background: #e5e7eb;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .custom-switch-input:checked + .custom-switch-indicator {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-color: rgba(99, 102, 241, 0.6);
+  }
+
+  .custom-switch-input:checked + .custom-switch-indicator::before {
+    transform: translateX(24px);
+  }
+
+  .switch-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  /* Submit Button */
+  .btn-submit {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #4a5568;
+    background: linear-gradient(135deg, #a8c0ff 0%, #c5d7f5 100%);
+    box-shadow: 0 4px 16px rgba(168, 192, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    bottom: -50%;
+    left: -50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: rotate(45deg) translateX(-200%);
+    transition: transform 0.6s;
+  }
+
+  .btn-submit:hover::after {
+    transform: rotate(45deg) translateX(200%);
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(168, 192, 255, 0.3);
+  }
+
+  .btn-submit:active {
+    transform: translateY(0);
+    opacity: 0.96;
+  }
+
+  /* Responsive */
+  @@media (max-width: 768px) {
+    .ai-form-container {
+      padding: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.6rem;
+    }
+
+    .form-card {
+      padding: 1.5rem;
+    }
+  }
+</style>
+
+<div class="ai-form-container">
+  <!-- soft orbs + grid -->
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+  <div class="grid-overlay"></div>
+
+  <div class="content-wrapper">
+    <div class="page-header">
+      <div class="header-badge"><span>➕</span></div>
+      <h1>Yeni Öne Çıkan Alan</h1>
     </div>
+
+    <div class="form-container">
+      <div class="form-card">
+        @using (Html.BeginForm("CreateFeature", "Feature", FormMethod.Post, new { @class = "ai-form" }))
+        {
+          <div class="form-group">
+            <label>Başlık</label>
+            @Html.TextBoxFor(x => x.FeatureTitle, new { @class = "form-control", placeholder = "Örn: Yeni İli Bizimle Keçirin" })
+          </div>
+
+          <div class="form-group">
+            <label>Alt Başlık</label>
+            @Html.TextBoxFor(x => x.FeatureTitle2, new { @class = "form-control", placeholder = "Açıklama metni giriniz" })
+          </div>
+
+          <div class="form-group">
+            <label>Hakkında</label>
+            @Html.TextAreaFor(x => x.FeatureDescription, new { @class = "form-control", placeholder = "Detaylı açıklama..." })
+          </div>
+
+          <div class="form-group">
+            <label>Görsel URL</label>
+            <input type="text" asp-for="FeatureImageUrl" class="form-control" placeholder="https://..." />
+          </div>
+
+          <div class="form-group">
+            <label class="custom-switch">
+              @Html.CheckBoxFor(x => x.FeatureStatus, new { @class = "custom-switch-input" })
+              <span class="custom-switch-indicator"></span>
+              <span class="switch-label">Aktif</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn-submit">💾 Kaydet</button>
+        }
+      </div>
+    </div>
+  </div>
 </div>

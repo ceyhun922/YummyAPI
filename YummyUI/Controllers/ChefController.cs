@@ -18,11 +18,11 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> ChefList()
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:5289/api/Chefies");
+            var response = await client.GetAsync("http://localhost:5289/api/Chefs");
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<ResultChefDto>(jsonData);
+                var values = JsonConvert.DeserializeObject<List<ResultChefDto>>(jsonData);
                 return View(values);
             }
             return View();
@@ -39,7 +39,7 @@ namespace YummyUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createChefDto);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("http://localhost:5289/api/Chefies", content);
+            var response = await client.PostAsync("http://localhost:5289/api/Chefs", content);
             if (!response.IsSuccessStatusCode)
             {
                 return View(createChefDto);
@@ -50,7 +50,8 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> DeleteChef(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            await client.DeleteAsync("http://localhost:5289/api/Chefies?id=" + id);
+            await client.DeleteAsync("http://localhost:5289/api/Chefs?id=" + id);
+            
             return RedirectToAction("ChefList");
 
         }
@@ -58,7 +59,7 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> UpdateChef(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:5289/api/Chefies/GetOneChef?id=" + id);
+            var response = await client.GetAsync("http://localhost:5289/api/Chefs/GetOneChef?id=" + id);
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
@@ -73,13 +74,13 @@ namespace YummyUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(getByIdChefDto);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var response = await client.PutAsync("http://localhost:5289/api/Chefies", content);
+            var response = await client.PutAsync("http://localhost:5289/api/Chefs", content);
             if (!response.IsSuccessStatusCode)
             {
                 return View(getByIdChefDto);
 
             }
-            return View();
+            return RedirectToAction("ChefList");
 
 
         }

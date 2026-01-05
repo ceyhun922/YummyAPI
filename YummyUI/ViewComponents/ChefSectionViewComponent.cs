@@ -20,7 +20,7 @@ namespace YummyUI.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:5289/api/Chefies/");
+            var response = await client.GetAsync("http://localhost:5289/api/Chefs/");
 
             if (response.IsSuccessStatusCode)
             {

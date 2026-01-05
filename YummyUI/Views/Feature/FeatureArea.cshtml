@@ -4,62 +4,622 @@
     Layout = "_AdminLayout";
 }
 
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
 
-<div class="section">
-    <div class="section-body">
+<style>
+  /* Layout bozulmasın: sadece bu sayfaya özel */
+  .ai-powered-container,
+  .ai-powered-container * {
+    box-sizing: border-box;
+  }
 
-        <div class="row">
-            <div class="col-12 md-12 lg-col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Öne Çıkan Alan</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Başlık</th>
-                                        <th>Başlık2</th>
-                                        <td>Foto</td>
-                                        <th>Kategori Sil</th>
-                                        <th>Kategori Güncelle</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+  .ai-powered-container {
+    height: 100%;
+    min-height: 0;
 
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>@item.FeatureTitle</td>
-                                            <td>@item.FeatureTitle2</td>
-                                            <td>
-                                                <img src="@item.FeatureImageUrl" width="80" alt="@item.FeatureTitle"></td>
+    padding: 1.6rem 2rem;
+    position: relative;
+    overflow: hidden;
 
-                                            <td><a asp-action="FeatureDelete" asp-controller="Feature"
-                                                    asp-route-id="@item.FeatureId" class="btn btn-danger">Sil</a></td>
-                                            <td><a asp-action="UpdateFeature" asp-controller="Feature"
-                                                    asp-route-id="@item.FeatureId" class="btn btn-warning">Güncelle</a></td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                            @if (Model.Count == 1)
-                            {
-                                <button class="btn btn-warning" onclick="return false">
-                                    <i data-feather="alert-triangle"></i> Mövcud
-                                </button>
-                            }
-                            else
-                            {
-                                <a asp-action="CreateFeature" asp-controller="Feature" class="btn btn-info">Yeni Alan
-                                    Girişi</a>
-                            }
+    display: flex;
+    flex-direction: column;
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    /* ✅ AI / futuristic background - YENİ RENKLER */
+    background:
+      radial-gradient(1200px 600px at 70% 80%, rgba(139, 92, 246, 0.3), transparent 60%),
+      radial-gradient(900px 500px at 15% 20%, rgba(99, 102, 241, 0.35), transparent 60%),
+      radial-gradient(800px 420px at 90% 10%, rgba(236, 72, 153, 0.25), transparent 55%),
+      linear-gradient(135deg, #0a0e27 0%, #16213e 40%, #0f1729 100%);
+  }
+
+  /* grid overlay */
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.15;
+    background-image:
+      linear-gradient(rgba(102, 126, 234, 0.15) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(102, 126, 234, 0.15) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: grid-move 20s linear infinite;
+  }
+
+  @@keyframes grid-move {
+    0% { background-position: 0 0; }
+    100% { background-position: 60px 60px; }
+  }
+
+  /* soft orbs - YENİ RENKLER */
+  .orb {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(100px);
+    opacity: 0.6;
+    animation: floaty 15s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .orb.a { 
+    width: 500px; 
+    height: 500px; 
+    left: -150px; 
+    top: -150px; 
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(99, 102, 241, 0.3));
+  }
+  
+  .orb.b { 
+    width: 450px; 
+    height: 450px; 
+    right: -150px; 
+    top: 100px; 
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.35), rgba(139, 92, 246, 0.3));
+    animation-delay: 3s; 
+  }
+  
+  .orb.c { 
+    width: 550px; 
+    height: 550px; 
+    left: 40%; 
+    bottom: -250px; 
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(79, 172, 254, 0.25));
+    animation-delay: 6s; 
+  }
+
+  @@keyframes floaty {
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    33% { transform: translate(20px, -20px) scale(1.05) rotate(120deg); }
+    66% { transform: translate(-15px, 15px) scale(0.95) rotate(240deg); }
+  }
+
+  .content-wrapper {
+    position: relative;
+    z-index: 5;
+
+    max-width: 1600px;
+    width: 100%;
+    margin: 0 auto;
+
+    flex: 1;
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  /* ✅ Header - YENİ GRADIENT */
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+
+    flex-shrink: 0;
+    padding: 0.2rem 0;
+  }
+
+  .header-badge {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6), 0 0 40px rgba(118, 75, 162, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    animation: icon-glow 2s ease-in-out infinite;
+  }
+
+  @@keyframes icon-glow {
+    0%, 100% { box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6), 0 0 40px rgba(118, 75, 162, 0.3); }
+    50% { box-shadow: 0 8px 40px rgba(102, 126, 234, 0.8), 0 0 60px rgba(118, 75, 162, 0.5); }
+  }
+
+  .header-badge span {
+    font-size: 1.6rem;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+  }
+
+  .page-header h1 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 2rem;
+    font-weight: 850;
+    letter-spacing: 0.2px;
+    text-shadow: 0 2px 20px rgba(102, 126, 234, 0.5);
+    background: linear-gradient(135deg, #ffffff 0%, #a8b9ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* list area */
+  .features-list {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 0.8rem 0 0.2rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .features-list::-webkit-scrollbar { width: 10px; }
+  .features-list::-webkit-scrollbar-thumb { 
+    background: linear-gradient(135deg, #667eea, #764ba2); 
+    border-radius: 999px; 
+  }
+  .features-list::-webkit-scrollbar-track { 
+    background: rgba(255, 255, 255, 0.05); 
+    border-radius: 999px; 
+  }
+
+  /* ✅ FEATURE CARD - YENİ AI GRADIENT */
+  .feature-card {
+    border-radius: 28px;
+    overflow: hidden;
+
+    background:
+      linear-gradient(
+        135deg,
+        rgba(15, 23, 42, 0.6) 0%,
+        rgba(30, 41, 59, 0.5) 50%,
+        rgba(139, 92, 246, 0.15) 100%
+      );
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 80px rgba(102, 126, 234, 0.1);
+
+    padding: 2.2rem 2.4rem;
+
+    transform: translateY(8px);
+    opacity: 0;
+    animation: in 0.6s ease forwards;
+    position: relative;
+  }
+
+  /* Glowing border animation */
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #667eea, #764ba2, #ec4899, #4facfe);
+    border-radius: 28px;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+    background-size: 400% 400%;
+    animation: gradient-rotate 8s ease infinite;
+  }
+
+  @@keyframes gradient-rotate {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .feature-card:hover::before {
+    opacity: 0.4;
+  }
+
+  @@keyframes in {
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* ✅ Layout: text left, image right */
+  .feature-layout {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 2.2rem;
+    align-items: center;
+  }
+
+  .feature-text-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .feature-title {
+    margin: 0;
+    color: #ffffff;
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: 0.3px;
+    text-shadow: 0 4px 20px rgba(102, 126, 234, 0.5);
+    background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .feature-subtitle {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 520px;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    border: none;
+    border-radius: 16px;
+    padding: 0.95rem 1.25rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    user-select: none;
+    min-width: 140px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+  }
+
+  .btn:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  .btn:hover { 
+    transform: translateY(-3px); 
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.4); 
+  }
+  
+  .btn:active { 
+    transform: translateY(-1px); 
+    opacity: 0.96; 
+  }
+
+  .btn span {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* AI gradient butonlar */
+  .btn-edit {
+    color: #fff;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+  }
+
+  .btn-delete {
+    color: #fff;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+  }
+
+  /* ✅ image block + gradient mask */
+  .feature-image-section {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(102, 126, 234, 0.2);
+    height: 340px;
+  }
+
+  .feature-image-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+
+    background: linear-gradient(
+      90deg,
+      rgba(10, 14, 39, 0.7) 0%,
+      rgba(10, 14, 39, 0.3) 40%,
+      transparent 100%
+    );
+  }
+
+  .feature-image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transform: scale(1.02);
+    transition: transform 0.5s ease;
+  }
+
+  .feature-card:hover .feature-image-section img {
+    transform: scale(1.05);
+  }
+
+  /* ✅ chip uyarı - AI gradient */
+  .chip-wrap {
+    margin-top: 1.2rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .chip {
+    border: none;
+    cursor: not-allowed;
+    padding: 0.95rem 1.4rem;
+    border-radius: 999px;
+    font-weight: 850;
+    letter-spacing: 0.2px;
+
+    color: #1a1a1a;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    box-shadow: 0 8px 30px rgba(245, 158, 11, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 360px;
+    justify-content: center;
+  }
+
+  .chip i { font-style: normal; }
+
+  /* empty state */
+  .empty-state {
+    flex: 1;
+    min-height: 0;
+    border-radius: 28px;
+    padding: 2.6rem;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+    display: grid;
+    place-items: center;
+    text-align: center;
+  }
+
+  .empty-state h2 { 
+    margin: 0; 
+    color: #ffffff; 
+    font-weight: 900;
+    background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .empty-state p { 
+    margin: 0.6rem 0 1.2rem; 
+    color: rgba(255, 255, 255, 0.75); 
+  }
+
+  .btn-add {
+    color: #fff;
+    border-radius: 16px;
+    padding: 1rem 1.4rem;
+    font-weight: 900;
+    text-decoration: none;
+
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-add::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    bottom: -50%;
+    left: -50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: rotate(45deg) translateX(-200%);
+    transition: transform 0.6s;
+  }
+
+  .btn-add:hover::after {
+    transform: rotate(45deg) translateX(200%);
+  }
+
+  .btn-add:hover { 
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.7);
+  }
+  
+  .btn-add:active { 
+    transform: translateY(-1px); 
+    opacity: 0.96; 
+  }
+
+  /* responsive */
+  @@media (max-width: 1100px) {
+    .feature-layout { grid-template-columns: 1fr; }
+    .feature-title { font-size: 2.4rem; }
+    .feature-image-section { height: 260px; }
+    .chip { min-width: 280px; }
+  }
+
+  @@media (max-width: 600px) {
+    .ai-powered-container { padding: 1.1rem; }
+    .page-header h1 { font-size: 1.6rem; }
+    .feature-title { font-size: 2rem; }
+    .btn { width: 100%; }
+    .chip { width: 100%; min-width: unset; }
+  }
+</style>
+
+<div class="ai-powered-container">
+  <!-- soft orbs + grid -->
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+  <div class="grid-overlay"></div>
+
+  <div class="content-wrapper">
+    <div class="page-header">
+      <div class="header-badge"><span>⭐</span></div>
+      <h1>Öne Çıkan Alan</h1>
     </div>
+
+    @if (Model != null && Model.Any())
+    {
+      <div class="features-list">
+        @foreach (var item in Model)
+        {
+          <div class="feature-card">
+            <div class="feature-layout">
+              <div class="feature-text-section">
+                <h2 class="feature-title">@item.FeatureTitle</h2>
+                <p class="feature-subtitle">@item.FeatureTitle2</p>
+
+                <div class="action-buttons">
+                  <a asp-action="UpdateFeature"
+                     asp-controller="Feature"
+                     asp-route-id="@item.FeatureId"
+                     class="btn btn-edit">
+                    <span>✏️ Güncelle</span>
+                  </a>
+
+                  <button type="button"
+                          class="btn btn-delete delete-feature"
+                          data-feature-id="@item.FeatureId"
+                          data-feature-title="@item.FeatureTitle">
+                    <span>🗑️ Sil</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="feature-image-section">
+                <img src="@item.FeatureImageUrl" alt="@item.FeatureTitle" loading="lazy" 
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22340%22%3E%3Crect fill=%22%230a0e27%22 width=%22600%22 height=%22340%22/%3E%3Ctext fill=%22%23667eea%22 font-family=%22Arial%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image%3C/text%3E%3C/svg%3E'" />
+              </div>
+            </div>
+
+            <div class="chip-wrap">
+              @if (Model.Count == 1)
+              {
+                <button class="chip" type="button" disabled>
+                  <i>⚠️</i> Mevcut Alan Var – Yeni Eklenemez
+                </button>
+              }
+              else
+              {
+                <a asp-action="CreateFeature" asp-controller="Feature" class="btn-add">
+                  ➕ Yeni Alan Ekle
+                </a>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+    else
+    {
+      <div class="empty-state">
+        <div>
+          <h2>Henüz öne çıkan alan bulunmuyor</h2>
+          <p>İlk öne çıkan alanınızı ekleyerek başlayın</p>
+          <a asp-action="CreateFeature" asp-controller="Feature" class="btn-add">
+            ➕ Yeni Alan Ekle
+          </a>
+        </div>
+      </div>
+    }
+  </div>
 </div>
+
+@section Scripts {
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const deleteButtons = document.querySelectorAll(".delete-feature");
+
+      deleteButtons.forEach(button => {
+        button.addEventListener("click", function () {
+          const featureId = this.getAttribute("data-feature-id");
+          const featureTitle = this.getAttribute("data-feature-title");
+
+          Swal.fire({
+            title: 'Emin misiniz?',
+            text: `"${featureTitle}" alanını silmek üzeresiniz. Bu işlem geri alınamaz!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Evet, sil!',
+            cancelButtonText: 'İptal',
+            reverseButtons: true,
+            background: '#1e293b',
+            color: '#ffffff'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: 'Siliniyor...',
+                text: 'Lütfen bekleyin',
+                icon: 'info',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                background: '#1e293b',
+                color: '#ffffff',
+                didOpen: () => Swal.showLoading()
+              });
+
+              window.location.href = '@Url.Action("FeatureDelete", "Feature")?id=' + featureId;
+            }
+          });
+        });
+      });
+    });
+  </script>
+}

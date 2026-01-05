@@ -1,56 +1,353 @@
 @using YummyUI.DTOs.ServiceDTOs
 @model List<ResultServiceDto>
+
 @{
-    Layout ="_AdminLayout";
-    var count =0;
+    Layout = "_AdminLayout";
+    var count = 0;
 }
 
-<div class="section">
-    <div class="section-body">
-        <div class="row">
-            <div class="col-12 md-12 lg-col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Servisler</h4>
-                    </div>
-                    <div class="card-body">
-                         <div class="table-responsive">
-            <table class="table table-striped table-hover" id="tableExport" style="width:100%;">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Servis İkonu</th>
-                  <th>Servis İsmi</th>
-                  <th>Servis Hakkında</th>
-                  <th>Servis Durumu</th>
-                  <th>Servis Sil</th>
-                  <th>Servis Güncelle</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach (var service in Model)
-                {
-                  <tr>
+<style>
+  .ai-page, .ai-page * { box-sizing: border-box; }
 
-                    <td>@(++count)</td>
-                    <td>@service.ServiceIcon</td>
-                    <td>@service.ServiceTitle</td>
-                    <td>@service.ServiceDescription</td>
-                    <td>@(service.ServiceStatus ? "Aktif" : "Pasif")</td>
-                    
-                    <td><a asp-action="ServiceDelete" asp-controller="Service" asp-route-id="@service.ServiceId"
-                        class="btn btn-danger">Sil</a></td>
-                    <td><a asp-action="ServiceUpdate" asp-controller="Service" asp-route-id="@service.ServiceId"
-                        class="btn btn-warning">Güncelle</a></td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-            <a asp-action="CreateService" asp-controller="Service" class="btn btn-info">Yeni Servis Girişi</a>
-          </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  .ai-page{
+    min-height:100%;
+    padding: 1.6rem 2rem;
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(1200px 600px at 70% 80%, rgba(56,189,248,.22), transparent 60%),
+      radial-gradient(900px 500px at 15% 20%, rgba(139,92,246,.26), transparent 60%),
+      radial-gradient(800px 420px at 90% 10%, rgba(99,102,241,.20), transparent 55%),
+      linear-gradient(135deg,#070b1f 0%,#0a1030 40%,#050818 100%);
+  }
+
+  .orb{
+    position:absolute; border-radius:999px;
+    filter:blur(90px); opacity:.55; pointer-events:none;
+    animation: floaty 14s ease-in-out infinite;
+  }
+  .orb.a{ width:480px;height:480px;left:-160px;top:-160px;background:rgba(139,92,246,.40); }
+  .orb.b{ width:420px;height:420px;right:-170px;top:120px;background:rgba(56,189,248,.36);animation-delay:3s; }
+  .orb.c{ width:520px;height:520px;left:35%;bottom:-240px;background:rgba(99,102,241,.30);animation-delay:6s; }
+
+  @@keyframes floaty{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(16px,-12px) scale(1.04); }
+  }
+
+  .grid-overlay{
+    position:absolute; inset:0; pointer-events:none; opacity:.16;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .wrap{
+    position:relative;
+    z-index:5;
+    max-width: 1400px;
+    margin: 0 auto;
+    display:flex;
+    flex-direction:column;
+    gap: 1.2rem;
+  }
+
+  /* header */
+  .page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 1rem;
+  }
+  .header-left{
+    display:flex;
+    align-items:center;
+    gap:.9rem;
+  }
+  .header-badge{
+    width:52px;height:52px;
+    border-radius:16px;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    box-shadow:0 12px 35px rgba(102,126,234,.6);
+    border:1px solid rgba(255,255,255,.12);
+  }
+  .header-badge span{ font-size:1.55rem; }
+  .title{
+    margin:0;
+    font-size:2rem;
+    font-weight:950;
+    background:linear-gradient(135deg,#fff,#a8b9ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+
+  .btn-add{
+    display:inline-flex;
+    align-items:center;
+    gap:.6rem;
+    padding: 1rem 1.25rem;
+    border-radius: 16px;
+    font-weight: 950;
+    color:#fff;
+    text-decoration:none;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    box-shadow: 0 14px 40px rgba(102,126,234,.6);
+    border: 1px solid rgba(255,255,255,.14);
+    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    white-space: nowrap;
+  }
+  .btn-add:hover{ transform: translateY(-2px); box-shadow: 0 18px 55px rgba(102,126,234,.75); }
+  .btn-add:active{ transform: translateY(0); opacity:.96; }
+
+  /* list container */
+  .panel{
+    background: rgba(15,23,42,.55);
+    border-radius: 28px;
+    border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 40px 80px rgba(0,0,0,.45);
+    overflow:hidden;
+  }
+
+  .panel-head{
+    padding: 1.05rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 1rem;
+  }
+  .panel-sub{
+    margin:0;
+    color: rgba(255,255,255,.70);
+    font-weight: 800;
+    font-size: .95rem;
+  }
+  .counter{
+    padding:.4rem .7rem;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.85);
+    font-weight: 900;
+    font-size: .8rem;
+  }
+
+  /* row */
+  .row-item{
+    display:flex;
+    align-items:center;
+    gap: 1rem;
+    padding: 1.05rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    transition: background .15s ease;
+  }
+  .row-item:hover{
+    background: rgba(102,126,234,.08);
+  }
+  .row-item:last-child{ border-bottom: none; }
+
+  .icon{
+    width:54px;height:54px;
+    border-radius: 16px;
+    display:grid;place-items:center;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 18px 45px rgba(0,0,0,.35);
+    flex: 0 0 auto;
+    color:#fff;
+    overflow:hidden;
+  }
+  .icon *{
+    font-size: 26px !important;
+    line-height: 1;
+  }
+
+  .main{
+    flex: 1;
+    min-width: 0;
+    display:flex;
+    flex-direction:column;
+    gap: .25rem;
+  }
+  .name{
+    margin:0;
+    color:#fff;
+    font-weight: 950;
+    font-size: 1.05rem;
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+  }
+  .desc{
+    margin:0;
+    color: rgba(255,255,255,.70);
+    line-height: 1.55;
+    display:-webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow:hidden;
+    max-width: 900px;
+  }
+
+  .meta{
+    display:flex;
+    align-items:center;
+    gap: .75rem;
+    flex: 0 0 auto;
+  }
+
+  .id-pill{
+    padding:.45rem .7rem;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: .8rem;
+    color: rgba(255,255,255,.78);
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    white-space: nowrap;
+  }
+
+  .status{
+    display:inline-flex;
+    align-items:center;
+    gap:.45rem;
+    padding:.55rem .9rem;
+    border-radius: 999px;
+    font-weight: 950;
+    font-size: .8rem;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.86);
+    white-space: nowrap;
+  }
+  .dot{
+    width:10px;height:10px;border-radius:999px;
+    background: rgba(245,158,11,.95);
+    box-shadow: 0 0 18px rgba(245,158,11,.55);
+  }
+  .status.active .dot{
+    background: rgba(34,197,94,.95);
+    box-shadow: 0 0 18px rgba(34,197,94,.55);
+  }
+
+  .actions{
+    display:flex;
+    gap:.55rem;
+    flex: 0 0 auto;
+  }
+  .btn{
+    border:none;
+    padding:.7rem 1rem;
+    border-radius: 14px;
+    font-weight: 950;
+    font-size: .85rem;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:.45rem;
+    white-space: nowrap;
+    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  }
+  .btn:hover{ transform: translateY(-2px); box-shadow: 0 14px 35px rgba(0,0,0,.35); }
+  .btn:active{ transform: translateY(0); opacity:.96; }
+
+  .btn-del{ background: linear-gradient(135deg,#ef4444,#dc2626); color:#fff; }
+  .btn-edit{ background: linear-gradient(135deg,#fbbf24,#f59e0b); color:#1a1a1a; }
+
+  /* responsive */
+  @@media (max-width: 980px){
+    .ai-page{ padding: 1.1rem; }
+    .title{ font-size: 1.6rem; }
+
+    .row-item{
+      flex-direction:column;
+      align-items:flex-start;
+    }
+    .meta{
+      width:100%;
+      justify-content:space-between;
+    }
+    .actions{ width:100%; justify-content:flex-end; }
+    .desc{ max-width: 100%; }
+  }
+</style>
+
+<div class="ai-page">
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+  <div class="grid-overlay"></div>
+
+  <div class="wrap">
+    <div class="page-header">
+      <div class="header-left">
+        <div class="header-badge"><span>🛠️</span></div>
+        <h1 class="title">Servisler</h1>
+      </div>
+
+      <a asp-action="CreateService" asp-controller="Service" class="btn-add">
+        ➕ Yeni Servis
+      </a>
     </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <p class="panel-sub">Servis yönetimi</p>
+        <span class="counter">Toplam: @(Model?.Count ?? 0)</span>
+      </div>
+
+      @if (Model != null && Model.Any())
+      {
+        foreach (var service in Model)
+        {
+          <div class="row-item">
+            <div class="icon">
+              @Html.Raw(service.ServiceIcon)
+            </div>
+
+            <div class="main">
+              <p class="name">@service.ServiceTitle</p>
+              <p class="desc">@service.ServiceDescription</p>
+            </div>
+
+            <div class="meta">
+              <span class="id-pill">#@service.ServiceId</span>
+
+              <span class="status @(service.ServiceStatus ? "active" : "")">
+                <span class="dot"></span>
+                @(service.ServiceStatus ? "Aktif" : "Pasif")
+              </span>
+
+              <div class="actions">
+                <a asp-action="ServiceDelete"
+                   asp-controller="Service"
+                   asp-route-id="@service.ServiceId"
+                   class="btn btn-del">
+                  🗑️ Sil
+                </a>
+
+                <a asp-action="ServiceUpdate"
+                   asp-controller="Service"
+                   asp-route-id="@service.ServiceId"
+                   class="btn btn-edit">
+                  ✏️ Güncelle
+                </a>
+              </div>
+            </div>
+          </div>
+
+          count++;
+        }
+      }
+      else
+      {
+        <div style="padding: 2rem; color: rgba(255,255,255,.75);">
+          Henüz servis eklenmemiş.
+        </div>
+      }
+    </div>
+  </div>
 </div>

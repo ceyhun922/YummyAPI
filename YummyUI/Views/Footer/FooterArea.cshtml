@@ -1,16 +1,16 @@
-@using YummyUI.DTOs.FeatureDTO
-@model GetByIdFeatureDto
+@using YummyUI.DTOs.FooterDTOs
+@model List<ResultFooterDto>
 @{
-    Layout = "_Adminlayout";
+    Layout = "_AdminLayout";
 }
 
 <style>
-  .ai-form-container,
-  .ai-form-container * {
+  .ai-contact-container,
+  .ai-contact-container * {
     box-sizing: border-box;
   }
 
-  .ai-form-container {
+  .ai-contact-container {
     height: 100%;
     min-height: 0;
     padding: 1.6rem 2rem;
@@ -19,7 +19,6 @@
     display: flex;
     flex-direction: column;
 
-    /* AI background */
     background:
       radial-gradient(1200px 600px at 70% 80%, rgba(99, 102, 241, 0.15), transparent 60%),
       radial-gradient(900px 500px at 15% 20%, rgba(139, 92, 246, 0.18), transparent 60%),
@@ -27,7 +26,6 @@
       linear-gradient(135deg, #0a0e27 0%, #0f1435 40%, #0a1128 100%);
   }
 
-  /* grid overlay */
   .grid-overlay {
     position: absolute;
     inset: 0;
@@ -45,7 +43,6 @@
     100% { background-position: 50px 50px; }
   }
 
-  /* soft orbs */
   .orb {
     position: absolute;
     border-radius: 999px;
@@ -91,7 +88,7 @@
   .content-wrapper {
     position: relative;
     z-index: 5;
-    max-width: 800px;
+    max-width: 1400px;
     width: 100%;
     margin: 0 auto;
     flex: 1;
@@ -101,7 +98,6 @@
     gap: 1.2rem;
   }
 
-  /* Header */
   .page-header {
     display: flex;
     align-items: center;
@@ -116,8 +112,8 @@
     border-radius: 16px;
     display: grid;
     place-items: center;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
     animation: icon-pulse 2s ease-in-out infinite;
   }
@@ -125,11 +121,11 @@
   @@keyframes icon-pulse {
     0%, 100% { 
       transform: scale(1); 
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); 
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); 
     }
     50% { 
       transform: scale(1.05); 
-      box-shadow: 0 0 30px rgba(245, 158, 11, 0.8); 
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); 
     }
   }
 
@@ -147,26 +143,24 @@
     text-shadow: 0 2px 20px rgba(99, 102, 241, 0.5);
   }
 
-  /* Form Container */
-  .form-container {
+  .contact-container {
     flex: 1;
     min-height: 0;
     overflow: auto;
     padding: 0.8rem 0;
   }
 
-  .form-container::-webkit-scrollbar { width: 8px; }
-  .form-container::-webkit-scrollbar-thumb { 
+  .contact-container::-webkit-scrollbar { width: 8px; }
+  .contact-container::-webkit-scrollbar-thumb { 
     background: linear-gradient(135deg, #6366f1, #8b5cf6); 
     border-radius: 10px; 
   }
-  .form-container::-webkit-scrollbar-track { 
+  .contact-container::-webkit-scrollbar-track { 
     background: rgba(255, 255, 255, 0.05); 
     border-radius: 10px; 
   }
 
-  /* Form Card */
-  .form-card {
+  .contact-card {
     border-radius: 28px;
     overflow: hidden;
     background: rgba(255, 255, 255, 0.02);
@@ -191,8 +185,7 @@
     }
   }
 
-  /* Glowing border */
-  .form-card::before {
+  .contact-card::before {
     content: '';
     position: absolute;
     top: -2px;
@@ -214,115 +207,82 @@
     100% { background-position: 0% 50%; }
   }
 
-  .form-card:hover::before {
+  .contact-card:hover::before {
     opacity: 0.5;
   }
 
-  /* Form */
-  .ai-form {
+  .contact-content {
     position: relative;
     z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
   }
 
-  .form-group {
-    margin-bottom: 1.5rem;
+  .info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
-  .form-group label {
-    display: block;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
-    letter-spacing: 0.3px;
+  .info-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 16px;
+    padding: 1.25rem;
+    transition: all 0.3s ease;
   }
 
-  .form-control {
-    width: 100%;
-    padding: 0.875rem 1rem;
+  .info-item:hover {
     background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 12px;
-    color: #e5e7eb;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+    border-color: rgba(99, 102, 241, 0.4);
+    transform: translateX(5px);
   }
 
-  .form-control:focus {
-    outline: none;
-    border-color: rgba(99, 102, 241, 0.6);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-  }
-
-  .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  textarea.form-control {
-    min-height: 120px;
-    resize: vertical;
-  }
-
-  /* Custom Switch */
-  .custom-switch {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .custom-switch-input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .custom-switch-indicator {
-    position: relative;
-    display: inline-block;
-    width: 52px;
-    height: 28px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 100px;
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    transition: all 0.3s ease;
-  }
-
-  .custom-switch-indicator::before {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 20px;
-    height: 20px;
-    background: #e5e7eb;
-    border-radius: 50%;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .custom-switch-input:checked + .custom-switch-indicator {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    border-color: rgba(99, 102, 241, 0.6);
-  }
-
-  .custom-switch-input:checked + .custom-switch-indicator::before {
-    transform: translateX(24px);
-  }
-
-  .switch-label {
-    color: rgba(255, 255, 255, 0.9);
+  .info-label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
     font-weight: 600;
-    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
   }
 
-  /* Submit Button */
-  .btn-submit {
+  .info-value {
+    color: #e5e7eb;
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  .map-section {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    box-shadow: 0 4px 16px rgba(168, 192, 255, 0.2);
+    height: 100%;
+    min-height: 400px;
+  }
+
+  .map-section iframe {
     width: 100%;
-    padding: 1rem;
+    height: 100%;
+    min-height: 400px;
+    border: none;
+    display: block;
+  }
+
+  .action-buttons {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+
+  .btn-edit {
+    padding: 0.95rem 2rem;
     border: none;
     border-radius: 16px;
     font-weight: 700;
@@ -332,12 +292,15 @@
     color: #fff;
     background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
     box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-    margin-top: 1rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     position: relative;
     overflow: hidden;
   }
 
-  .btn-submit::before {
+  .btn-edit::before {
     content: '';
     position: absolute;
     top: 50%;
@@ -350,45 +313,49 @@
     transition: width 0.5s, height 0.5s;
   }
 
-  .btn-submit:hover::before {
+  .btn-edit:hover::before {
     width: 300px;
     height: 300px;
   }
 
-  .btn-submit:hover {
+  .btn-edit:hover {
     transform: translateY(-3px);
     box-shadow: 0 14px 35px rgba(245, 158, 11, 0.5);
   }
 
-  .btn-submit:active {
+  .btn-edit:active {
     transform: translateY(-1px);
-    opacity: 0.96;
   }
 
-  .btn-submit span {
+  .btn-edit span {
     position: relative;
     z-index: 1;
   }
 
-  /* Image Preview */
-  .image-preview {
-    margin-top: 1rem;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    max-height: 200px;
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #9ca3af;
   }
 
-  .image-preview img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    display: block;
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.3;
   }
 
-  /* Responsive */
+  @@media (max-width: 1024px) {
+    .contact-content {
+      grid-template-columns: 1fr;
+    }
+
+    .map-section {
+      min-height: 300px;
+    }
+  }
+
   @@media (max-width: 768px) {
-    .ai-form-container {
+    .ai-contact-container {
       padding: 1rem;
     }
 
@@ -396,14 +363,13 @@
       font-size: 1.6rem;
     }
 
-    .form-card {
+    .contact-card {
       padding: 1.5rem;
     }
   }
 </style>
 
-<div class="ai-form-container">
-  <!-- soft orbs + grid -->
+<div class="ai-contact-container">
   <div class="orb a"></div>
   <div class="orb b"></div>
   <div class="orb c"></div>
@@ -411,70 +377,66 @@
 
   <div class="content-wrapper">
     <div class="page-header">
-      <div class="header-badge"><span>✏️</span></div>
-      <h1>Öne Çıkan Alan Güncelle</h1>
+      <div class="header-badge"><span>📧</span></div>
+      <h1>İletişim Bilgileri</h1>
     </div>
 
-    <div class="form-container">
-      <div class="form-card">
-        @using (Html.BeginForm("UpdateFeature", "Feature", FormMethod.Post, new { @class = "ai-form" }))
+    <div class="contact-container">
+      @if (Model != null && Model.Any())
+      {
+        @foreach (var item in Model)
         {
-          @Html.HiddenFor(x => x.FeatureId)
+          <div class="contact-card">
+            <div class="contact-content">
+              <div class="info-section">
+                <div class="info-item">
+                  <div class="info-label">📍 Adres</div>
+                  <div class="info-value">@item.Address</div>
+                </div>
 
-          <div class="form-group">
-            <label>Başlık</label>
-            @Html.TextBoxFor(x => x.FeatureTitle, new { @class = "form-control", placeholder = "Örn: Yeni İli Bizimle Keçirin" })
-          </div>
+                <div class="info-item">
+                  <div class="info-label">📞 Telefon</div>
+                  <div class="info-value">@item.CallUs</div>
+                </div>
 
-          <div class="form-group">
-            <label>Alt Başlık</label>
-            @Html.TextBoxFor(x => x.FeatureTitle2, new { @class = "form-control", placeholder = "Açıklama metni giriniz" })
-          </div>
+                <div class="info-item">
+                  <div class="info-label">✉️ E-posta</div>
+                  <div class="info-value">@item.EmailUs</div>
+                </div>
 
-          <div class="form-group">
-            <label>Hakkında</label>
-            @Html.TextAreaFor(x => x.FeatureDescription, new { @class = "form-control", placeholder = "Detaylı açıklama..." })
-          </div>
-
-          <div class="form-group">
-            <label>Görsel URL</label>
-            @Html.TextBoxFor(x => x.FeatureImageUrl, new { @class = "form-control", placeholder = "https://...", id = "imageUrl" })
-            
-            @if (!string.IsNullOrEmpty(Model.FeatureImageUrl))
-            {
-              <div class="image-preview">
-                <img src="@Model.FeatureImageUrl" alt="Önizleme" id="previewImage" />
+                <div class="info-item">
+                  <div class="info-label">🕐 Çalışma Saatleri</div>
+                  <div class="info-value">@item.OpeningHours</div>
+                </div>
               </div>
-            }
-          </div>
 
-          <div class="form-group">
-            <label class="custom-switch">
-              @Html.CheckBoxFor(x => x.FeatureStatus, new { @class = "custom-switch-input" })
-              <span class="custom-switch-indicator"></span>
-              <span class="switch-label">Aktif</span>
-            </label>
-          </div>
+              <div class="map-section">
+                <iframe src="@item.MapLocation" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+              </div>
 
-          <button type="submit" class="btn-submit">
-            <span>💾 Güncelle</span>
-          </button>
+              <div class="action-buttons">
+                <a href="@Url.Action("UpdateFooter", "Footer", new { id = item.FooterId })" class="btn-edit">
+                  <span>✏️ Düzenle</span>
+                </a>
+              </div>
+            </div>
+          </div>
         }
-      </div>
+      }
+      else
+      {
+        <div class="contact-card">
+          <div class="empty-state">
+            <div class="empty-icon">📧</div>
+            <h3>Henüz iletişim bilgisi eklenmemiş</h3>
+            <p>İletişim bilgilerinizi ekleyerek başlayın</p>
+          </div>
+        </div>
+      }
     </div>
   </div>
 </div>
-
-@section Scripts {
-<script>
-  // Görsel URL değiştiğinde önizlemeyi güncelle
-  document.getElementById('imageUrl')?.addEventListener('input', function(e) {
-    const previewImg = document.getElementById('previewImage');
-    const url = e.target.value;
-    
-    if (previewImg && url) {
-      previewImg.src = url;
-    }
-  });
-</script>
-}

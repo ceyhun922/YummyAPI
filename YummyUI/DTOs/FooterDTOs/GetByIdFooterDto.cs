@@ -1,6 +1,6 @@
 namespace YummyUI.DTOs.FooterDTOs
 {
-    public class ResultFooterDto
+    public class GetByIdFooterDto
     {
          public int FooterId { get; set; }
         public string? MapLocation { get; set; }
@@ -8,7 +8,5 @@ namespace YummyUI.DTOs.FooterDTOs
         public string? CallUs { get; set; }
         public string? EmailUs { get; set; }
         public string? OpeningHours { get; set; }
-
-        
     }
 }

@@ -1,3 +1,4 @@
+
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using YummyAPI.Context;
@@ -8,12 +9,12 @@ namespace YummyAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ChefiesController : ControllerBase
+    public class ChefsController : ControllerBase
     {
         private readonly ApiContext _context;
         private readonly IMapper _mapper;
 
-        public ChefiesController(ApiContext context, IMapper mapper)
+        public ChefsController(ApiContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
