@@ -81,5 +81,10 @@ namespace YummyUI.Controllers
             }
             return RedirectToAction("FooterArea");
         }
+
+        public IActionResult FooterAreaBottom()
+        {
+            return View();
+        }
     }
 }

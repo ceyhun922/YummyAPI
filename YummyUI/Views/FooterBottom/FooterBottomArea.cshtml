@@ -1,0 +1,435 @@
+@using YummyUI.DTOs.FooterDTOs
+@model List<ResultFooterBottomDto>
+
+@{
+    Layout = "_AdminLayout";
+
+    // ✅ Tek kayıt mantığı: liste boş olabilir
+    var footer = Model?.FirstOrDefault();
+    var hasFooter = footer != null;
+
+    // ✅ Address tek string geliyor: "Nizami küçəsi 203B,Bakı, Azərbaycan"
+    // 2 satıra böl: 1) Nizami küçəsi 203B  2) Bakı, Azərbaycan
+    var addressRaw = footer?.Address ?? "";
+    var addressParts = addressRaw
+        .Split(',', StringSplitOptions.RemoveEmptyEntries)
+        .Select(x => x.Trim())
+        .ToList();
+
+    var addressLine1 = addressParts.Count > 0 ? addressParts[0] : addressRaw;
+    var addressLine2 = addressParts.Count > 1 ? string.Join(", ", addressParts.Skip(1)) : "";
+}
+
+@section Styles
+{
+  <style>
+  .ai-page, .ai-page *{ box-sizing:border-box; }
+
+  .ai-page{
+    min-height:100%;
+    padding: 1.6rem 2rem;
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(1200px 600px at 70% 80%, rgba(56,189,248,.22), transparent 60%),
+      radial-gradient(900px 500px at 15% 20%, rgba(139,92,246,.26), transparent 60%),
+      radial-gradient(800px 420px at 90% 10%, rgba(99,102,241,.20), transparent 55%),
+      linear-gradient(135deg,#070b1f 0%,#0a1030 40%,#050818 100%);
+  }
+
+  .orb{
+    position:absolute; border-radius:999px;
+    filter:blur(90px); opacity:.55; pointer-events:none;
+    animation: floaty 14s ease-in-out infinite;
+  }
+  .orb.a{ width:480px;height:480px;left:-160px;top:-160px;background:rgba(139,92,246,.40); }
+  .orb.b{ width:420px;height:420px;right:-170px;top:120px;background:rgba(56,189,248,.36);animation-delay:3s; }
+  .orb.c{ width:520px;height:520px;left:35%;bottom:-240px;background:rgba(99,102,241,.30);animation-delay:6s; }
+  @@keyframes floaty{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(16px,-12px) scale(1.04); }
+  }
+
+  .grid-overlay{
+    position:absolute; inset:0; pointer-events:none; opacity:.16;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .wrap{
+    position:relative;
+    z-index:5;
+    max-width: 1200px;
+    margin: 0 auto;
+    display:flex;
+    flex-direction:column;
+    gap: 1.2rem;
+  }
+
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 1rem;
+  }
+  .header-left{
+    display:flex;
+    align-items:center;
+    gap:.9rem;
+  }
+  .badge{
+    width:52px;height:52px;
+    border-radius:16px;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    box-shadow:0 12px 35px rgba(102,126,234,.6);
+    border:1px solid rgba(255,255,255,.12);
+  }
+  .badge span{ font-size:1.55rem; }
+
+  .title{
+    margin:0;
+    font-size:2rem;
+    font-weight:950;
+    background:linear-gradient(135deg,#fff,#a8b9ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:.55rem;
+    padding: 1rem 1.15rem;
+    border-radius: 16px;
+    font-weight: 950;
+    text-decoration:none;
+    border: 1px solid rgba(255,255,255,.14);
+    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    white-space: nowrap;
+  }
+  .btn:hover{ transform: translateY(-2px); box-shadow: 0 18px 55px rgba(0,0,0,.35); }
+  .btn:active{ transform: translateY(0); opacity:.96; }
+
+  .btn-primary{
+    color:#fff;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    box-shadow: 0 14px 40px rgba(102,126,234,.6);
+  }
+  .btn-danger{
+    color:#fff;
+    background: linear-gradient(135deg,#ef4444,#dc2626);
+    box-shadow: 0 14px 40px rgba(239,68,68,.35);
+  }
+  .btn-warning{
+    color:#1a1a1a;
+    background: linear-gradient(135deg,#fbbf24,#f59e0b);
+    box-shadow: 0 14px 40px rgba(245,158,11,.25);
+  }
+
+  .header-actions{
+    display:flex;
+    gap:.65rem;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+  }
+
+  .panel{
+    background: rgba(15,23,42,.55);
+    border-radius: 28px;
+    border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 40px 80px rgba(0,0,0,.45);
+    overflow:hidden;
+  }
+
+  .panel-head{
+    padding: 1.15rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap: 1rem;
+  }
+
+  .sub{
+    margin:0;
+    color: rgba(255,255,255,.70);
+    font-weight: 850;
+  }
+
+  .ai-bar{
+    margin: 1rem 1.25rem 0 1.25rem;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: linear-gradient(135deg, rgba(245,158,11,.18), rgba(102,126,234,.14));
+    padding: .95rem 1rem;
+    color: rgba(255,255,255,.88);
+    font-weight: 850;
+    display:flex;
+    align-items:flex-start;
+    gap:.75rem;
+  }
+  .ai-pill{
+    width:34px;height:34px;
+    border-radius: 14px;
+    display:grid;
+    place-items:center;
+    background: rgba(245,158,11,.25);
+    border: 1px solid rgba(245,158,11,.28);
+    box-shadow: 0 0 24px rgba(245,158,11,.22);
+    flex: 0 0 auto;
+  }
+  .ai-text{ line-height: 1.45; }
+  .ai-text b{ color:#fff; }
+
+  .content{ padding: 1.25rem; }
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .box{
+    grid-column: span 3;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.04);
+    padding: 1.1rem;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease, background .25s ease;
+    position: relative;
+    overflow:hidden;
+  }
+  .box::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:22px;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .25s ease;
+    background:
+      radial-gradient(500px 200px at 20% 0%, rgba(139,92,246,.25), transparent 60%),
+      radial-gradient(500px 200px at 80% 0%, rgba(56,189,248,.18), transparent 55%);
+  }
+  .box:hover{
+    transform: translateY(-8px);
+    background: rgba(255,255,255,.07);
+    border-color: rgba(102,126,234,.45);
+    box-shadow: 0 30px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  .box:hover::before{ opacity:1; }
+
+  .box-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom: .75rem;
+    position:relative;
+    z-index:2;
+  }
+  .box-title{
+    margin:0;
+    color:#fff;
+    font-weight:950;
+    letter-spacing:.2px;
+  }
+
+  .mini-ic{
+    width:38px;height:38px;
+    border-radius: 14px;
+    display:grid;
+    place-items:center;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow: 0 12px 25px rgba(0,0,0,.30);
+    color:#fff;
+    font-size: 1.05rem;
+    transition: transform .25s ease, box-shadow .25s ease;
+    position:relative;
+    z-index:2;
+  }
+  .box:hover .mini-ic{ transform: scale(1.08); box-shadow: 0 0 28px rgba(102,126,234,.8); }
+
+  .line{
+    margin: .45rem 0;
+    color: rgba(255,255,255,.78);
+    font-weight: 700;
+    line-height: 1.55;
+    position:relative;
+    z-index:2;
+  }
+  .muted{ color: rgba(255,255,255,.62); font-weight: 650; }
+
+  .social{
+    display:flex;
+    flex-wrap:wrap;
+    gap:.6rem;
+    margin-top:.4rem;
+    position:relative;
+    z-index:2;
+  }
+  .social a{
+    width:44px;height:44px;
+    border-radius: 16px;
+    display:grid;
+    place-items:center;
+    text-decoration:none;
+    color:#fff;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .social a:hover{
+    transform: translateY(-3px) scale(1.05);
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    box-shadow: 0 16px 40px rgba(102,126,234,.6);
+  }
+
+  .empty{
+    padding: 2.2rem;
+    text-align:center;
+    color: rgba(255,255,255,.78);
+  }
+  .empty h2{ margin:0 0 .45rem 0; color:#fff; font-weight:950; }
+  .empty p{ margin:0 0 1.1rem 0; color: rgba(255,255,255,.68); }
+
+  @@media (max-width: 1200px){
+    .box{ grid-column: span 6; }
+  }
+  @@media (max-width: 700px){
+    .ai-page{ padding:1.1rem; }
+    .title{ font-size: 1.6rem; }
+    .box{ grid-column: span 12; }
+    .panel-head{ flex-direction:column; align-items:flex-start; }
+  }
+</style>
+
+}
+
+<div class="ai-page">
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+  <div class="grid-overlay"></div>
+
+  <div class="wrap">
+    <div class="header">
+      <div class="header-left">
+        <div class="badge"><span>🧾</span></div>
+        <h1 class="title">Footer Alanı</h1>
+      </div>
+
+      <div class="header-actions">
+        @if (hasFooter)
+        {
+          <a asp-action="UpdateFooter" asp-controller="Footer" asp-route-id="@footer!.FooterId" class="btn btn-warning">✏️ Düzenle</a>
+          <a asp-action="DeleteFooter" asp-controller="Footer" asp-route-id="@footer!.FooterId" class="btn btn-danger">🗑️ Sil</a>
+        }
+        else
+        {
+          <a asp-action="CreateFooter" asp-controller="Footer" class="btn btn-primary">➕ Yeni Footer Oluştur</a>
+        }
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <p class="sub">Web sitede görünen footer bilgileri</p>
+        <span class="muted">Son güncelleme: —</span>
+      </div>
+
+      @if (hasFooter)
+      {
+        <div class="ai-bar">
+          <div class="ai-pill">!</div>
+          <div class="ai-text">
+            <b>Footer alanı var.</b> Yenisi oluşturmak için mevcutu siliniz.
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="grid">
+
+            <div class="box">
+              <div class="box-head">
+                <p class="box-title">Address</p>
+                <div class="mini-ic">📍</div>
+              </div>
+              <p class="line">@addressLine1</p>
+              @if (!string.IsNullOrWhiteSpace(addressLine2))
+              {
+                <p class="line muted">@addressLine2</p>
+              }
+            </div>
+
+            <div class="box">
+              <div class="box-head">
+                <p class="box-title">Contact</p>
+                <div class="mini-ic">☎️</div>
+              </div>
+              <p class="line">Phone: <span class="muted">@footer!.CallUs</span></p>
+              <p class="line">Email: <span class="muted">@footer!.EmailUs</span></p>
+            </div>
+
+            <div class="box">
+              <div class="box-head">
+                <p class="box-title">Opening Hours</p>
+                <div class="mini-ic">🕒</div>
+              </div>
+              <p class="line">Mon–Sat: <span class="muted">@footer!.OpeningHours</span></p>
+              <p class="line">Sunday: <span class="muted">Closed</span></p>
+            </div>
+
+            <div class="box">
+              <div class="box-head">
+                <p class="box-title">Follow Us</p>
+                <div class="mini-ic">🔗</div>
+              </div>
+
+              <div class="social">
+                @* URL null/boş ise linki pasif yap *@
+                @if (!string.IsNullOrWhiteSpace(footer!.FaceookUrl))
+                { <a href="@footer.FaceookUrl" target="_blank" rel="noopener noreferrer" title="Facebook">f</a> }
+                else
+                { <a href="javascript:void(0)" title="Facebook" style="opacity:.45;cursor:not-allowed;">f</a> }
+
+                @if (!string.IsNullOrWhiteSpace(footer!.XUrl))
+                { <a href="@footer.XUrl" target="_blank" rel="noopener noreferrer" title="X">𝕏</a> }
+                else
+                { <a href="javascript:void(0)" title="X" style="opacity:.45;cursor:not-allowed;">𝕏</a> }
+
+                @if (!string.IsNullOrWhiteSpace(footer!.InstagramUrl))
+                { <a href="@footer.InstagramUrl" target="_blank" rel="noopener noreferrer" title="Instagram">⌁</a> }
+                else
+                { <a href="javascript:void(0)" title="Instagram" style="opacity:.45;cursor:not-allowed;">⌁</a> }
+
+                @if (!string.IsNullOrWhiteSpace(footer!.LinkedinUrl))
+                { <a href="@footer.LinkedinUrl" target="_blank" rel="noopener noreferrer" title="LinkedIn">in</a> }
+                else
+                { <a href="javascript:void(0)" title="LinkedIn" style="opacity:.45;cursor:not-allowed;">in</a> }
+              </div>
+
+              <p class="line muted" style="margin-top:.8rem;">Sosyal linkleri düzenlemeden güncelle.</p>
+            </div>
+
+          </div>
+        </div>
+      }
+      else
+      {
+        <div class="empty">
+          <h2>Footer alanı yok</h2>
+          <p>Yeni bir footer alanı oluşturmak için butona tıkla.</p>
+          <a asp-action="CreateFooter" asp-controller="Footer" class="btn btn-primary">
+            ➕ Yeni Footer Oluştur
+          </a>
+        </div>
+      }
+    </div>
+  </div>
+</div>

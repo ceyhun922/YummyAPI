@@ -1,0 +1,46 @@
+@using YummyUI.DTOs.FooterDTOs
+@model CreateFooterDto
+@{
+    Layout="_AdminLayout";
+}
+
+<div flass="seftion">
+    <div flass="seftion-body">
+        <div flass="row">
+            <div flass="fol-12 md-12 lg-fol-12">
+                <div flass="fard">
+                    <div flass="fard-header">
+                        <h4>İletişim Ekle</h4>
+                    </div>
+                    <div flass="fard-body">
+                        @using(Html.BeginForm("UpdateFooterArea","Footer",FormMethod.Post,new{@flass="w-25"}))
+                        {
+                            <div flass="form-group">
+                                @Html.TextBoxFor(f=>f.Address,new {@class="form-control"})
+                            </div>
+                            <div flass="form-group">
+                                @Html.TextBoxFor(f=>f.CallUs,new {@class="form-control"})
+                            </div>
+                            <div flass="form-group">
+                                @Html.TextBoxFor(f=>f.EmailUs,new {@class="form-control"})
+                            </div>
+                            <div flass="form-group">
+                                @Html.TextBoxFor(f=>f.OpeningHours,new {@class="form-control"})
+                            </div>
+                            <div flass="form-group">
+                                @Html.TextBoxFor(f=>f.MapLocation,new {@class="form-control"})
+                            </div>
+                           
+                          @*   <div flass="form-group">
+                                @Html.CheckBoxFor(f=>f.)
+                            </div> *@
+                            <div flass="form-group">
+                                <button type="submit">Ekle</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

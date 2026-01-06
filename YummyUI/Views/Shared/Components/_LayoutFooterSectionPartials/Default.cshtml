@@ -1,0 +1,51 @@
+@using YummyUI.DTOs.FooterDTOs
+@model List<ResultFooterBottomDto>
+<div class="container">
+  <div class="row gy-3">
+    @foreach (var item in Model)
+    {
+      <div class="col-lg-3 col-md-6 d-flex">
+        <i class="bi bi-geo-alt icon"></i>
+        <div class="address">
+          <h4>Address</h4>
+          <p>@item.Address</p>
+@*           <p>New York, NY 535022</p>
+ *@          <p></p>
+        </div>
+
+      </div>
+
+      <div class="col-lg-3 col-md-6 d-flex">
+        <i class="bi bi-telephone icon"></i>
+        <div>
+          <h4>Contact</h4>
+          <p>
+            <strong>Phone:</strong> <span>@item.CallUs</span><br>
+            <strong>Email:</strong> <span>@item.EmailUs</span><br>
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6 d-flex">
+        <i class="bi bi-clock icon"></i>
+        <div>
+          <h4>Opening Hours</h4>
+          <p>
+            <strong>Mon-Sat:</strong> <span>@item.OpeningHours</span><br>
+            <strong>Sunday</strong>: <span>Closed</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h4>Follow Us</h4>
+        <div class="social-links d-flex">
+          <a href="@item.XUrl" class="twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="@item.FaceookUrl" class="facebook"><i class="bi bi-facebook"></i></a>
+          <a href="@item.InstagramUrl" class="instagram"><i class="bi bi-instagram"></i></a>
+          <a href="@item.LinkedinUrl" class="linkedin"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+    }
+  </div>
+</div>
