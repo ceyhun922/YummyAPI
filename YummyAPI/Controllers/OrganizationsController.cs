@@ -69,5 +69,12 @@ namespace YummyAPI.Controllers
 
             return Ok(mapper);
         }
+        [HttpGet("{id}")]
+        public IActionResult GetOrganization(int id)
+        {
+            var value =_context.Organizations?.Find(id);
+            var mapper =_mapper.Map<GetByIdOrganizationDto>(value);
+            return Ok(mapper);
+        }
     }
 }

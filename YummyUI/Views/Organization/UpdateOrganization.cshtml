@@ -1,0 +1,795 @@
+@using YummyUI.DTOs.OrganizationDTOs
+@model GetByIdOrganizationDto
+@{
+    Layout = "_AdminLayout";
+}
+
+@section Styles {
+    <style>
+        .orgu,
+        .orgu * {
+            box-sizing: border-box;
+        }
+
+        .orgu {
+            min-height: 100%;
+            padding: 1.6rem 2rem;
+            position: relative;
+            overflow: hidden;
+
+            background:
+                radial-gradient(1200px 600px at 70% 80%, rgba(56, 189, 248, .18), transparent 60%),
+                radial-gradient(900px 500px at 15% 20%, rgba(139, 92, 246, .22), transparent 60%),
+                radial-gradient(800px 420px at 90% 10%, rgba(99, 102, 241, .18), transparent 55%),
+                linear-gradient(135deg, #070b1f 0%, #0a1030 40%, #050818 100%);
+        }
+
+        .orgu .orb {
+            position: absolute;
+            border-radius: 999px;
+            filter: blur(100px);
+            opacity: .55;
+            pointer-events: none;
+            animation: orgUFloat 14s ease-in-out infinite;
+        }
+
+        .orgu .orb.a {
+            width: 520px;
+            height: 520px;
+            left: -180px;
+            top: -180px;
+            background: rgba(139, 92, 246, .42);
+        }
+
+        .orgu .orb.b {
+            width: 460px;
+            height: 460px;
+            right: -190px;
+            top: 110px;
+            background: rgba(56, 189, 248, .36);
+            animation-delay: 3s;
+        }
+
+        .orgu .orb.c {
+            width: 560px;
+            height: 560px;
+            left: 38%;
+            bottom: -260px;
+            background: rgba(99, 102, 241, .30);
+            animation-delay: 6s;
+        }
+
+        @@keyframes orgUFloat {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(18px, -14px) scale(1.04);
+            }
+        }
+
+        .orgu .grid {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: .14;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 64px 64px;
+        }
+
+        .orgu .wrap {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+        }
+
+        .orgu .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .orgu .titleBox {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+        }
+
+        .orgu .badge {
+            width: 56px;
+            height: 56px;
+            border-radius: 18px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: 1px solid rgba(255, 255, 255, .14);
+            box-shadow: 0 18px 55px rgba(102, 126, 234, .45), 0 0 45px rgba(118, 75, 162, .25);
+            color: #fff;
+        }
+
+        .orgu .badge i {
+            font-size: 26px;
+        }
+
+        .orgu .h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 950;
+            background: linear-gradient(135deg, #fff, #a8b9ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .orgu .sub {
+            margin: .2rem 0 0 0;
+            color: rgba(255, 255, 255, .70);
+            font-weight: 800;
+            font-size: .95rem;
+        }
+
+        .orgu .shell {
+            background: rgba(15, 23, 42, .55);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 40px 90px rgba(0, 0, 0, .45);
+            overflow: hidden;
+        }
+
+        .orgu .shellHead {
+            padding: 1.1rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .orgu .shellHead p {
+            margin: 0;
+            color: rgba(255, 255, 255, .75);
+            font-weight: 850;
+        }
+
+        .orgu .chip {
+            padding: .45rem .8rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .06);
+            color: rgba(255, 255, 255, .88);
+            font-weight: 900;
+            font-size: .85rem;
+            white-space: nowrap;
+        }
+
+        .orgu .body {
+            padding: 1.25rem;
+        }
+
+        .orgu .grid2 {
+            display: grid;
+            grid-template-columns: 1.35fr .65fr;
+            gap: 1.1rem;
+            align-items: start;
+        }
+
+        .orgu .group {
+            margin-bottom: 1rem;
+        }
+
+        .orgu .label {
+            display: block;
+            margin-bottom: .45rem;
+            font-weight: 950;
+            color: rgba(255, 255, 255, .92);
+        }
+
+        .orgu .input,
+        .orgu .textarea {
+            width: 100%;
+            padding: .95rem 1rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .06);
+            color: rgba(255, 255, 255, .92);
+            font-weight: 800;
+            outline: none;
+            transition: box-shadow .15s ease, border-color .15s ease, background .15s ease;
+        }
+
+        .orgu .input::placeholder,
+        .orgu .textarea::placeholder {
+            color: rgba(255, 255, 255, .55);
+        }
+
+        .orgu .input:focus,
+        .orgu .textarea:focus {
+            border-color: rgba(102, 126, 234, .55);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, .18);
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .orgu .textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .orgu .row {
+            display: flex;
+            gap: .8rem;
+            align-items: center;
+        }
+
+        .orgu .previewBox {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            border: 1px dashed rgba(255, 255, 255, .20);
+            background: rgba(255, 255, 255, .06);
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            overflow: hidden;
+        }
+
+        .orgu .previewBox img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .orgu .previewBox .ph {
+            color: rgba(255, 255, 255, .85);
+            font-weight: 950;
+            font-size: .95rem;
+        }
+
+        .orgu .pick {
+            border: none;
+            padding: .95rem 1.05rem;
+            border-radius: 16px;
+            font-weight: 950;
+            cursor: pointer;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1a1a1a;
+            box-shadow: 0 14px 30px rgba(245, 158, 11, .20);
+            transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+            white-space: nowrap;
+        }
+
+        .orgu .pick:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 44px rgba(245, 158, 11, .26);
+        }
+
+        .orgu .pick:active {
+            transform: translateY(0);
+            opacity: .96;
+        }
+
+        .orgu .thumbs {
+            margin-top: .7rem;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: .65rem;
+        }
+
+        .orgu .thumb {
+            border-radius: 18px;
+            overflow: hidden;
+            height: 86px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .06);
+            cursor: pointer;
+            position: relative;
+            transition: transform .18s ease, border-color .18s ease, background .18s ease;
+        }
+
+        .orgu .thumb:hover {
+            transform: translateY(-2px);
+            border-color: rgba(102, 126, 234, .35);
+            background: rgba(255, 255, 255, .08);
+        }
+
+        .orgu .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .orgu .thumb::after {
+            content: "Seç";
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            padding: .3rem .55rem;
+            border-radius: 999px;
+            font-weight: 950;
+            font-size: .78rem;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .16);
+            background: rgba(15, 23, 42, .55);
+            backdrop-filter: blur(10px);
+        }
+
+        .orgu .statusRow {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+        }
+
+        .orgu .switch {
+            width: 56px;
+            height: 32px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .14);
+            border: 1px solid rgba(255, 255, 255, .12);
+            position: relative;
+            cursor: pointer;
+            transition: background .2s ease, border-color .2s ease;
+            flex: 0 0 auto;
+        }
+
+        .orgu .switch::after {
+            content: "";
+            width: 26px;
+            height: 26px;
+            border-radius: 999px;
+            position: absolute;
+            top: 50%;
+            left: 3px;
+            transform: translateY(-50%);
+            background: #fff;
+            box-shadow: 0 12px 20px rgba(0, 0, 0, .22);
+            transition: left .2s ease;
+        }
+
+        .orgu .switch.on {
+            background: rgba(34, 197, 94, .22);
+            border-color: rgba(34, 197, 94, .30);
+        }
+
+        .orgu .switch.on::after {
+            left: 27px;
+        }
+
+        .orgu .statusText {
+            font-weight: 950;
+            color: rgba(255, 255, 255, .75);
+        }
+
+        .orgu .statusText.on {
+            color: #22c55e;
+        }
+
+        .orgu .live {
+            position: sticky;
+            top: 90px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .12);
+            box-shadow: 0 24px 70px rgba(0, 0, 0, .35);
+            overflow: hidden;
+        }
+
+        .orgu .liveImg {
+            height: 160px;
+            background: rgba(0, 0, 0, .22);
+            position: relative;
+        }
+
+        .orgu .liveImg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .orgu .liveShade {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, .10) 0%, rgba(0, 0, 0, .60) 100%);
+        }
+
+        .orgu .liveBody {
+            padding: 1rem 1.05rem 1.1rem;
+        }
+
+        .orgu .liveName {
+            margin: 0;
+            color: #fff;
+            font-weight: 950;
+            font-size: 1.15rem;
+        }
+
+        .orgu .liveDesc {
+            margin: .55rem 0 0 0;
+            color: rgba(255, 255, 255, .74);
+            font-weight: 800;
+            line-height: 1.55;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .orgu .liveBadges {
+            margin-top: .85rem;
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+        }
+
+        .orgu .pill {
+            padding: .45rem .75rem;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(15, 23, 42, .55);
+            color: rgba(255, 255, 255, .92);
+            font-weight: 950;
+            font-size: .82rem;
+            white-space: nowrap;
+        }
+
+        .orgu .pill.green {
+            border-color: rgba(34, 197, 94, .22);
+            background: rgba(34, 197, 94, .12);
+            color: #b7f7cf;
+        }
+
+        .orgu .pill.orange {
+            border-color: rgba(245, 158, 11, .22);
+            background: rgba(245, 158, 11, .12);
+            color: #ffe0b0;
+        }
+
+        .orgu .actions {
+            margin-top: 1.05rem;
+            display: flex;
+            gap: .7rem;
+            flex-wrap: wrap;
+        }
+
+        .orgu .save {
+            border: none;
+            padding: .95rem 1.2rem;
+            border-radius: 16px;
+            font-weight: 950;
+            cursor: pointer;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #052e16;
+            box-shadow: 0 16px 35px rgba(34, 197, 94, .18);
+            transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+        }
+
+        .orgu .save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 22px 52px rgba(34, 197, 94, .22);
+        }
+
+        .orgu .back {
+            border: none;
+            padding: .95rem 1.1rem;
+            border-radius: 16px;
+            font-weight: 950;
+            cursor: pointer;
+            background: rgba(255, 255, 255, .12);
+            color: rgba(255, 255, 255, .92);
+            transition: transform .18s ease, opacity .18s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: .55rem;
+        }
+
+        .orgu .back:hover {
+            transform: translateY(-2px);
+        }
+
+        .orgu .back:active {
+            transform: translateY(0);
+            opacity: .96;
+        }
+
+        @@media (max-width: 980px) {
+            .orgu {
+                padding: 1.1rem;
+            }
+
+            .orgu .grid2 {
+                grid-template-columns: 1fr;
+            }
+
+            .orgu .live {
+                position: static;
+            }
+
+            .orgu .h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+}
+<div class="orgu">
+    <div class="orb a"></div>
+    <div class="orb b"></div>
+    <div class="orb c"></div>
+    <div class="grid"></div>
+
+    <div class="wrap">
+        <div class="header">
+            <div class="titleBox">
+                <div class="badge"><i class="bi bi-pencil-square"></i></div>
+                <div>
+                    <div class="h1">Organizasyon Güncelle</div>
+                    <div class="sub">Mevcut veriyi düzenle • canlı preview</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="shell">
+            <div class="shellHead">
+                <p>Organizasyon güncelleme paneli</p>
+                <span class="chip">ID: #@Model.OrganizationId</span>
+            </div>
+
+            <div class="body">
+                @using (Html.BeginForm("UpdateOrganization", "Organization", FormMethod.Post))
+                {
+                    @Html.HiddenFor(x => x.OrganizationId)
+
+                    <div class="grid2">
+                        <!-- LEFT -->
+                        <div>
+                            <div class="group">
+                                <label class="label" for="OrgName">Organizasyon Adı</label>
+                                @Html.TextBoxFor(x => x.OrganizationName, new {
+                                @class = "input",
+                                                        id = "OrgName",
+                                                        placeholder = "Örn: Kurumsal Yemek Organizasyonu",
+                                                        autocomplete = "off"
+                                                        })
+                        </div>
+
+                        <div class="group">
+                            <label class="label" for="OrgDesc">Açıklama</label>
+                            @Html.TextAreaFor(x => x.OrganizationDescription, new {
+                                                        @class = "textarea",
+                                                        id = "OrgDesc",
+                                                        placeholder = "Kısa açıklama yaz..."
+                                                        })
+                        </div>
+
+                        <div class="group">
+                            <label class="label" for="OrgPrice">Fiyat</label>
+                            @Html.TextBoxFor(x => x.OrganizationPrice, new {
+                                                        @class = "input",
+                                                        id = "OrgPrice",
+                                                        type = "number",
+                                                        step = "0.01",
+                                                        placeholder = "Örn: 49.90"
+                                                        })
+                        </div>
+
+                        <div class="group">
+                            <label class="label" for="OrgImage">Görsel Yolu</label>
+
+                            <div class="row">
+                                @Html.TextBoxFor(x => x.OrganizationImage, new {
+                                                                @class = "input",
+                                                                id = "OrgImage",
+                                                                placeholder = "Örn: /Yummy/assets/img/organization/org-1.jpg",
+                                                                autocomplete = "off"
+                                                                })
+
+                                <div class="previewBox" title="Canlı görsel">
+                                    <img id="ImgPreview" alt="preview" />
+                                    <div class="ph" id="ImgPh">IMG</div>
+                                </div>
+
+                                <button type="button" class="pick" id="PickRandom">4 Resimden Seç</button>
+                            </div>
+
+                            <!-- ✅ 4 hazır görsel (yolları burada güncelle) -->
+                            <div class="thumbs" id="Thumbs">
+                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-1.jpg">
+                                    <img src="/Yummy/assets/img/organization/org-1.jpg" alt="org-1" />
+                                </div>
+                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-2.jpg">
+                                    <img src="/Yummy/assets/img/organization/org-2.jpg" alt="org-2" />
+                                </div>
+                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-3.jpg">
+                                    <img src="/Yummy/assets/img/organization/org-3.jpg" alt="org-3" />
+                                </div>
+                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-4.jpg">
+                                    <img src="/Yummy/assets/img/organization/org-4.jpg" alt="org-4" />
+                                </div>
+                            </div>
+
+                            <div
+                                style="margin-top:.55rem; color: rgba(255,255,255,.70); font-weight:800; font-size:.92rem;">
+                                Resmi tıkla seç. Input’a yol otomatik yazılır və sağda preview yenilənir.
+                            </div>
+                        </div>
+
+                        <div class="group">
+                            <label class="label">Durum</label>
+
+                            <div style="display:none;">
+                                @Html.CheckBoxFor(x => x.OrganizationStatus, new { id = "OrgStatusCb" })
+                            </div>
+
+                            <div class="statusRow">
+                                <div class="switch" id="OrgSwitch" role="button" tabindex="0"></div>
+                                <div class="statusText" id="OrgStatusText">Pasif</div>
+                            </div>
+                        </div>
+
+                        <div class="actions">
+                            <button type="submit" class="save">✅ Güncelle</button>
+                            <a class="back" asp-action="OrganizationList" asp-controller="Organization">
+                                ↩️ Geri Dön
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: LIVE -->
+                    <div class="live">
+                        <div class="liveImg">
+                            <img id="LiveImg"
+                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'%3E%3Crect width='1200' height='600' fill='%230b1225'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23667eea' font-family='Arial' font-size='44'%3EPreview%3C/text%3E%3C/svg%3E"
+                                alt="live" />
+                            <div class="liveShade"></div>
+                        </div>
+                        <div class="liveBody">
+                            <p class="liveName" id="LiveName">Örn: Organizasyon Adı</p>
+                            <p class="liveDesc" id="LiveDesc">Açıklama burada canlı görünür.</p>
+
+                            <div class="liveBadges">
+                                <span class="pill" id="LivePrice">₼ 0.00</span>
+                                <span class="pill orange" id="LiveStatus">Pasif</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const $ = (id) => document.getElementById(id);
+
+            const nameI = $("OrgName");
+            const descI = $("OrgDesc");
+            const priceI = $("OrgPrice");
+            const imgI = $("OrgImage");
+            const cb = $("OrgStatusCb");
+
+            const imgPrev = $("ImgPreview");
+            const imgPh = $("ImgPh");
+            const liveImg = $("LiveImg");
+            const liveName = $("LiveName");
+            const liveDesc = $("LiveDesc");
+            const livePrice = $("LivePrice");
+            const liveStatus = $("LiveStatus");
+
+            const sw = $("OrgSwitch");
+            const st = $("OrgStatusText");
+
+            const thumbs = $("Thumbs");
+            const pickBtn = $("PickRandom");
+
+            const PRESET = [
+                "/Yummy/assets/img/organization/org-1.jpg",
+                "/Yummy/assets/img/organization/org-2.jpg",
+                "/Yummy/assets/img/organization/org-3.jpg",
+                "/Yummy/assets/img/organization/org-4.jpg"
+            ];
+
+            function setPreview(src) {
+                const v = (src || "").trim();
+                if (!v) {
+                    imgPrev.style.display = "none";
+                    imgPh.style.display = "block";
+                    liveImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'%3E%3Crect width='1200' height='600' fill='%230b1225'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23667eea' font-family='Arial' font-size='44'%3EPreview%3C/text%3E%3C/svg%3E";
+                    return;
+                }
+
+                imgPrev.src = v;
+                liveImg.src = v;
+
+                imgPrev.onload = () => { imgPrev.style.display = "block"; imgPh.style.display = "none"; };
+                imgPrev.onerror = () => { imgPrev.style.display = "none"; imgPh.style.display = "block"; };
+
+                liveImg.onerror = () => {
+                    liveImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'%3E%3Crect width='1200' height='600' fill='%230b1225'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23ef4444' font-family='Arial' font-size='44'%3EImage%20Not%20Found%3C/text%3E%3C/svg%3E";
+                };
+            }
+
+            function setStatus(on) {
+                if (on) {
+                    sw.classList.add("on");
+                    st.classList.add("on");
+                    st.textContent = "Aktif";
+                    liveStatus.className = "pill green";
+                    liveStatus.textContent = "Aktif";
+                } else {
+                    sw.classList.remove("on");
+                    st.classList.remove("on");
+                    st.textContent = "Pasif";
+                    liveStatus.className = "pill orange";
+                    liveStatus.textContent = "Pasif";
+                }
+                cb.checked = !!on;
+            }
+
+            function money(v) {
+                const n = Number(v);
+                if (isNaN(n)) return "₼ 0.00";
+                return "₼ " + n.toFixed(2);
+            }
+
+            // init from model values
+            liveName.textContent = (nameI.value || "").trim() || "Örn: Organizasyon Adı";
+            liveDesc.textContent = (descI.value || "").trim() || "Açıklama burada canlı görünür.";
+            livePrice.textContent = money(priceI.value);
+            setPreview(imgI.value);
+            setStatus(cb.checked);
+
+            // events
+            nameI.addEventListener("input", e => {
+                liveName.textContent = (e.target.value || "").trim() || "Örn: Organizasyon Adı";
+            });
+            descI.addEventListener("input", e => {
+                liveDesc.textContent = (e.target.value || "").trim() || "Açıklama burada canlı görünür.";
+            });
+            priceI.addEventListener("input", e => {
+                livePrice.textContent = money(e.target.value);
+            });
+            imgI.addEventListener("input", e => {
+                setPreview(e.target.value);
+            });
+
+            // thumbs click
+            thumbs.addEventListener("click", (e) => {
+                const t = e.target.closest(".thumb");
+                if (!t) return;
+                const src = t.getAttribute("data-src");
+                imgI.value = src;
+                setPreview(src);
+            });
+
+            // random pick
+            pickBtn.addEventListener("click", () => {
+                const src = PRESET[Math.floor(Math.random() * PRESET.length)];
+                imgI.value = src;
+                setPreview(src);
+            });
+
+            // switch
+            sw.addEventListener("click", () => setStatus(!cb.checked));
+            sw.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setStatus(!cb.checked);
+                }
+            });
+        })();
+    </script>
+}

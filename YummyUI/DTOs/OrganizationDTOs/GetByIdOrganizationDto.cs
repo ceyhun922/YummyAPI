@@ -1,9 +1,9 @@
-namespace YummyAPI.DTOs.OrganizationDTO
+namespace YummyUI.DTOs.OrganizationDTOs
 {
-    public class UpdateOrganizationDto
+    public class GetByIdOrganizationDto
     {
         public int OrganizationId { get; set; }
-        public string OrganizationName { get; set; }=string.Empty;
+        public string OrganizationName { get; set; } = string.Empty;
         public string? OrganizationDescription { get; set; }
         public double OrganizationPrice { get; set; }
         public string? OrganizationImage { get; set; }

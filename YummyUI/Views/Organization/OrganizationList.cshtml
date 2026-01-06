@@ -1,0 +1,435 @@
+@using YummyUI.DTOs.OrganizationDTOs
+@model List<ResultOrganizationDto>
+
+@{
+  Layout = "_AdminLayout";
+}
+
+<style>
+  /* ===== ORG PAGE (AI PREMIUM) ===== */
+  .orgp, .orgp *{ box-sizing:border-box; }
+
+  .orgp{
+    min-height:100%;
+    padding: 1.6rem 2rem;
+    position:relative;
+    overflow:hidden;
+
+    background:
+      radial-gradient(1200px 600px at 70% 80%, rgba(56,189,248,.18), transparent 60%),
+      radial-gradient(900px 500px at 15% 20%, rgba(139,92,246,.22), transparent 60%),
+      radial-gradient(800px 420px at 90% 10%, rgba(99,102,241,.18), transparent 55%),
+      linear-gradient(135deg,#070b1f 0%,#0a1030 40%,#050818 100%);
+  }
+
+  .orgp .orb{
+    position:absolute; border-radius:999px;
+    filter:blur(100px); opacity:.55; pointer-events:none;
+    animation: orgFloat 14s ease-in-out infinite;
+  }
+  .orgp .orb.a{ width:520px;height:520px; left:-180px; top:-180px; background:rgba(139,92,246,.42); }
+  .orgp .orb.b{ width:460px;height:460px; right:-190px; top:110px; background:rgba(56,189,248,.36); animation-delay:3s; }
+  .orgp .orb.c{ width:560px;height:560px; left:38%; bottom:-260px; background:rgba(99,102,241,.30); animation-delay:6s; }
+
+  @@keyframes orgFloat{
+    0%,100%{ transform:translate(0,0) scale(1); }
+    50%{ transform:translate(18px,-14px) scale(1.04); }
+  }
+
+  .orgp .grid{
+    position:absolute; inset:0; pointer-events:none; opacity:.14;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  .orgp .wrap{
+    position:relative; z-index:2;
+    max-width: 1500px;
+    margin:0 auto;
+    display:flex; flex-direction:column; gap:1.2rem;
+  }
+
+  /* ===== HEADER ===== */
+  .orgp .header{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:1rem;
+  }
+  .orgp .titleBox{ display:flex; align-items:center; gap:.9rem; }
+  .orgp .badge{
+    width:56px;height:56px;border-radius:18px;
+    display:grid; place-items:center;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow: 0 18px 55px rgba(102,126,234,.45), 0 0 45px rgba(118,75,162,.25);
+    color:#fff;
+  }
+  .orgp .badge i{ font-size:26px; }
+  .orgp .h1{
+    margin:0;
+    font-size:2rem;
+    font-weight:950;
+    background:linear-gradient(135deg,#fff,#a8b9ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .orgp .sub{
+    margin:.2rem 0 0 0;
+    color: rgba(255,255,255,.70);
+    font-weight:800;
+    font-size:.95rem;
+  }
+
+  .orgp .addBtn{
+    display:inline-flex; align-items:center; gap:.6rem;
+    padding: 1rem 1.25rem;
+    border-radius: 16px;
+    font-weight: 950;
+    color:#fff; text-decoration:none;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow: 0 16px 45px rgba(102,126,234,.55);
+    transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+    white-space:nowrap;
+  }
+  .orgp .addBtn:hover{ transform: translateY(-2px); box-shadow: 0 24px 75px rgba(102,126,234,.70); }
+  .orgp .addBtn:active{ transform: translateY(0); opacity:.96; }
+
+  /* ===== TOP BAR (count / filter) ===== */
+  .orgp .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:1rem;
+    padding: .95rem 1.05rem;
+    border-radius: 22px;
+    background: rgba(15,23,42,.55);
+    border:1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 30px 80px rgba(0,0,0,.35);
+  }
+  .orgp .count{
+    padding:.45rem .8rem;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.88);
+    font-weight: 900;
+    font-size:.85rem;
+    white-space:nowrap;
+  }
+  .orgp .search{
+    flex:1; min-width:260px;
+    padding:.85rem 1rem;
+    border-radius: 16px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.92);
+    font-weight:800;
+    outline:none;
+  }
+  .orgp .search::placeholder{ color: rgba(255,255,255,.55); }
+
+  /* ===== GRID ===== */
+  .orgp .gridCards{
+    display:grid;
+    grid-template-columns: repeat(12, minmax(0,1fr));
+    gap: 1.1rem;
+  }
+
+  .orgp .card{
+    grid-column: span 4;
+    position:relative;
+    border-radius: 26px;
+    overflow:hidden;
+
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 26px 80px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+    backdrop-filter: blur(14px);
+
+    transition: transform .55s cubic-bezier(.16,1,.3,1),
+                box-shadow .55s cubic-bezier(.16,1,.3,1),
+                border-color .55s ease,
+                background .55s ease;
+  }
+  .orgp .card::after{
+    content:"";
+    position:absolute; inset:-2px;
+    border-radius: 28px;
+    pointer-events:none;
+    opacity:0;
+    transition: opacity .55s ease;
+    background:
+      radial-gradient(600px 220px at 20% 0%, rgba(139,92,246,.22), transparent 60%),
+      radial-gradient(600px 220px at 80% 0%, rgba(56,189,248,.18), transparent 55%);
+  }
+  .orgp .card:hover{
+    transform: translateY(-7px);
+    background: rgba(255,255,255,.08);
+    border-color: rgba(102,126,234,.35);
+    box-shadow: 0 38px 120px rgba(0,0,0,.62);
+  }
+  .orgp .card:hover::after{ opacity:1; }
+
+  /* IMAGE */
+  .orgp .media{
+    height: 220px;
+    position:relative;
+    overflow:hidden;
+    background: rgba(0,0,0,.25);
+  }
+  .orgp .media img{
+    width:100%; height:100%;
+    object-fit:cover; display:block;
+    transform: scale(1.03);
+    filter: saturate(1.05) contrast(1.02);
+    transition: transform .8s cubic-bezier(.16,1,.3,1), filter .8s ease;
+  }
+  .orgp .card:hover .media img{
+    transform: scale(1.08);
+    filter: saturate(1.08) contrast(1.05);
+  }
+  .orgp .shade{
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, rgba(0,0,0,.10) 0%, rgba(0,0,0,.55) 95%);
+    pointer-events:none;
+  }
+
+  /* BADGES OVER IMAGE */
+  .orgp .badges{
+    position:absolute;
+    left:14px; right:14px; top:14px;
+    display:flex; justify-content:space-between; gap:.6rem;
+    z-index:2;
+  }
+  .orgp .pill{
+    display:inline-flex; align-items:center; gap:.45rem;
+    padding:.55rem .85rem;
+    border-radius: 999px;
+    border:1px solid rgba(255,255,255,.16);
+    background: rgba(15,23,42,.55);
+    color: rgba(255,255,255,.92);
+    font-weight: 950;
+    font-size:.85rem;
+    box-shadow: 0 18px 45px rgba(0,0,0,.28);
+    white-space:nowrap;
+  }
+  .orgp .price{
+    background: linear-gradient(135deg, rgba(34,197,94,.25), rgba(16,185,129,.15));
+    border-color: rgba(34,197,94,.25);
+  }
+  .orgp .status{
+    background: rgba(245,158,11,.14);
+    border-color: rgba(245,158,11,.22);
+  }
+  .orgp .status.active{
+    background: rgba(34,197,94,.14);
+    border-color: rgba(34,197,94,.22);
+  }
+  .orgp .dot{
+    width:10px;height:10px;border-radius:999px;
+    background: rgba(245,158,11,.95);
+    box-shadow: 0 0 18px rgba(245,158,11,.55);
+  }
+  .orgp .status.active .dot{
+    background: rgba(34,197,94,.95);
+    box-shadow: 0 0 18px rgba(34,197,94,.55);
+  }
+
+  /* BODY */
+  .orgp .body{
+    padding: 1.05rem 1.1rem 1.15rem;
+  }
+  .orgp .name{
+    margin:0;
+    font-size: 1.2rem;
+    font-weight: 950;
+    color:#fff;
+    letter-spacing:.2px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+  }
+  .orgp .desc{
+    margin:.55rem 0 0 0;
+    color: rgba(255,255,255,.74);
+    line-height:1.55;
+    font-weight:700;
+    display:-webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow:hidden;
+  }
+
+  /* ACTIONS */
+  .orgp .actions{
+    margin-top: .95rem;
+    display:flex; gap:.6rem; flex-wrap:wrap;
+  }
+  .orgp .btnx{
+    flex:1;
+    min-width: 140px;
+    border:none;
+    padding:.85rem 1.05rem;
+    border-radius: 16px;
+    font-weight: 950;
+    text-decoration:none;
+    display:inline-flex; align-items:center; justify-content:center; gap:.55rem;
+    transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+  }
+  .orgp .btnx:hover{ transform: translateY(-2px); box-shadow: 0 18px 45px rgba(0,0,0,.28); }
+  .orgp .btnx:active{ transform: translateY(0); opacity:.96; }
+
+  .orgp .del{ color:#fff; background: linear-gradient(135deg,#ef4444,#dc2626); }
+  .orgp .edit{ color:#111; background: linear-gradient(135deg,#fbbf24,#f59e0b); }
+
+  /* no image fallback */
+  .orgp .noimg{
+    width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    color: rgba(255,255,255,.90);
+    font-weight: 950;
+    gap:.35rem;
+  }
+  .orgp .noimg small{ color: rgba(255,255,255,.65); font-weight:800; }
+
+  /* responsive */
+  @@media (max-width: 1100px){ .orgp .card{ grid-column: span 6; } }
+  @@media (max-width: 720px){
+    .orgp{ padding: 1.1rem; }
+    .orgp .card{ grid-column: span 12; }
+    .orgp .h1{ font-size: 1.6rem; }
+    .orgp .topbar{ flex-direction:column; align-items:stretch; }
+    .orgp .search{ min-width:0; width:100%; }
+  }
+</style>
+
+<div class="orgp">
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+  <div class="grid"></div>
+
+  <div class="wrap">
+    <div class="header">
+      <div>
+        <div class="titleBox">
+          <div class="badge"><i class="bi bi-calendar2-event"></i></div>
+          <div>
+            <div class="h1">Organizasyonlar</div>
+            <div class="sub">Resim • fiyat • durum • yönetim</div>
+          </div>
+        </div>
+      </div>
+
+      <a asp-action="CreateOrganization" asp-controller="Organization" class="addBtn">
+        <i class="bi bi-plus-lg"></i> Yeni Organizasyon
+      </a>
+    </div>
+
+    <div class="topbar">
+      <span class="count">Toplam: @(Model?.Count ?? 0)</span>
+      <input id="OrgSearch" class="search" placeholder="Ara: ad / açıklama..." autocomplete="off" />
+      <span class="count"><i class="bi bi-lightning-charge"></i> Premium Panel</span>
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+      <div class="gridCards" id="OrgGrid">
+        @foreach (var item in Model)
+        {
+          var img = (item.OrganizationImage ?? "").Trim();
+          var name = item.OrganizationName ?? "";
+          var desc = item.OrganizationDescription ?? "";
+          var price = item.OrganizationPrice;
+          var active = item.OrganizationStatus;
+
+          <div class="card org-item" data-name="@name.ToLower()" data-desc="@desc.ToLower()">
+            <div class="media">
+              @if (!string.IsNullOrWhiteSpace(img))
+              {
+                <img src="@img"
+                     alt="@name"
+                     loading="lazy"
+                     onerror="this.onerror=null;this.style.display='none';this.parentElement.querySelector('.noimg').style.display='flex';" />
+                <div class="noimg" style="display:none;">
+                  <div style="font-size:2rem;">🖼️</div>
+                  Görsel Yok
+                  <small>Resim yüklenmemiş</small>
+                </div>
+              }
+              else
+              {
+                <div class="noimg">
+                  <div style="font-size:2rem;">🖼️</div>
+                  Görsel Yok
+                  <small>Resim yüklenmemiş</small>
+                </div>
+              }
+
+              <div class="shade"></div>
+
+              <div class="badges">
+                <span class="pill price">
+                  <i class="bi bi-cash-coin"></i> @price ₼
+                </span>
+
+                <span class="pill status @(active ? "active" : "")">
+                  <span class="dot"></span>
+                  @(active ? "Aktif" : "Pasif")
+                </span>
+              </div>
+            </div>
+
+            <div class="body">
+              <p class="name">@name</p>
+              <p class="desc">@desc</p>
+
+              <div class="actions">
+                <a asp-action="DeleteOrganization"
+                   asp-controller="Organization"
+                   asp-route-id="@item.OrganizationId"
+                   class="btnx del">
+                  <i class="bi bi-trash3"></i> Sil
+                </a>
+
+                <a asp-action="UpdateOrganization"
+                   asp-controller="Organization"
+                   asp-route-id="@item.OrganizationId"
+                   class="btnx edit">
+                  <i class="bi bi-pencil-square"></i> Güncelle
+                </a>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+    else
+    {
+      <div style="padding: 1.25rem; color: rgba(255,255,255,.78); font-weight:900;">
+        Henüz organizasyon eklenmemiş.
+      </div>
+    }
+  </div>
+</div>
+
+@section Scripts{
+<script>
+  (function(){
+    const input = document.getElementById("OrgSearch");
+    const grid  = document.getElementById("OrgGrid");
+    if(!input || !grid) return;
+
+    input.addEventListener("input", function(){
+      const q = (this.value || "").trim().toLowerCase();
+      const cards = grid.querySelectorAll(".org-item");
+      cards.forEach(c=>{
+        const n = c.getAttribute("data-name") || "";
+        const d = c.getAttribute("data-desc") || "";
+        const ok = !q || n.includes(q) || d.includes(q);
+        c.style.display = ok ? "" : "none";
+      });
+    });
+  })();
+</script>
+}
