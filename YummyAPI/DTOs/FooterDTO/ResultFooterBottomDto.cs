@@ -1,18 +1,15 @@
-using System.ComponentModel.DataAnnotations;
-
-namespace YummyAPI.Entities
+namespace YummyAPI.DTOs.FooterDTO
 {
-    public class Footer
+    public class ResultFooterBottomDto
     {
-        [Key]
-        public int FooterId { get; set; }
+         public int FooterId { get; set; }
         public string? MapLocation { get; set; }
         public string? Address { get; set; }
         public string? CallUs { get; set; }
         public string? EmailUs { get; set; }
         public string? OpeningHours { get; set; }
+         public string? XUrl { get; set; }
         public string? FaceookUrl { get; set; }
-        public string? XUrl { get; set; }
         public string? InstagramUrl { get; set; }
         public string? LinkedinUrl { get; set; }
         public DateTime UpdateDate {get;set;} =DateTime.Now;

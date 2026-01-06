@@ -1,46 +1,307 @@
+@{
+  // Aktif menü için
+  var currentController = (ViewContext.RouteData.Values["controller"]?.ToString() ?? "").ToLowerInvariant();
+  var currentAction = (ViewContext.RouteData.Values["action"]?.ToString() ?? "").ToLowerInvariant();
+
+  string IsActive(string c, string a = "")
+  {
+    c = (c ?? "").ToLowerInvariant();
+    a = (a ?? "").ToLowerInvariant();
+    var okC = currentController == c;
+    var okA = string.IsNullOrWhiteSpace(a) || currentAction == a;
+    return (okC && okA) ? "is-active" : "";
+  }
+}
+
+<style>
+  /* ===== Premium Sidebar ===== */
+  #sidebar-wrapper{
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(900px 600px at 10% 0%, rgba(139,92,246,.22), transparent 60%),
+      radial-gradient(900px 600px at 100% 30%, rgba(56,189,248,.18), transparent 55%),
+      linear-gradient(180deg, #0b102a 0%, #0a0f25 60%, #070b1f 100%);
+    border-right: 1px solid rgba(255,255,255,.08);
+  }
+
+  #sidebar-wrapper::before{
+    content:"";
+    position:absolute; inset:-2px;
+    pointer-events:none;
+    opacity:.18;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+
+  #sidebar-wrapper .sidebar-brand{
+    position:relative;
+    z-index:2;
+    padding: 18px 16px 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    display:flex;
+    align-items:center;
+    gap: 12px;
+  }
+
+  #sidebar-wrapper .sidebar-brand a{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    text-decoration:none;
+    width:100%;
+  }
+
+  #sidebar-wrapper .sidebar-brand img.header-logo{
+    width:40px;
+    height:40px;
+    border-radius:14px;
+    object-fit:cover;
+    border:1px solid rgba(255,255,255,.12);
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  #sidebar-wrapper .sidebar-brand .logo-name{
+    font-weight: 950;
+    letter-spacing:.3px;
+    font-size: 1.05rem;
+    background: linear-gradient(135deg,#ffffff,#a8b9ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+
+  /* menu */
+  #sidebar-wrapper .sidebar-menu{
+    position:relative;
+    z-index:2;
+    padding: 12px 10px 16px 10px;
+    margin:0;
+    list-style:none;
+  }
+
+  .menu-section{
+    margin: 14px 10px 8px 10px;
+    padding: 0 8px;
+    color: rgba(255,255,255,.50);
+    font-weight: 900;
+    font-size: .72rem;
+    letter-spacing: .18rem;
+    text-transform: uppercase;
+    display:flex;
+    align-items:center;
+    gap: 8px;
+  }
+
+  .menu-section::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background: rgba(255,255,255,.08);
+  }
+
+  #sidebar-wrapper .sidebar-menu > li{
+    margin: 6px 6px;
+  }
+
+  #sidebar-wrapper .sidebar-menu .nav-link{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    padding: 12px 12px;
+    border-radius: 16px;
+    text-decoration:none;
+    color: rgba(255,255,255,.78);
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(255,255,255,.02);
+    transition: transform .15s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
+    overflow:hidden;
+  }
+
+  #sidebar-wrapper .sidebar-menu .nav-link i[data-feather]{
+    width:18px;
+    height:18px;
+    opacity:.9;
+  }
+
+  #sidebar-wrapper .sidebar-menu .nav-link span{
+    font-weight: 900;
+    letter-spacing:.1px;
+    font-size: .93rem;
+  }
+
+  /* hover glow */
+  #sidebar-wrapper .sidebar-menu .nav-link::before{
+    content:"";
+    position:absolute; inset:0;
+    opacity:0;
+    transition: opacity .15s ease;
+    background: radial-gradient(300px 120px at 20% 0%, rgba(139,92,246,.22), transparent 60%);
+    pointer-events:none;
+  }
+
+  #sidebar-wrapper .sidebar-menu .nav-link:hover{
+    transform: translateX(4px);
+    background: rgba(102,126,234,.10);
+    border-color: rgba(102,126,234,.35);
+    box-shadow: 0 18px 40px rgba(0,0,0,.35);
+  }
+  #sidebar-wrapper .sidebar-menu .nav-link:hover::before{ opacity:1; }
+
+  /* active */
+  #sidebar-wrapper .sidebar-menu .nav-link.is-active{
+    color:#fff;
+    background: linear-gradient(135deg, rgba(102,126,234,.35), rgba(118,75,162,.22));
+    border-color: rgba(102,126,234,.55);
+    box-shadow: 0 20px 55px rgba(102,126,234,.18);
+  }
+  #sidebar-wrapper .sidebar-menu .nav-link.is-active::after{
+    content:"";
+    position:absolute;
+    left:0; top:10px; bottom:10px;
+    width:4px;
+    border-radius: 999px;
+    background: linear-gradient(180deg,#667eea,#764ba2);
+  }
+
+  /* special: Siteye Git */
+  .nav-link.go-site{
+    background: linear-gradient(135deg, rgba(34,197,94,.18), rgba(59,130,246,.10)) !important;
+    border-color: rgba(34,197,94,.25) !important;
+  }
+  .nav-link.go-site:hover{
+    background: linear-gradient(135deg, rgba(34,197,94,.28), rgba(59,130,246,.14)) !important;
+    border-color: rgba(34,197,94,.40) !important;
+  }
+
+  /* logout */
+  .nav-link.logout{
+    background: rgba(239,68,68,.10) !important;
+    border-color: rgba(239,68,68,.22) !important;
+  }
+  .nav-link.logout:hover{
+    background: rgba(239,68,68,.18) !important;
+    border-color: rgba(239,68,68,.40) !important;
+  }
+</style>
 
 <aside id="sidebar-wrapper">
-          <div class="sidebar-brand">
-            <a href="index.html"> <img alt="image" src="~/Admin/assets/img/logo.png" class="header-logo" /> <span
-                class="logo-name">Admin</span>
-            </a>
-          </div>
-          <ul class="sidebar-menu">
-             <li class="dropdown">
-              <a asp-action="Index" asp-controller="Home" class="nav-link"><i data-feather="monitor"></i><span>Siteye Git</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="Index" asp-controller="Admin" class="nav-link"><i data-feather="airplay"></i><span>Dashboard</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="CategoryList" asp-controller="Category" class="nav-link"><i data-feather="list"></i><span>Kategoriler</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="ProductList" asp-controller="Product" class="nav-link"><i data-feather="box"></i><span>Ürünler</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="FeatureArea" asp-controller="Feature" class="nav-link"><i data-feather="box"></i><span>Öne Çıkan Alan</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="AboutArea" asp-controller="About" class="nav-link"><i data-feather="edit"></i><span>Haqqımızda</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="ServiceList" asp-controller="Service" class="nav-link"><i data-feather="edit"></i><span>Neden Yummy</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="TestimonialList" asp-controller="Testimonial" class="nav-link"><i data-feather="edit"></i><span>Müşteriler</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="ChefList" asp-controller="Chef" class="nav-link"><i data-feather="users"></i><span>Şeflerimiz</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="FooterArea" asp-controller="Footer" class="nav-link"><i data-feather="users"></i><span>İletişim</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="FooterBottomArea" asp-controller="FooterBottom" class="nav-link"><i data-feather="users"></i><span>Footer</span></a>
-            </li>
-            <li class="dropdown">
-              <a asp-action="GalleryList" asp-controller="Gallery" class="nav-link"><i data-feather="users"></i><span>Galeri</span></a>
-            </li>
-          </ul>
-        </aside>
+  <div class="sidebar-brand">
+    <a asp-action="Index" asp-controller="Admin">
+      <img alt="image" src="~/Admin/assets/img/logo.png" class="header-logo" />
+      <span class="logo-name">Yummy Admin</span>
+    </a>
+  </div>
+
+  <ul class="sidebar-menu">
+
+    <div class="menu-section">Quick</div>
+    <li class="dropdown">
+      <a asp-action="Index" asp-controller="Home"
+         class="nav-link go-site @IsActive("Home","Index")">
+        <i data-feather="monitor"></i><span>Siteye Git</span>
+      </a>
+    </li>
+
+    <div class="menu-section">Genel</div>
+    <li class="dropdown">
+      <a asp-action="Index" asp-controller="Admin"
+         class="nav-link @IsActive("Admin","Index")">
+        <i data-feather="airplay"></i><span>Dashboard</span>
+      </a>
+    </li>
+
+    <div class="menu-section">Menü Yönetimi</div>
+    <li class="dropdown">
+      <a asp-action="CategoryList" asp-controller="Category"
+         class="nav-link @IsActive("Category","CategoryList")">
+        <i data-feather="list"></i><span>Kategoriler</span>
+      </a>
+    </li>
+    <li class="dropdown">
+      <a asp-action="ProductList" asp-controller="Product"
+         class="nav-link @IsActive("Product","ProductList")">
+        <i data-feather="box"></i><span>Ürünler</span>
+      </a>
+    </li>
+
+    <div class="menu-section">Site İçeriği</div>
+    <li class="dropdown">
+      <a asp-action="FeatureArea" asp-controller="Feature"
+         class="nav-link @IsActive("Feature","FeatureArea")">
+        <i data-feather="star"></i><span>Öne Çıkan Alan</span>
+      </a>
+    </li>
+    <li class="dropdown">
+      <a asp-action="AboutArea" asp-controller="About"
+         class="nav-link @IsActive("About","AboutArea")">
+        <i data-feather="edit"></i><span>Haqqımızda</span>
+      </a>
+    </li>
+    <li class="dropdown">
+      <a asp-action="ServiceList" asp-controller="Service"
+         class="nav-link @IsActive("Service","ServiceList")">
+        <i data-feather="award"></i><span>Neden Yummy</span>
+      </a>
+    </li>
+    <li class="dropdown">
+      <a asp-action="TestimonialList" asp-controller="Testimonial"
+         class="nav-link @IsActive("Testimonial","TestimonialList")">
+        <i data-feather="message-square"></i><span>Müşteriler</span>
+      </a>
+    </li>
+    <li class="dropdown">
+      <a asp-action="ChefList" asp-controller="Chef"
+         class="nav-link @IsActive("Chef","ChefList")">
+        <i data-feather="users"></i><span>Şeflerimiz</span>
+      </a>
+    </li>
+    <li class="dropdown">
+      <a asp-action="GalleryList" asp-controller="Gallery"
+         class="nav-link @IsActive("Gallery","GalleryList")">
+        <i data-feather="image"></i><span>Galeri</span>
+      </a>
+    </li>
+    <li class="dropdown">
+      <a asp-action="OrganizationList" asp-controller="Organization"
+         class="nav-link @IsActive("Organization","OrganizationList")">
+        <i data-feather="calendar"></i><span>Organisayonlar</span>
+      </a>
+    </li>
+
+    <div class="menu-section">İletişim</div>
+    <li class="dropdown">
+      <a asp-action="FooterArea" asp-controller="Footer"
+         class="nav-link @IsActive("Footer","FooterArea")">
+        <i data-feather="phone"></i><span>İletişim</span>
+      </a>
+    </li>
+    <li class="dropdown">
+      <a asp-action="FooterBottomArea" asp-controller="FooterBottom"
+         class="nav-link @IsActive("FooterBottom","FooterBottomArea")">
+        <i data-feather="layout"></i><span>Footer</span>
+      </a>
+    </li>
+    <li class="dropdown">
+      <a asp-action="MessageList" asp-controller="Message"
+         class="nav-link @IsActive("Message","MessageList")">
+        <i data-feather="inbox"></i><span>Messajlar</span>
+      </a>
+    </li>
+    <li class="dropdown">
+      <a asp-action="RezervationList" asp-controller="Rezervation"
+         class="nav-link @IsActive("Rezervation","RezervationList")">
+        <i data-feather="bookmark"></i><span>Rezervasyonlar</span>
+      </a>
+    </li>
+
+    <div class="menu-section">Hesap</div>
+    <li class="dropdown">
+      <a asp-action="Logout" asp-controller="Auth" class="nav-link logout">
+        <i data-feather="log-out"></i><span>Çıkış Yap</span>
+      </a>
+    </li>
+  </ul>
+</aside>

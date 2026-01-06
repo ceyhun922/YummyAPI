@@ -1,15 +1,12 @@
 @using YummyUI.DTOs.FooterDTOs
-@model List<ResultFooterBottomDto>
+@model ResultFooterBottomDto
+
 
 @{
     Layout = "_AdminLayout";
 
-    // ✅ Tek kayıt mantığı: liste boş olabilir
-    var footer = Model?.FirstOrDefault();
+    var footer = Model;
     var hasFooter = footer != null;
-
-    // ✅ Address tek string geliyor: "Nizami küçəsi 203B,Bakı, Azərbaycan"
-    // 2 satıra böl: 1) Nizami küçəsi 203B  2) Bakı, Azərbaycan
     var addressRaw = footer?.Address ?? "";
     var addressParts = addressRaw
         .Split(',', StringSplitOptions.RemoveEmptyEntries)
@@ -325,33 +322,18 @@
       </div>
 
       <div class="header-actions">
-        @if (hasFooter)
-        {
-          <a asp-action="UpdateFooter" asp-controller="Footer" asp-route-id="@footer!.FooterId" class="btn btn-warning">✏️ Düzenle</a>
-          <a asp-action="DeleteFooter" asp-controller="Footer" asp-route-id="@footer!.FooterId" class="btn btn-danger">🗑️ Sil</a>
-        }
-        else
-        {
-          <a asp-action="CreateFooter" asp-controller="Footer" class="btn btn-primary">➕ Yeni Footer Oluştur</a>
-        }
+       <p>Footer Alanı</p>
       </div>
     </div>
 
     <div class="panel">
       <div class="panel-head">
         <p class="sub">Web sitede görünen footer bilgileri</p>
-        <span class="muted">Son güncelleme: —</span>
+        <span class="muted">Son güncelleme: @footer?.UpdateDate</span>
       </div>
 
       @if (hasFooter)
       {
-        <div class="ai-bar">
-          <div class="ai-pill">!</div>
-          <div class="ai-text">
-            <b>Footer alanı var.</b> Yenisi oluşturmak için mevcutu siliniz.
-          </div>
-        </div>
-
         <div class="content">
           <div class="grid">
 
@@ -420,16 +402,7 @@
           </div>
         </div>
       }
-      else
-      {
-        <div class="empty">
-          <h2>Footer alanı yok</h2>
-          <p>Yeni bir footer alanı oluşturmak için butona tıkla.</p>
-          <a asp-action="CreateFooter" asp-controller="Footer" class="btn btn-primary">
-            ➕ Yeni Footer Oluştur
-          </a>
-        </div>
-      }
+     
     </div>
   </div>
 </div>

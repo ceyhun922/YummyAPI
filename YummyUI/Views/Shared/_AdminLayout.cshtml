@@ -2,23 +2,27 @@
 <html lang="en">
 
 
-<!-- blank.html  21 Nov 2019 03:54:41 GMT -->
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
   <title>Yummy ADMİN</title>
+
   <!-- General CSS Files -->
   <link rel="stylesheet" href="~/Admin/assets/css/app.min.css">
-  <!-- Template CSS -->
   <link rel="stylesheet" href="~/Admin/assets/css/style.css">
   <link rel="stylesheet" href="~/Admin/assets/css/components.css">
-  <!-- Custom style CSS -->
   <link rel="stylesheet" href="~/Admin/assets/css/custom.css">
+
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
   <link rel='shortcut icon' type='image/x-icon' href='~/Admin/assets/img/favicon.ico' />
-  @RenderSection("Styles",false)
+  @RenderSection("Styles", false)
 </head>
 
-<body>
+
+<body class="ai-admin">
+
   <div class="loader"></div>
   <div id="app">
     <div class="main-wrapper main-wrapper-1">
@@ -287,6 +291,7 @@
     </div>
   </div>
   <!-- General JS Scripts -->
+
   <script src="~/Admin/assets/js/app.min.js"></script>
   <!-- JS Libraies -->
   <!-- Page Specific JS File -->
@@ -296,6 +301,8 @@
   <script src="~/Admin/assets/js/custom.js"></script>
 
   @RenderSection("Scripts",false);
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 
 

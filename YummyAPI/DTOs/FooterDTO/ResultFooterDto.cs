@@ -8,9 +8,5 @@ namespace YummyAPI.DTOs.FooterDTO
         public string? CallUs { get; set; }
         public string? EmailUs { get; set; }
         public string? OpeningHours { get; set; }
-         public string? XUrl { get; set; }
-        public string? FaceookUrl { get; set; }
-        public string? InstagramUrl { get; set; }
-        public string? LinkedinUrl { get; set; }
     }
 }

@@ -1,3 +1,5 @@
+
+
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using YummyAPI.Context;
@@ -70,6 +72,14 @@ namespace YummyAPI.Controllers
 
             var dto = _mapper.Map<GetByIdFooterDto>(value);
             return Ok(dto);
+        }
+
+        [HttpGet("FooterBottomArea")]
+        public IActionResult FooterBottomArea()
+        {
+            var value =_context.Footers?.FirstOrDefault();
+            var mapper =_mapper.Map<ResultFooterBottomDto>(value);
+            return Ok(mapper);
         }
 
     }

@@ -8,6 +8,8 @@ namespace YummyUI.DTOs.FooterDTOs
         public string? CallUs { get; set; }
         public string? EmailUs { get; set; }
         public string? OpeningHours { get; set; }
+        public DateTime UpdateDate { get; set; } = DateTime.Now;
+
 
     }
 }

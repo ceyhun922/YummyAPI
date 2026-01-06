@@ -16,12 +16,11 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> FooterBottomArea()
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:5289/api/Footers");
+            var response = await client.GetAsync("http://localhost:5289/api/Footers/FooterBottomArea");
             if (response.IsSuccessStatusCode)
             {
                 var jsonData = await response.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResultFooterBottomDto>>(jsonData);
-                values?.FirstOrDefault();
+                var values = JsonConvert.DeserializeObject<ResultFooterBottomDto>(jsonData);
                 return View(values);
             }
             return View();

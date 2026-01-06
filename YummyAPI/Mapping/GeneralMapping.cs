@@ -76,6 +76,7 @@ namespace YummyAPI.Mapping
             CreateMap<Footer, CreateFooterDto>().ReverseMap();
             CreateMap<Footer, UpdateFooterDto>().ReverseMap();
             CreateMap<Footer, GetByIdFooterDto>().ReverseMap();
+            CreateMap<Footer, ResultFooterBottomDto>().ReverseMap();
 
 
             //contact

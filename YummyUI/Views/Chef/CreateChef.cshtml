@@ -1,54 +1,226 @@
 @using YummyUI.DTOs.ChefDTOs
 @model CreateChefDto
 @{
-    Layout="_AdminLayout";
+    Layout = "_AdminLayout";
 }
 
-<div class="section">
-    <div class="section-body">
-        <div class="row">
-            <div class="col-12 md-12 lg-col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Şef Ekle</h4>
-                    </div>
-                    <div class="card-body">
-                        @using(Html.BeginForm("CreateChef","Chef",FormMethod.Post,new{@class="w-25"}))
-                        {
-                            <div class="form-group">
-                                @Html.TextBoxFor(c=>c.ChefName,new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(c=>c.ChefTitle,new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(c=>c.ChefDescription,new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(c=>c.ChefImageUrl,new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(c=>c.ChefFacebookUrl,new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(c=>c.ChefInstagramUrl,new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(c=>c.ChefLinkedinUrl,new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(c=>c.ChefXUrl,new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.CheckBoxFor(c=>c.ChefStatus)
-                            </div>
-                            <div class="form-group">
-                                <button type="submit">Ekle</button>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
+<style>
+/* ===== AI PREMIUM FORM ===== */
+.ai-form,
+.ai-form *{ box-sizing:border-box; }
+
+.ai-form{
+  min-height:100%;
+  padding:2rem;
+  background:
+    radial-gradient(1200px 600px at 70% 80%, rgba(139,92,246,.25), transparent 60%),
+    radial-gradient(900px 500px at 15% 20%, rgba(99,102,241,.30), transparent 60%),
+    linear-gradient(135deg,#0a0e27 0%,#16213e 40%,#0f1729 100%);
+}
+
+.form-wrap{
+  max-width:720px;
+  margin:0 auto;
+  background:rgba(15,23,42,.60);
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(18px);
+  box-shadow:0 40px 90px rgba(0,0,0,.55);
+  padding:2rem 2.2rem;
+}
+
+.form-head{
+  display:flex;
+  align-items:center;
+  gap:1rem;
+  margin-bottom:1.6rem;
+}
+
+.form-badge{
+  width:54px;height:54px;
+  border-radius:18px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  box-shadow:0 14px 40px rgba(102,126,234,.6);
+  font-size:1.6rem;
+}
+
+.form-title{
+  margin:0;
+  font-size:1.9rem;
+  font-weight:950;
+  background:linear-gradient(135deg,#fff,#a8b9ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.form-sub{
+  margin:.2rem 0 0 0;
+  color:rgba(255,255,255,.65);
+  font-weight:700;
+  font-size:.95rem;
+}
+
+/* inputs */
+.f-group{ margin-bottom:1.2rem; }
+
+.f-label{
+  display:block;
+  margin-bottom:.45rem;
+  color:rgba(255,255,255,.85);
+  font-weight:800;
+  font-size:.9rem;
+}
+
+.f-input{
+  width:100%;
+  padding:.9rem 1rem;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  font-size:.95rem;
+  outline:none;
+  transition:all .35s cubic-bezier(.16,1,.3,1);
+}
+
+.f-input:focus{
+  border-color:#667eea;
+  background:rgba(255,255,255,.08);
+  box-shadow:0 0 0 4px rgba(102,126,234,.25);
+}
+
+/* textarea */
+textarea.f-input{
+  resize:none;
+  min-height:90px;
+}
+
+/* status */
+.status-wrap{
+  display:flex;
+  align-items:center;
+  gap:.6rem;
+  margin-top:.4rem;
+}
+.status-wrap label{
+  font-weight:800;
+  color:rgba(255,255,255,.85);
+}
+
+/* buttons */
+.form-actions{
+  margin-top:1.8rem;
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+
+.btn-ai{
+  border:none;
+  border-radius:16px;
+  padding:1rem 1.4rem;
+  font-weight:950;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:.6rem;
+  color:#fff;
+  text-decoration:none;
+  transition:transform .35s cubic-bezier(.16,1,.3,1),
+             box-shadow .35s ease,
+             opacity .2s ease;
+}
+
+.btn-ai:hover{
+  transform:translateY(-2px);
+  box-shadow:0 18px 45px rgba(0,0,0,.35);
+}
+
+.btn-primary{
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  box-shadow:0 14px 40px rgba(102,126,234,.55);
+}
+
+.btn-cancel{
+  background:linear-gradient(135deg,#374151,#111827);
+  box-shadow:0 14px 40px rgba(0,0,0,.45);
+}
+
+/* responsive */
+@@media(max-width:700px){
+  .form-wrap{ padding:1.5rem; }
+  .form-title{ font-size:1.6rem; }
+}
+</style>
+
+<div class="ai-form">
+  <div class="form-wrap">
+
+    <div class="form-head">
+      <div class="form-badge">👨‍🍳</div>
+      <div>
+        <h1 class="form-title">Şef Ekle</h1>
+        <p class="form-sub">Premium AI destekli şef profili oluştur</p>
+      </div>
     </div>
+
+    @using (Html.BeginForm("CreateChef","Chef",FormMethod.Post))
+    {
+      <div class="f-group">
+        <label class="f-label">Şef İsmi</label>
+        @Html.TextBoxFor(c=>c.ChefName,new{@class="f-input", placeholder="Ahmet Yılmaz"})
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">Uzmanlık / Ünvan</label>
+        @Html.TextBoxFor(c=>c.ChefTitle,new{@class="f-input", placeholder="Baş Şef"})
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">Açıklama</label>
+        @Html.TextAreaFor(c=>c.ChefDescription,new{@class="f-input", placeholder="20 yıllık deneyime sahip..."})
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">Profil Fotoğraf URL</label>
+        @Html.TextBoxFor(c=>c.ChefImageUrl,new{@class="f-input", placeholder="https://..."})
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">Facebook</label>
+        @Html.TextBoxFor(c=>c.ChefFacebookUrl,new{@class="f-input"})
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">Instagram</label>
+        @Html.TextBoxFor(c=>c.ChefInstagramUrl,new{@class="f-input"})
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">LinkedIn</label>
+        @Html.TextBoxFor(c=>c.ChefLinkedinUrl,new{@class="f-input"})
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">X (Twitter)</label>
+        @Html.TextBoxFor(c=>c.ChefXUrl,new{@class="f-input"})
+      </div>
+
+      <div class="status-wrap">
+        @Html.CheckBoxFor(c=>c.ChefStatus)
+        <label>Aktif olarak yayınla</label>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-ai btn-primary">
+          ➕ Şefi Kaydet
+        </button>
+
+        <a asp-action="Index" asp-controller="Chef" class="btn-ai btn-cancel">
+          ↩️ Vazgeç
+        </a>
+      </div>
+    }
+  </div>
 </div>
