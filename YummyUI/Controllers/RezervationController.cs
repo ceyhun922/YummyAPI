@@ -29,10 +29,10 @@ namespace YummyUI.Controllers
             return View();
         }
 
-        public IActionResult CreateRezeration() => View();
+        public IActionResult CreateRezervation() => View();
 
         [HttpPost]
-        public async Task<IActionResult> CreateRezeration(CreateRezervationDto createRezervationDto)
+        public async Task<IActionResult> CreateRezervation(CreateRezervationDto createRezervationDto)
         {
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createRezervationDto);
@@ -42,6 +42,39 @@ namespace YummyUI.Controllers
             {
                 return View(createRezervationDto);
 
+            }
+            return RedirectToAction("RezervationList");
+        }
+
+        public async Task<IActionResult> DeleteRezervation(int id)
+        {
+            var client =_httpClientFactory.CreateClient();
+            await client.DeleteAsync("http://localhost:5289/api/Rezervations?id=" +id);
+            return RedirectToAction("RezervationList");
+        }
+
+        public async Task<IActionResult> UpdateRezervation(int id)
+        {
+            var client =_httpClientFactory.CreateClient();
+            var response =await client.GetAsync($"http://localhost:5289/api/Rezervations/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonData =await response.Content.ReadAsStringAsync();
+                var value =JsonConvert.DeserializeObject<GetByIdRezervationDto>(jsonData);
+                return View(value);
+            }
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateRezervation(GetByIdRezervationDto getByIdRezervationDto)
+        {
+            var client =_httpClientFactory.CreateClient();
+            var jsonData =JsonConvert.SerializeObject(getByIdRezervationDto);
+            StringContent stringContent =new(jsonData,Encoding.UTF8,"application/json");
+            var response =await client.PutAsync("http://localhost:5289/api/Rezervations",stringContent);
+            if (!response.IsSuccessStatusCode)
+            {
+                return View(getByIdRezervationDto);
             }
             return RedirectToAction("RezervationList");
         }

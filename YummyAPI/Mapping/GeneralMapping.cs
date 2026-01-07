@@ -94,6 +94,7 @@ namespace YummyAPI.Mapping
             CreateMap<Rezervation, ResultRezervationDto>().ReverseMap();
             CreateMap<Rezervation, CreateRezervationDto>().ReverseMap();
             CreateMap<Rezervation, UpdateRezervationDto>().ReverseMap();
+            CreateMap<Rezervation,GetByIdRezervationDto>().ReverseMap();
 
 
 

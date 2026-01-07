@@ -1,0 +1,517 @@
+@using YummyUI.DTOs.RezervationDTOs
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model GetByIdRezervationDto
+@{
+    Layout = "_AdminLayout";
+
+    // ===== Date (supports DateOnly?/DateTime?/string) -> yyyy-MM-dd
+    string dateVal = "";
+    try
+    {
+        var d = Model?.RezervationDate;
+
+        if (d == null) dateVal = "";
+        else if (d is DateOnly dd) dateVal = dd.ToString("yyyy-MM-dd");
+        else if (d is DateOnly dt) dateVal = dt.ToString("yyyy-MM-dd");
+        else
+        {
+            DateTime parsed;
+            dateVal = DateTime.TryParse(d.ToString(), out parsed) ? parsed.ToString("yyyy-MM-dd") : "";
+        }
+    }
+    catch { dateVal = ""; }
+
+    // ===== Time (supports TimeOnly?/DateTime?/string) -> HH:mm
+    string timeVal = "";
+    try
+    {
+        // Səndə TimeOnly? olduğu üçün birbaşa bu daha sağlamdır
+        // TimeOnly? compile-safe:
+        timeVal = Model != null ? Model.RezervationClockk.ToString("HH:mm") : "";
+    }
+    catch
+    {
+        // fallback: parse edək (əgər gələcəkdə string/DateTime olsa)
+        try
+        {
+            var t = Model?.RezervationClockk;
+            if (t != null)
+            {
+                DateTime parsed;
+                if (DateTime.TryParse(t.ToString(), out parsed)) timeVal = parsed.ToString("HH:mm");
+                else
+                {
+                    var s = t.ToString();
+                    timeVal = string.IsNullOrWhiteSpace(s) ? "" : (s.Length > 5 ? s.Substring(0, 5) : s);
+                }
+            }
+        }
+        catch { timeVal = ""; }
+    }
+
+    // ===== Status list (0-3)
+    var statusList = new List<SelectListItem>
+{
+new SelectListItem { Text="Pending", Value="0" },
+new SelectListItem { Text="On Hold", Value="1" },
+new SelectListItem { Text="Approved", Value="2" },
+new SelectListItem { Text="Canceled", Value="3" },
+};
+
+    string StatusLabel(int s) => s switch
+    {
+        0 => "Pending",
+        1 => "On Hold",
+        2 => "Approved",
+        3 => "Canceled",
+        _ => "Unknown"
+    };
+
+    int statusInt = 0;
+    try { statusInt = Convert.ToInt32(Model?.RezervationStatus); } catch { statusInt = 0; }
+    var statusText = StatusLabel(statusInt);
+}
+
+@section Styles {
+    <style>
+        :root {
+            --line: rgba(148, 163, 184, .18);
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+            --primary: #f59e0b;
+            --ok: #22c55e;
+            --bad: #ef4444;
+            --shadow: 0 20px 60px rgba(0, 0, 0, .35);
+        }
+
+        .rzp,
+        .rzp * {
+            box-sizing: border-box;
+        }
+
+        .rzp {
+            min-height: 100%;
+            padding: 1.6rem 2rem;
+            background:
+                radial-gradient(1200px 600px at 70% 80%, rgba(56, 189, 248, .12), transparent 60%),
+                radial-gradient(900px 500px at 15% 20%, rgba(139, 92, 246, .14), transparent 60%),
+                radial-gradient(800px 420px at 90% 10%, rgba(245, 158, 11, .10), transparent 60%),
+                linear-gradient(180deg, #070b14, #070b14);
+            color: var(--text);
+        }
+
+        .rzp-shell {
+            max-width: 1100px;
+            margin: 0 auto;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            background: rgba(15, 23, 42, .65);
+        }
+
+        .rzp-head {
+            padding: 1.4rem 1.6rem;
+            border-bottom: 1px solid var(--line);
+            background: rgba(15, 23, 42, .45);
+        }
+
+        .rzp-title {
+            margin: 0 0 .25rem 0;
+            font-size: 1.45rem;
+            font-weight: 800;
+        }
+
+        .rzp-sub {
+            margin: 0;
+            color: var(--muted);
+            font-size: .95rem;
+        }
+
+        .rzp-body {
+            padding: 1.4rem 1.6rem 1.6rem;
+            display: grid;
+            grid-template-columns: 1.65fr .95fr;
+            gap: 1.2rem;
+        }
+
+        .rzp-card {
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            background: rgba(11, 19, 36, .75);
+            padding: 1.05rem;
+        }
+
+        .rzp-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .9rem;
+        }
+
+        .rzp-col-2 {
+            grid-column: span 2;
+        }
+
+        .rzp-field label {
+            display: block;
+            margin: 0 0 .45rem;
+            color: var(--muted);
+            font-size: .9rem;
+        }
+
+        .rzp-input,
+        .rzp-textarea,
+        .rzp-select {
+            width: 100%;
+            border: 1px solid rgba(148, 163, 184, .22);
+            background: rgba(2, 6, 23, .40);
+            color: var(--text);
+            border-radius: 14px;
+            padding: .85rem .95rem;
+            outline: none;
+            transition: .15s ease;
+        }
+
+        .rzp-textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .rzp-input:focus,
+        .rzp-textarea:focus,
+        .rzp-select:focus {
+            border-color: rgba(245, 158, 11, .55);
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, .12);
+        }
+
+        .rzp-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: .8rem;
+            padding: .85rem;
+            border: 1px dashed rgba(148, 163, 184, .22);
+            border-radius: 14px;
+            background: rgba(2, 6, 23, .18);
+        }
+
+        .rzp-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .55rem;
+        }
+
+        .rzp-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .45rem;
+            padding: .42rem .7rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, .22);
+            background: rgba(2, 6, 23, .28);
+            font-size: .86rem;
+            color: rgba(226, 232, 240, .95);
+        }
+
+        .rzp-badge.warn {
+            border-color: rgba(245, 158, 11, .45);
+        }
+
+        .rzp-badge.ok {
+            border-color: rgba(34, 197, 94, .35);
+        }
+
+        .rzp-badge.bad {
+            border-color: rgba(239, 68, 68, .35);
+        }
+
+        .rzp-actions {
+            display: flex;
+            gap: .75rem;
+            margin-top: 1.05rem;
+        }
+
+        .rzp-btn {
+            border: none;
+            border-radius: 14px;
+            padding: .85rem 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: .55rem;
+            text-decoration: none;
+        }
+
+        .rzp-btn-primary {
+            background: linear-gradient(180deg, #fbbf24, #f59e0b);
+            color: #111827;
+            box-shadow: 0 12px 30px rgba(245, 158, 11, .18);
+        }
+
+        .rzp-btn-primary:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.02);
+        }
+
+        .rzp-btn-ghost {
+            background: rgba(148, 163, 184, .12);
+            color: var(--text);
+            border: 1px solid rgba(148, 163, 184, .22);
+        }
+
+        .rzp-btn-ghost:hover {
+            background: rgba(148, 163, 184, .16);
+        }
+
+        .rzp-preview {
+            position: sticky;
+            top: 18px;
+            align-self: start;
+        }
+
+        .rzp-preview-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: .8rem;
+        }
+
+        .rzp-preview-h {
+            font-size: 1.05rem;
+            font-weight: 900;
+            margin: 0;
+        }
+
+        .rzp-preview-p {
+            margin: .6rem 0 0;
+            color: rgba(148, 163, 184, .95);
+            line-height: 1.45;
+            font-size: .92rem;
+            word-break: break-word;
+        }
+
+        .rzp-mini {
+            width: 42px;
+            height: 42px;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, .22);
+            background: rgba(2, 6, 23, .25);
+            display: grid;
+            place-items: center;
+            font-weight: 900;
+        }
+
+        @@media(max-width:980px) {
+            .rzp-body {
+                grid-template-columns: 1fr;
+            }
+
+            .rzp-preview {
+                position: relative;
+                top: 0;
+            }
+        }
+    </style>
+}
+
+<div class="rzp">
+    <div class="rzp-shell">
+        <div class="rzp-head">
+            <h1 class="rzp-title">Rezervasiya Güncəlləmə</h1>
+            <p class="rzp-sub">Məlumatları yeniləyin, tarix/saat və statusu idarə edin.</p>
+        </div>
+
+        @using (Html.BeginForm("UpdateRezervation", "Rezervation", FormMethod.Post, new { autocomplete = "off" }))
+        {
+            @Html.HiddenFor(x => x.RezervationId)
+
+            <div class="rzp-body">
+                <!-- LEFT -->
+                <div class="rzp-card">
+                    <div class="rzp-grid">
+
+                        <div class="rzp-field">
+                            <label>Ad Soyad</label>
+                            @Html.TextBoxFor(x => x.FullName, new { @class="rzp-input", placeholder="Müştəri adı",
+                            data_preview = "pvName" })
+                    </div>
+
+                    <div class="rzp-field">
+                        <label>Email</label>
+                        @Html.TextBoxFor(x => x.Email, new { @class="rzp-input", placeholder="example@mail.com",
+                                                data_preview = "pvEmail" })
+                    </div>
+
+                    <div class="rzp-field">
+                        <label>Telefon</label>
+                        @Html.TextBoxFor(x => x.PhoneNumber, new { @class="rzp-input", placeholder="+994 ...",
+                                                data_preview = "pvPhone" })
+                    </div>
+
+                    <div class="rzp-field">
+                        <label>Adam sayı</label>
+                        @Html.TextBoxFor(x => x.PersonCount, new { @class="rzp-input", placeholder="Məs: 2",
+                                                data_preview = "pvCount" })
+                    </div>
+
+                    <!-- Date / Time / Status -->
+                    <div class="rzp-field rzp-col-2">
+                        <label>Tarix • Saat • Status</label>
+
+                        <div class="rzp-row">
+                            <div class="rzp-badges">
+                                <span class="rzp-badge warn" id="pvDateBadge">📅 @(string.IsNullOrWhiteSpace(dateVal) ?
+                                                                        "—" : dateVal)</span>
+                                <span class="rzp-badge warn" id="pvTimeBadge">⏰ @(string.IsNullOrWhiteSpace(timeVal) ?
+                                                                        "—" : timeVal)</span>
+                                <span class="rzp-badge ok" id="pvStatusBadge">🏷️ @statusText</span>
+                            </div>
+                        </div>
+
+                        <div class="rzp-grid" style="margin-top:.85rem;">
+                            <div class="rzp-field">
+                                <label>Rezervasiya Tarixi</label>
+                                @Html.TextBox("RezervationDate", dateVal, new { @class="rzp-input", type="date",
+                                data_preview = "pvDate" })
+                            </div>
+
+                            <div class="rzp-field">
+                                <label>Rezervasiya Saati</label>
+                                @Html.TextBox("RezervationClockk", timeVal, new { @class="rzp-input", type="time",
+                                                                data_preview = "pvTime" })
+                            </div>
+
+                            <div class="rzp-field rzp-col-2">
+                                <label>Status</label>
+                                <!-- TagHelper FIX: no C# inside option attributes -->
+                                <select class="rzp-select" asp-for="RezervationStatus" asp-items="statusList"
+                                    id="RezervationStatus" data-preview="pvStatus">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rzp-field rzp-col-2">
+                        <label>Mesaj / Qeyd</label>
+                        @Html.TextAreaFor(x => x.Message, new { @class = "rzp-textarea", placeholder = "Rezervasiya          qeydi...", data_preview = "pvMsg" })
+                    </div>
+                </div>
+
+                <div class="rzp-actions">
+                    <button type="submit" class="rzp-btn rzp-btn-primary">✅ Güncelle</button>
+                    <a class="rzp-btn rzp-btn-ghost" asp-action="RezervationList" >↩️ Geri Dön</a>
+                </div>
+            </div>
+
+            <!-- RIGHT PREVIEW -->
+            <div class="rzp-card rzp-preview">
+                <div class="rzp-preview-top">
+                    <div>
+                        <p class="rzp-preview-h" id="pvName">@Model?.FullName</p>
+                        <div class="rzp-badges" style="margin-top:.55rem;">
+                            <span class="rzp-badge" id="pvEmail">✉️ @Model?.Email</span>
+                            <span class="rzp-badge" id="pvPhone">📞 @Model?.PhoneNumber</span>
+                            <span class="rzp-badge" id="pvCount">👥 @Model?.PersonCount</span>
+                        </div>
+                    </div>
+                    <div class="rzp-mini">RZ</div>
+                </div>
+
+                <p class="rzp-preview-p" id="pvMsg">
+                    @(string.IsNullOrWhiteSpace(Model?.Message) ? "Mesaj yoxdur." : Model.Message)
+                </p>
+
+                <div class="rzp-badges">
+                    <span class="rzp-badge warn" id="pvDate">📅 @(string.IsNullOrWhiteSpace(dateVal) ? "—" :
+                                                dateVal)</span>
+                    <span class="rzp-badge warn" id="pvTime">⏰ @(string.IsNullOrWhiteSpace(timeVal) ? "—" :
+                                                timeVal)</span>
+                    <span class="rzp-badge ok" id="pvStatus">🏷️ @statusText</span>
+                </div>
+            </div>
+
+        </div>
+                }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const elName = document.getElementById('pvName');
+            const elEmail = document.getElementById('pvEmail');
+            const elPhone = document.getElementById('pvPhone');
+            const elCount = document.getElementById('pvCount');
+            const elMsg = document.getElementById('pvMsg');
+
+            const elDate = document.getElementById('pvDate');
+            const elTime = document.getElementById('pvTime');
+            const elStatus = document.getElementById('pvStatus');
+
+            const elDateBadge = document.getElementById('pvDateBadge');
+            const elTimeBadge = document.getElementById('pvTimeBadge');
+            const elStatusBadge = document.getElementById('pvStatusBadge');
+
+            const statusClass = (val) => {
+                if (val === "2") return "ok";
+                if (val === "3") return "bad";
+                return "warn";
+            };
+            const setBadgeClass = (node, cls) => {
+                node.classList.remove("ok", "bad", "warn");
+                node.classList.add(cls);
+            };
+
+            document.querySelectorAll('[data-preview]').forEach(inp => {
+                inp.addEventListener('input', () => {
+                    const key = inp.getAttribute('data-preview');
+                    const v = (inp.value || '').trim();
+
+                    if (key === "pvName") elName.textContent = v || "—";
+                    if (key === "pvEmail") elEmail.textContent = "✉️ " + (v || "—");
+                    if (key === "pvPhone") elPhone.textContent = "📞 " + (v || "—");
+                    if (key === "pvCount") elCount.textContent = "👥 " + (v || "—");
+                    if (key === "pvMsg") elMsg.textContent = v || "Mesaj yoxdur.";
+
+                    if (key === "pvDate") {
+                        const txt = v || "—";
+                        elDate.textContent = "📅 " + txt;
+                        elDateBadge.textContent = "📅 " + txt;
+                    }
+                    if (key === "pvTime") {
+                        const txt = v || "—";
+                        elTime.textContent = "⏰ " + txt;
+                        elTimeBadge.textContent = "⏰ " + txt;
+                    }
+                });
+
+                inp.addEventListener('change', () => {
+                    const key = inp.getAttribute('data-preview');
+                    if (key !== "pvStatus") return;
+
+                    const val = inp.value;
+                    const text = inp.options[inp.selectedIndex].text;
+
+                    elStatus.textContent = "🏷️ " + text;
+                    elStatusBadge.textContent = "🏷️ " + text;
+
+                    const cls = statusClass(val);
+                    setBadgeClass(elStatus, cls);
+                    setBadgeClass(elStatusBadge, cls);
+                });
+            });
+
+            const st = document.getElementById("RezervationStatus");
+            if (st) {
+                const cls = statusClass(st.value);
+                setBadgeClass(elStatus, cls);
+                setBadgeClass(elStatusBadge, cls);
+
+                elStatus.textContent = "🏷️ " + st.options[st.selectedIndex].text;
+                elStatusBadge.textContent = "🏷️ " + st.options[st.selectedIndex].text;
+            }
+        })();
+    </script>
+}

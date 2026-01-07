@@ -105,5 +105,13 @@ namespace YummyAPI.Controllers
             return Ok(dto);
         }
 
+        [HttpGet("{id}")]
+        public IActionResult GetRezervation(int id)
+        {
+            var value =_context.Rezervations?.Find(id);
+            var mapper =_mapper.Map<GetByIdRezervationDto>(value);
+            return Ok(mapper);
+        }
+
     }
 }

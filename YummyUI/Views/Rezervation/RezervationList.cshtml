@@ -13,236 +13,381 @@
 
 @section Styles
 {
-<style>
-  .rzp, .rzp *{ box-sizing:border-box; }
+  <style>
+    .rzp,
+    .rzp * {
+      box-sizing: border-box;
+    }
 
-  .rzp{
-    min-height:100%;
-    padding: 1.6rem 2rem;
-    position:relative;
-    overflow:hidden;
-    background:
-      radial-gradient(1200px 600px at 70% 80%, rgba(56,189,248,.18), transparent 60%),
-      radial-gradient(900px 500px at 15% 20%, rgba(139,92,246,.22), transparent 60%),
-      radial-gradient(800px 420px at 90% 10%, rgba(99,102,241,.18), transparent 55%),
-      linear-gradient(135deg,#070b1f 0%,#0a1030 40%,#050818 100%);
-  }
+    .rzp {
+      min-height: 100%;
+      padding: 1.6rem 2rem;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(1200px 600px at 70% 80%, rgba(56, 189, 248, .18), transparent 60%),
+        radial-gradient(900px 500px at 15% 20%, rgba(139, 92, 246, .22), transparent 60%),
+        radial-gradient(800px 420px at 90% 10%, rgba(99, 102, 241, .18), transparent 55%),
+        linear-gradient(135deg, #070b1f 0%, #0a1030 40%, #050818 100%);
+    }
 
-  .rzp .orb{
-    position:absolute; border-radius:999px;
-    filter:blur(100px); opacity:.55; pointer-events:none;
-    animation: rzpFloat 14s ease-in-out infinite;
-  }
-  .rzp .orb.a{ width:520px;height:520px; left:-180px; top:-180px; background:rgba(139,92,246,.42); }
-  .rzp .orb.b{ width:460px;height:460px; right:-190px; top:110px; background:rgba(56,189,248,.36); animation-delay:3s; }
-  .rzp .orb.c{ width:560px;height:560px; left:38%; bottom:-260px; background:rgba(99,102,241,.30); animation-delay:6s; }
+    .rzp .orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(100px);
+      opacity: .55;
+      pointer-events: none;
+      animation: rzpFloat 14s ease-in-out infinite;
+    }
 
-  @@keyframes rzpFloat{
-    0%,100%{ transform:translate(0,0) scale(1); }
-    50%{ transform:translate(18px,-14px) scale(1.04); }
-  }
+    .rzp .orb.a {
+      width: 520px;
+      height: 520px;
+      left: -180px;
+      top: -180px;
+      background: rgba(139, 92, 246, .42);
+    }
 
-  .rzp .grid{
-    position:absolute; inset:0; pointer-events:none; opacity:.14;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
-    background-size: 64px 64px;
-  }
+    .rzp .orb.b {
+      width: 460px;
+      height: 460px;
+      right: -190px;
+      top: 110px;
+      background: rgba(56, 189, 248, .36);
+      animation-delay: 3s;
+    }
 
-  .rzp .wrap{
-    position:relative; z-index:2;
-    max-width:1500px;
-    margin:0 auto;
-    display:flex; flex-direction:column; gap:1.1rem;
-  }
+    .rzp .orb.c {
+      width: 560px;
+      height: 560px;
+      left: 38%;
+      bottom: -260px;
+      background: rgba(99, 102, 241, .30);
+      animation-delay: 6s;
+    }
 
-  .rzp .header{
-    display:flex; align-items:center; justify-content:space-between;
-    gap:1rem;
-  }
-  .rzp .titleBox{ display:flex; align-items:center; gap:.9rem; }
-  .rzp .badge{
-    width:56px;height:56px;border-radius:18px;
-    display:grid; place-items:center;
-    background: linear-gradient(135deg,#667eea,#764ba2);
-    border:1px solid rgba(255,255,255,.14);
-    box-shadow: 0 18px 55px rgba(102,126,234,.45), 0 0 45px rgba(118,75,162,.25);
-    color:#fff;
-  }
-  .rzp .badge i{ font-size:26px; }
-  .rzp .h1{
-    margin:0;
-    font-size:2rem;
-    font-weight:950;
-    background:linear-gradient(135deg,#fff,#a8b9ff);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-  }
-  .rzp .sub{
-    margin:.2rem 0 0 0;
-    color: rgba(255,255,255,.70);
-    font-weight:850;
-    font-size:.95rem;
-  }
+    @@keyframes rzpFloat {
 
-  .rzp .panel{
-    background: rgba(15,23,42,.55);
-    border-radius: 28px;
-    border:1px solid rgba(255,255,255,.12);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 40px 90px rgba(0,0,0,.45);
-    overflow:hidden;
-  }
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
 
-  .rzp .panelHead{
-    padding: 1.1rem 1.25rem;
-    border-bottom:1px solid rgba(255,255,255,.08);
-    display:flex; align-items:center; justify-content:space-between; gap:1rem;
-    flex-wrap:wrap;
-  }
-  .rzp .panelHead p{ margin:0; color: rgba(255,255,255,.75); font-weight:850; }
-  .rzp .chip{
-    padding:.45rem .8rem;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.06);
-    color: rgba(255,255,255,.88);
-    font-weight:900;
-    font-size:.85rem;
-    white-space:nowrap;
-  }
+      50% {
+        transform: translate(18px, -14px) scale(1.04);
+      }
+    }
 
-  /* ✅ Filter bar */
-  .rzp .filterbar{
-    width:100%;
-    display:flex;
-    gap:.6rem;
-    flex-wrap:wrap;
-    margin-top:.35rem;
-  }
-  .rzp .ft{
-    border:none;
-    text-decoration:none;
-    display:inline-flex;
-    align-items:center;
-    gap:.55rem;
-    padding:.55rem .85rem;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.06);
-    color: rgba(255,255,255,.88);
-    font-weight:950;
-    font-size:.85rem;
-    cursor:pointer;
-    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
-  }
-  .rzp .ft:hover{ transform: translateY(-1px); box-shadow: 0 14px 34px rgba(0,0,0,.28); }
-  .rzp .ft.active{
-    background: linear-gradient(135deg, rgba(102,126,234,.35), rgba(118,75,162,.25));
-    border-color: rgba(255,255,255,.20);
-  }
-  .rzp .ft .pill{
-    padding:.18rem .55rem;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,.14);
-    background: rgba(0,0,0,.18);
-    color:#fff;
-    font-weight:950;
-    font-size:.78rem;
-  }
+    .rzp .grid {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .14;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
 
-  .rzp .tableWrap{ overflow:auto; }
-  .rzp table{
-    width:100%;
-    border-collapse:separate;
-    border-spacing:0;
-    min-width: 1050px;
-  }
-  .rzp thead th{
-    text-align:left;
-    padding: 1rem 1rem;
-    color: rgba(255,255,255,.75);
-    font-weight:900;
-    font-size:.85rem;
-    letter-spacing:.2px;
-    border-bottom:1px solid rgba(255,255,255,.10);
-    background: rgba(255,255,255,.03);
-    white-space:nowrap;
-  }
-  .rzp tbody td{
-    padding: 1rem 1rem;
-    border-bottom:1px solid rgba(255,255,255,.06);
-    color: rgba(255,255,255,.92);
-    font-weight:800;
-    vertical-align:top;
-  }
-  .rzp tbody tr:hover td{ background: rgba(102,126,234,.06); }
+    .rzp .wrap {
+      position: relative;
+      z-index: 2;
+      max-width: 1500px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+    }
 
-  .rzp .muted{ color: rgba(255,255,255,.70); font-weight:800; }
-  .rzp .nowrap{ white-space:nowrap; }
-  .rzp .clip{
-    max-width: 340px;
-    display:-webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow:hidden;
-    color: rgba(255,255,255,.78);
-    font-weight:800;
-    line-height:1.45;
-  }
+    .rzp .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
 
-  .rzp .status{
-    display:inline-flex;
-    align-items:center;
-    gap:.5rem;
-    padding:.5rem .85rem;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.06);
-    font-weight:950;
-    font-size:.85rem;
-    white-space:nowrap;
-  }
-  .rzp .dot{ width:10px; height:10px; border-radius:999px; background:#f59e0b; box-shadow:0 0 16px rgba(245,158,11,.45); }
-  .rzp .ok .dot{ background:#22c55e; box-shadow:0 0 16px rgba(34,197,94,.45); }
-  .rzp .wait .dot{ background:#f59e0b; box-shadow:0 0 16px rgba(245,158,11,.45); }
-  .rzp .cancel .dot{ background:#ef4444; box-shadow:0 0 16px rgba(239,68,68,.45); }
+    .rzp .titleBox {
+      display: flex;
+      align-items: center;
+      gap: .9rem;
+    }
 
-  .rzp .actions{
-    display:flex;
-    gap:.5rem;
-    flex-wrap:wrap;
-  }
-  .rzp .btnA{
-    border:none;
-    padding:.65rem .9rem;
-    border-radius:14px;
-    font-weight:950;
-    font-size:.85rem;
-    text-decoration:none;
-    display:inline-flex;
-    align-items:center;
-    gap:.45rem;
-    white-space:nowrap;
-    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
-    cursor:pointer;
-  }
-  .rzp .btnA:hover{ transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,.35); }
-  .rzp .btnA:active{ transform: translateY(0); opacity:.96; }
+    .rzp .badge {
+      width: 56px;
+      height: 56px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: 1px solid rgba(255, 255, 255, .14);
+      box-shadow: 0 18px 55px rgba(102, 126, 234, .45), 0 0 45px rgba(118, 75, 162, .25);
+      color: #fff;
+    }
 
-  .rzp .del{ background: linear-gradient(135deg,#ef4444,#dc2626); color:#fff; }
-  .rzp .edit{ background: linear-gradient(135deg,#fbbf24,#f59e0b); color:#1a1a1a; }
-  .rzp .approve{ background: linear-gradient(135deg,#22c55e,#16a34a); color:#052e16; }
-  .rzp .hold{ background: linear-gradient(135deg,#60a5fa,#3b82f6); color:#061a33; }
-  .rzp .cancelBtn{ background: linear-gradient(135deg,#fb7185,#ef4444); color:#fff; }
+    .rzp .badge i {
+      font-size: 26px;
+    }
 
-  @@media (max-width: 980px){
-    .rzp{ padding: 1.1rem; }
-    .rzp .h1{ font-size: 1.6rem; }
-    .rzp .panelHead{ flex-direction:column; align-items:flex-start; }
-  }
-</style>
+    .rzp .h1 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 950;
+      background: linear-gradient(135deg, #fff, #a8b9ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .rzp .sub {
+      margin: .2rem 0 0 0;
+      color: rgba(255, 255, 255, .70);
+      font-weight: 850;
+      font-size: .95rem;
+    }
+
+    .rzp .panel {
+      background: rgba(15, 23, 42, .55);
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 40px 90px rgba(0, 0, 0, .45);
+      overflow: hidden;
+    }
+
+    .rzp .panelHead {
+      padding: 1.1rem 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .rzp .panelHead p {
+      margin: 0;
+      color: rgba(255, 255, 255, .75);
+      font-weight: 850;
+    }
+
+    .rzp .chip {
+      padding: .45rem .8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .06);
+      color: rgba(255, 255, 255, .88);
+      font-weight: 900;
+      font-size: .85rem;
+      white-space: nowrap;
+    }
+
+    /* ✅ Filter bar */
+    .rzp .filterbar {
+      width: 100%;
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      margin-top: .35rem;
+    }
+
+    .rzp .ft {
+      border: none;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .55rem .85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .06);
+      color: rgba(255, 255, 255, .88);
+      font-weight: 950;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    }
+
+    .rzp .ft:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, .28);
+    }
+
+    .rzp .ft.active {
+      background: linear-gradient(135deg, rgba(102, 126, 234, .35), rgba(118, 75, 162, .25));
+      border-color: rgba(255, 255, 255, .20);
+    }
+
+    .rzp .ft .pill {
+      padding: .18rem .55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .14);
+      background: rgba(0, 0, 0, .18);
+      color: #fff;
+      font-weight: 950;
+      font-size: .78rem;
+    }
+
+    .rzp .tableWrap {
+      overflow: auto;
+    }
+
+    .rzp table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 1050px;
+    }
+
+    .rzp thead th {
+      text-align: left;
+      padding: 1rem 1rem;
+      color: rgba(255, 255, 255, .75);
+      font-weight: 900;
+      font-size: .85rem;
+      letter-spacing: .2px;
+      border-bottom: 1px solid rgba(255, 255, 255, .10);
+      background: rgba(255, 255, 255, .03);
+      white-space: nowrap;
+    }
+
+    .rzp tbody td {
+      padding: 1rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      color: rgba(255, 255, 255, .92);
+      font-weight: 800;
+      vertical-align: top;
+    }
+
+    .rzp tbody tr:hover td {
+      background: rgba(102, 126, 234, .06);
+    }
+
+    .rzp .muted {
+      color: rgba(255, 255, 255, .70);
+      font-weight: 800;
+    }
+
+    .rzp .nowrap {
+      white-space: nowrap;
+    }
+
+    .rzp .clip {
+      max-width: 340px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: rgba(255, 255, 255, .78);
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .rzp .status {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .5rem .85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .06);
+      font-weight: 950;
+      font-size: .85rem;
+      white-space: nowrap;
+    }
+
+    .rzp .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #f59e0b;
+      box-shadow: 0 0 16px rgba(245, 158, 11, .45);
+    }
+
+    .rzp .ok .dot {
+      background: #22c55e;
+      box-shadow: 0 0 16px rgba(34, 197, 94, .45);
+    }
+
+    .rzp .wait .dot {
+      background: #f59e0b;
+      box-shadow: 0 0 16px rgba(245, 158, 11, .45);
+    }
+
+    .rzp .cancel .dot {
+      background: #ef4444;
+      box-shadow: 0 0 16px rgba(239, 68, 68, .45);
+    }
+
+    .rzp .actions {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+    }
+
+    .rzp .btnA {
+      border: none;
+      padding: .65rem .9rem;
+      border-radius: 14px;
+      font-weight: 950;
+      font-size: .85rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      white-space: nowrap;
+      transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+      cursor: pointer;
+    }
+
+    .rzp .btnA:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, .35);
+    }
+
+    .rzp .btnA:active {
+      transform: translateY(0);
+      opacity: .96;
+    }
+
+    .rzp .del {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+    }
+
+    .rzp .edit {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #1a1a1a;
+    }
+
+    .rzp .approve {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #052e16;
+    }
+
+    .rzp .hold {
+      background: linear-gradient(135deg, #60a5fa, #3b82f6);
+      color: #061a33;
+    }
+
+    .rzp .cancelBtn {
+      background: linear-gradient(135deg, #fb7185, #ef4444);
+      color: #fff;
+    }
+
+    @@media (max-width: 980px) {
+      .rzp {
+        padding: 1.1rem;
+      }
+
+      .rzp .h1 {
+        font-size: 1.6rem;
+      }
+
+      .rzp .panelHead {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 }
 
 <div class="rzp">
@@ -269,11 +414,16 @@
 
         <!-- ✅ FILTER BAR (no refresh) -->
         <div class="filterbar" id="filterbar">
-          <button type="button" class="ft active" data-filter="all">Hamısı <span class="pill" data-pill="all">@all.Count</span></button>
-          <button type="button" class="ft" data-filter="0">Bekleyenler <span class="pill" data-pill="0">@c0</span></button>
-          <button type="button" class="ft" data-filter="1">Bekletilenler <span class="pill" data-pill="1">@c1</span></button>
-          <button type="button" class="ft" data-filter="2">Onaylananlar <span class="pill" data-pill="2">@c2</span></button>
-          <button type="button" class="ft" data-filter="3">İptal Edilenler <span class="pill" data-pill="3">@c3</span></button>
+          <button type="button" class="ft active" data-filter="all">Hamısı <span class="pill"
+              data-pill="all">@all.Count</span></button>
+          <button type="button" class="ft" data-filter="0">Bekleyenler <span class="pill"
+              data-pill="0">@c0</span></button>
+          <button type="button" class="ft" data-filter="1">Bekletilenler <span class="pill"
+              data-pill="1">@c1</span></button>
+          <button type="button" class="ft" data-filter="2">Onaylananlar <span class="pill"
+              data-pill="2">@c2</span></button>
+          <button type="button" class="ft" data-filter="3">İptal Edilenler <span class="pill"
+              data-pill="3">@c3</span></button>
         </div>
       </div>
 
@@ -339,40 +489,28 @@
 
                   <td class="nowrap">
                     <div class="actions">
-                      <button type="button" class="btnA del js-del"
-                              data-id="@rez.RezervationId"
-                              data-name="@rez.FullName">
+                      <button type="button" class="btnA del js-del" asp-action="DeleteRezervation"
+                        asp-controller="Rezervation" data-id="@rez.RezervationId" data-name="@rez.FullName">
                         <i class="bi bi-trash3"></i> Sil
                       </button>
 
-                      <a class="btnA edit"
-                         asp-action="UpdateRezervation"
-                         asp-controller="Rezervation"
-                         asp-route-id="@rez.RezervationId">
+                      <a class="btnA edit" asp-action="UpdateRezervation" asp-controller="Rezervation"
+                        asp-route-id="@rez.RezervationId">
                         <i class="bi bi-pencil-square"></i> Güncelle
                       </a>
 
-                      <a class="btnA approve"
-                         asp-action="ChangeStatus"
-                         asp-controller="Rezervation"
-                         asp-route-id="@rez.RezervationId"
-                         asp-route-status="Approved">
+                      <a class="btnA approve" asp-action="ChangeStatus" asp-controller="Rezervation"
+                        asp-route-id="@rez.RezervationId" asp-route-status="Approved">
                         <i class="bi bi-check2-circle"></i> Onayla
                       </a>
 
-                      <a class="btnA hold"
-                         asp-action="ChangeStatus"
-                         asp-controller="Rezervation"
-                         asp-route-id="@rez.RezervationId"
-                         asp-route-status="Pending">
+                      <a class="btnA hold" asp-action="ChangeStatus" asp-controller="Rezervation"
+                        asp-route-id="@rez.RezervationId" asp-route-status="Pending">
                         <i class="bi bi-hourglass-split"></i> Beklet
                       </a>
 
-                      <a class="btnA cancelBtn"
-                         asp-action="ChangeStatus"
-                         asp-controller="Rezervation"
-                         asp-route-id="@rez.RezervationId"
-                         asp-route-status="Canceled">
+                      <a class="btnA cancelBtn" asp-action="ChangeStatus" asp-controller="Rezervation"
+                        asp-route-id="@rez.RezervationId" asp-route-status="Canceled">
                         <i class="bi bi-x-circle"></i> İptal et
                       </a>
                     </div>
@@ -393,69 +531,69 @@
   </div>
 </div>
 
-@section Scripts{
-<script>
-  // ✅ Filter without refresh + dynamic visible count
-  (function(){
-    const filterbar = document.getElementById("filterbar");
-    const buttons = filterbar ? filterbar.querySelectorAll(".ft") : [];
-    const tbody = document.getElementById("rzpBody");
-    const rows = tbody ? Array.from(tbody.querySelectorAll("tr")) : [];
-    const visibleEl = document.getElementById("visibleCount");
+@section Scripts {
+  <script>
+    // ✅ Filter without refresh + dynamic visible count
+    (function () {
+      const filterbar = document.getElementById("filterbar");
+      const buttons = filterbar ? filterbar.querySelectorAll(".ft") : [];
+      const tbody = document.getElementById("rzpBody");
+      const rows = tbody ? Array.from(tbody.querySelectorAll("tr")) : [];
+      const visibleEl = document.getElementById("visibleCount");
 
-    function updateVisibleCount(){
-      if(!visibleEl) return;
-      const visible = rows.filter(r => r.style.display !== "none").length;
-      visibleEl.textContent = String(visible);
-    }
+      function updateVisibleCount() {
+        if (!visibleEl) return;
+        const visible = rows.filter(r => r.style.display !== "none").length;
+        visibleEl.textContent = String(visible);
+      }
 
-    function applyFilter(filter){
-      rows.forEach(row => {
-        const s = row.getAttribute("data-status");
-        row.style.display = (filter === "all" || s === filter) ? "" : "none";
-      });
-      updateVisibleCount();
-    }
-
-    buttons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        buttons.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        const filter = btn.getAttribute("data-filter") || "all";
-        applyFilter(filter);
-      });
-    });
-
-    // default
-    applyFilter("all");
-  })();
-</script>
-
-<script>
-  // ✅ Delete confirm (existing)
-  (function(){
-    const btns = document.querySelectorAll(".js-del");
-    btns.forEach(btn=>{
-      btn.addEventListener("click", async ()=>{
-        const id = btn.getAttribute("data-id");
-        const name = btn.getAttribute("data-name") || "Kayıt";
-
-        const res = await Swal.fire({
-          title: "Silinsin mi?",
-          html: `<div style="opacity:.9"><b>${name}</b> rezervasyonu silinecek.</div>`,
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonText: "Evet, sil",
-          cancelButtonText: "Vazgeç",
-          confirmButtonColor: "#ef4444"
+      function applyFilter(filter) {
+        rows.forEach(row => {
+          const s = row.getAttribute("data-status");
+          row.style.display = (filter === "all" || s === filter) ? "" : "none";
         });
+        updateVisibleCount();
+      }
 
-        if(res.isConfirmed){
-          window.location.href = `/Rezervation/DeleteRezervation/${id}`;
-        }
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+
+          const filter = btn.getAttribute("data-filter") || "all";
+          applyFilter(filter);
+        });
       });
-    });
-  })();
-</script>
+
+      // default
+      applyFilter("all");
+    })();
+  </script>
+
+  <script>
+    // ✅ Delete confirm (existing)
+    (function () {
+      const btns = document.querySelectorAll(".js-del");
+      btns.forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-id");
+          const name = btn.getAttribute("data-name") || "Kayıt";
+
+          const res = await Swal.fire({
+            title: "Silinsin mi?",
+            html: `<div style="opacity:.9"><b>${name}</b> rezervasyonu silinecek.</div>`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Evet, sil",
+            cancelButtonText: "Vazgeç",
+            confirmButtonColor: "#ef4444"
+          });
+
+          if (res.isConfirmed) {
+            window.location.href = `/Rezervation/DeleteRezervation/${id}`;
+          }
+        });
+      });
+    })();
+  </script>
 }
