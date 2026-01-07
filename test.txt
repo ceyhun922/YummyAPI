@@ -1,0 +1,566 @@
+@using YummyUI.DTOs.RezervationDTOs
+@model List<ResultRezervationDto>
+@{
+  Layout = "_AdminLayout";
+  var all = Model ?? new List<ResultRezervationDto>();
+
+  string SText(int s) => s switch
+  {
+    0 => "Bekliyor",
+    1 => "Beklet",
+    2 => "Onaylandı",
+    3 => "İptal",
+    _ => "Bilinmiyor"
+  };
+
+  string DayISO(DateOnly d) => d.ToString("yyyy-MM-dd");
+  string TimeISO(TimeOnly t) => t.ToString("HH:mm");
+}
+
+@section Styles{
+<style>
+  .rzp, .rzp *{ box-sizing:border-box; }
+  .rzp{
+    min-height:100%;
+    padding: 1.6rem 2rem;
+    position:relative;
+    overflow:hidden;
+    background:
+      radial-gradient(1200px 600px at 70% 80%, rgba(56,189,248,.18), transparent 60%),
+      radial-gradient(900px 500px at 15% 20%, rgba(139,92,246,.22), transparent 60%),
+      radial-gradient(800px 420px at 90% 10%, rgba(99,102,241,.18), transparent 55%),
+      linear-gradient(135deg,#070b1f 0%,#0a1030 40%,#050818 100%);
+  }
+  .rzp .orb{ position:absolute; border-radius:999px; filter:blur(100px); opacity:.55; pointer-events:none; animation: float 14s ease-in-out infinite; }
+  .rzp .orb.a{ width:520px;height:520px; left:-180px; top:-180px; background:rgba(139,92,246,.42); }
+  .rzp .orb.b{ width:460px;height:460px; right:-190px; top:110px; background:rgba(56,189,248,.36); animation-delay:3s; }
+  .rzp .orb.c{ width:560px;height:560px; left:38%; bottom:-260px; background:rgba(99,102,241,.30); animation-delay:6s; }
+  @@keyframes float{ 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(18px,-14px) scale(1.04)} }
+  .rzp .grid{ position:absolute; inset:0; pointer-events:none; opacity:.14;
+    background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);
+    background-size:64px 64px;
+  }
+  .rzp .wrap{ position:relative; z-index:2; max-width:1600px; margin:0 auto; display:flex; flex-direction:column; gap:1rem; }
+
+  .rzp .header{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+  .rzp .titleBox{ display:flex; align-items:center; gap:.9rem; }
+  .rzp .badge{ width:56px;height:56px;border-radius:18px; display:grid; place-items:center;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow: 0 18px 55px rgba(102,126,234,.45), 0 0 45px rgba(118,75,162,.25);
+    color:#fff;
+  }
+  .rzp .badge i{ font-size:26px; }
+  .rzp .h1{ margin:0; font-size:2rem; font-weight:950; background:linear-gradient(135deg,#fff,#a8b9ff);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .rzp .sub{ margin:.2rem 0 0; color:rgba(255,255,255,.70); font-weight:850; font-size:.95rem; }
+
+  .rzp .panel{ background: rgba(15,23,42,.55); border-radius: 28px; border:1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(16px); box-shadow: 0 40px 90px rgba(0,0,0,.45); overflow:hidden; }
+  .rzp .panelHead{ padding: 1.1rem 1.25rem; border-bottom:1px solid rgba(255,255,255,.08);
+    display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+  .rzp .panelHead p{ margin:0; color:rgba(255,255,255,.78); font-weight:900; }
+  .rzp .chip{ padding:.45rem .8rem; border-radius:999px; border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06); color: rgba(255,255,255,.88); font-weight:900; font-size:.85rem; white-space:nowrap; }
+
+  /* top controls */
+  .rzp .controls{ width:100%; display:flex; gap:.7rem; flex-wrap:wrap; align-items:center; }
+  .rzp .tabs{ display:flex; gap:.5rem; flex-wrap:wrap; }
+  .rzp .tab{ border:none; cursor:pointer; padding:.55rem .85rem; border-radius:999px;
+    background: rgba(255,255,255,.06); color:rgba(255,255,255,.88); font-weight:950; border:1px solid rgba(255,255,255,.12); }
+  .rzp .tab.active{ background: linear-gradient(135deg, rgba(102,126,234,.35), rgba(118,75,162,.25));
+    border-color: rgba(255,255,255,.20); }
+  .rzp .input{
+    padding:.6rem .8rem; border-radius:14px; border:1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.18); color:#fff; font-weight:850;
+  }
+  .rzp .input::placeholder{ color: rgba(255,255,255,.55); }
+
+  /* layout: left views + right detail */
+  .rzp .content{ display:grid; grid-template-columns: 1fr 360px; gap:1rem; padding: 1rem 1.25rem 1.25rem; }
+  .rzp .left{ min-height:540px; }
+  .rzp .right{ position:relative; }
+  .rzp .card{
+    background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.10);
+    border-radius:18px; padding:.85rem .9rem; box-shadow: 0 20px 60px rgba(0,0,0,.35);
+  }
+
+  /* kanban */
+  .rzp .kanban{ display:grid; grid-template-columns: repeat(4, 1fr); gap:.85rem; }
+  .rzp .col{ background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:22px; overflow:hidden; }
+  .rzp .colHead{ padding:.85rem .9rem; display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid rgba(255,255,255,.08); color:rgba(255,255,255,.85); font-weight:950; }
+  .rzp .colHead .count{ padding:.2rem .55rem; border-radius:999px; border:1px solid rgba(255,255,255,.12); background: rgba(0,0,0,.18); font-size:.82rem; }
+  .rzp .colBody{ padding:.75rem; display:flex; flex-direction:column; gap:.6rem; min-height:420px; }
+
+  .rzp .item{ cursor:pointer; transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease; }
+  .rzp .item:hover{ transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,.35); border-color: rgba(255,255,255,.18); }
+  .rzp .item.active{ outline: 2px solid rgba(99,102,241,.55); }
+
+  .rzp .row1{ display:flex; align-items:flex-start; justify-content:space-between; gap:.6rem; }
+  .rzp .name{ font-weight:950; color:#fff; }
+  .rzp .meta{ color: rgba(255,255,255,.72); font-weight:800; font-size:.85rem; margin-top:.15rem; }
+  .rzp .pillS{ display:inline-flex; align-items:center; gap:.45rem; padding:.35rem .65rem; border-radius:999px;
+    border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.06); font-weight:950; font-size:.80rem; white-space:nowrap; color:#fff; }
+  .rzp .dot{ width:9px;height:9px;border-radius:999px; background:#f59e0b; box-shadow:0 0 14px rgba(245,158,11,.45); }
+  .rzp .s2 .dot{ background:#22c55e; box-shadow:0 0 14px rgba(34,197,94,.45); }
+  .rzp .s3 .dot{ background:#ef4444; box-shadow:0 0 14px rgba(239,68,68,.45); }
+  .rzp .s1 .dot{ background:#60a5fa; box-shadow:0 0 14px rgba(96,165,250,.45); }
+
+  /* timeline */
+  .rzp .timeline{ display:flex; flex-direction:column; gap:.65rem; }
+  .rzp .slot{ border-radius:18px; border:1px solid rgba(255,255,255,.10); background: rgba(255,255,255,.04); overflow:hidden; }
+  .rzp .slotHead{ padding:.75rem .9rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,.08); }
+  .rzp .slotTime{ font-weight:950; color:#fff; }
+  .rzp .slotBody{ padding:.75rem; display:flex; flex-direction:column; gap:.55rem; }
+
+  /* detail */
+  .rzp .detail{ position:sticky; top:1rem; }
+  .rzp .dTitle{ display:flex; align-items:center; justify-content:space-between; gap:.6rem; margin-bottom:.8rem; }
+  .rzp .dTitle h3{ margin:0; color:#fff; font-weight:950; font-size:1.05rem; }
+  .rzp .dEmpty{ color: rgba(255,255,255,.75); font-weight:850; line-height:1.5; }
+  .rzp .kv{ display:grid; grid-template-columns: 110px 1fr; gap:.35rem .65rem; margin-top:.7rem; }
+  .rzp .k{ color: rgba(255,255,255,.65); font-weight:850; }
+  .rzp .v{ color: rgba(255,255,255,.92); font-weight:900; word-break:break-word; }
+  .rzp .msg{ margin-top:.75rem; padding:.75rem .85rem; border-radius:16px; border:1px solid rgba(255,255,255,.10); background: rgba(0,0,0,.18);
+    color: rgba(255,255,255,.85); font-weight:850; line-height:1.5; }
+
+  .rzp .actions{ display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.85rem; }
+  .rzp .btnA{
+    border:none; padding:.65rem .85rem; border-radius:14px; font-weight:950; font-size:.85rem;
+    display:inline-flex; align-items:center; gap:.45rem; cursor:pointer; text-decoration:none;
+    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+  }
+  .rzp .btnA:hover{ transform: translateY(-2px); box-shadow: 0 16px 40px rgba(0,0,0,.35); }
+  .rzp .approve{ background: linear-gradient(135deg,#22c55e,#16a34a); color:#052e16; }
+  .rzp .hold{ background: linear-gradient(135deg,#60a5fa,#3b82f6); color:#061a33; }
+  .rzp .cancelBtn{ background: linear-gradient(135deg,#fb7185,#ef4444); color:#fff; }
+  .rzp .del{ background: linear-gradient(135deg,#ef4444,#dc2626); color:#fff; }
+
+  .rzp .hidden{ display:none !important; }
+
+  @@media (max-width: 1200px){
+    .rzp .content{ grid-template-columns: 1fr; }
+    .rzp .detail{ position:static; }
+    .rzp .kanban{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @@media (max-width: 720px){
+    .rzp{ padding:1.1rem; }
+    .rzp .kanban{ grid-template-columns: 1fr; }
+  }
+</style>
+}
+
+<div class="rzp">
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+  <div class="grid"></div>
+
+  <div class="wrap">
+
+    <div class="header">
+      <div class="titleBox">
+        <div class="badge"><i class="bi bi-calendar2-check"></i></div>
+        <div>
+          <div class="h1">Rezervasyonlar</div>
+          <div class="sub">Kanban • Timeline • Master-Detail</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panelHead">
+        <p>Rezervasyon yönetimi</p>
+        <span class="chip">Görünen: <span id="visibleCount">0</span> / @all.Count</span>
+
+        <div class="controls">
+          <div class="tabs" id="viewTabs">
+            <button type="button" class="tab active" data-view="kanban">Kanban</button>
+            <button type="button" class="tab" data-view="timeline">Timeline</button>
+          </div>
+
+          <input id="dayPick" class="input" type="date" />
+          <input id="q" class="input" type="search" placeholder="Ad / telefon / email ara..." style="min-width:260px;" />
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- LEFT: Views -->
+        <div class="left">
+          <!-- Kanban View -->
+          <div id="view-kanban">
+            <div class="kanban">
+              <div class="col" data-col="0">
+                <div class="colHead">Bekleyenler <span class="count" data-count="0">0</span></div>
+                <div class="colBody" data-body="0"></div>
+              </div>
+
+              <div class="col" data-col="1">
+                <div class="colHead">Bekletilenler <span class="count" data-count="1">0</span></div>
+                <div class="colBody" data-body="1"></div>
+              </div>
+
+              <div class="col" data-col="2">
+                <div class="colHead">Onaylananlar <span class="count" data-count="2">0</span></div>
+                <div class="colBody" data-body="2"></div>
+              </div>
+
+              <div class="col" data-col="3">
+                <div class="colHead">İptal Edilenler <span class="count" data-count="3">0</span></div>
+                <div class="colBody" data-body="3"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline View -->
+          <div id="view-timeline" class="hidden">
+            <div id="timeline" class="timeline"></div>
+          </div>
+
+          <!-- Hidden data store (render items once) -->
+          <div id="store" class="hidden">
+            @foreach (var rez in all)
+            {
+              var s = rez.RezervationStatus;
+              <div class="store-item"
+                   data-id="@rez.RezervationId"
+                   data-status="@s"
+                   data-name="@rez.FullName"
+                   data-email="@rez.Email"
+                   data-phone="@rez.PhoneNumber"
+                   data-person="@rez.PersonCount"
+                   data-date="@DayISO(rez.RezervationDate)"
+                   data-time="@TimeISO(rez.RezervationClockk)"
+                   data-message="@rez.Message">
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- RIGHT: Master-Detail -->
+        <div class="right">
+          <div class="card detail" id="detail">
+            <div class="dTitle">
+              <h3>Detay</h3>
+              <span class="pillS" id="detailStatus"><span class="dot"></span><span>Seçim yok</span></span>
+            </div>
+
+            <div id="detailEmpty" class="dEmpty">
+              Soldan bir rezervasyon seç. Sağda detaylar ve hızlı işlemler açılacaq.
+            </div>
+
+            <div id="detailBody" class="hidden">
+              <div class="kv">
+                <div class="k">Ad</div><div class="v" id="dName"></div>
+                <div class="k">Email</div><div class="v" id="dEmail"></div>
+                <div class="k">Telefon</div><div class="v" id="dPhone"></div>
+                <div class="k">Tarih</div><div class="v" id="dDate"></div>
+                <div class="k">Saat</div><div class="v" id="dTime"></div>
+                <div class="k">Kişi</div><div class="v" id="dPerson"></div>
+              </div>
+
+              <div class="msg" id="dMsg"></div>
+
+              <div class="actions">
+                <button type="button" class="btnA approve" data-act="Approved">
+                  <i class="bi bi-check2-circle"></i> Onayla
+                </button>
+                <button type="button" class="btnA hold" data-act="Pending">
+                  <i class="bi bi-hourglass-split"></i> Beklet
+                </button>
+                <button type="button" class="btnA cancelBtn" data-act="Canceled">
+                  <i class="bi bi-x-circle"></i> İptal
+                </button>
+                <a class="btnA del" id="delLink" href="#">
+                  <i class="bi bi-trash3"></i> Sil
+                </a>
+              </div>
+
+              <div style="margin-top:.75rem; color:rgba(255,255,255,.65); font-weight:850;">
+                Status dəyişəndə Kanban/Timeline dərhal yenilənir (refresh yoxdur).
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div>
+  </div>
+</div>
+
+@section Scripts{
+<script>
+(function(){
+  // ✅ API base url (SƏNİN PORTA GÖRƏ DƏYİŞ!)
+  const apiBase = "http://localhost:5289"; // <-- səndə fərqli ola bilər
+
+  const storeItems = Array.from(document.querySelectorAll("#store .store-item")).map(el => ({
+    el,
+    id: el.dataset.id,
+    status: Number(el.dataset.status),
+    name: el.dataset.name || "",
+    email: el.dataset.email || "",
+    phone: el.dataset.phone || "",
+    person: el.dataset.person || "",
+    date: el.dataset.date || "",
+    time: el.dataset.time || "",
+    message: el.dataset.message || ""
+  }));
+
+  // UI refs
+  const viewTabs = document.getElementById("viewTabs");
+  const viewKanban = document.getElementById("view-kanban");
+  const viewTimeline = document.getElementById("view-timeline");
+  const timeline = document.getElementById("timeline");
+  const dayPick = document.getElementById("dayPick");
+  const q = document.getElementById("q");
+  const visibleCount = document.getElementById("visibleCount");
+
+  const colBodies = {
+    0: document.querySelector('[data-body="0"]'),
+    1: document.querySelector('[data-body="1"]'),
+    2: document.querySelector('[data-body="2"]'),
+    3: document.querySelector('[data-body="3"]')
+  };
+
+  // detail refs
+  const detailEmpty = document.getElementById("detailEmpty");
+  const detailBody = document.getElementById("detailBody");
+  const detailStatus = document.getElementById("detailStatus");
+  const dName = document.getElementById("dName");
+  const dEmail = document.getElementById("dEmail");
+  const dPhone = document.getElementById("dPhone");
+  const dDate = document.getElementById("dDate");
+  const dTime = document.getElementById("dTime");
+  const dPerson = document.getElementById("dPerson");
+  const dMsg = document.getElementById("dMsg");
+  const delLink = document.getElementById("delLink");
+
+  let selectedId = null;
+  let activeView = "kanban";
+
+  // helpers
+  const statusText = (s) => ({0:"Bekliyor",1:"Beklet",2:"Onaylandı",3:"İptal"}[s] ?? "Bilinmiyor");
+  const statusClass = (s) => s===2 ? "s2" : (s===3 ? "s3" : (s===1 ? "s1" : "s0"));
+
+  const matchesFilter = (it) => {
+    const day = (dayPick.value || "").trim();
+    const query = (q.value || "").trim().toLowerCase();
+
+    const dayOk = !day || it.date === day;
+
+    if(!query) return dayOk;
+    const hay = (it.name+" "+it.email+" "+it.phone).toLowerCase();
+    return dayOk && hay.includes(query);
+  };
+
+  function setVisibleCount(n){
+    if(visibleCount) visibleCount.textContent = String(n);
+  }
+
+  function updateColumnCounts(visibleItems){
+    const counts = {0:0,1:0,2:0,3:0};
+    visibleItems.forEach(it => counts[it.status] = (counts[it.status] || 0) + 1);
+
+    [0,1,2,3].forEach(s => {
+      const el = document.querySelector(`[data-count="${s}"]`);
+      if(el) el.textContent = String(counts[s] || 0);
+    });
+  }
+
+  // build card element
+  function buildCard(it){
+    const card = document.createElement("div");
+    card.className = `card item ${statusClass(it.status)}`;
+    card.dataset.id = it.id;
+    card.dataset.status = String(it.status);
+
+    if(selectedId === it.id) card.classList.add("active");
+
+    card.innerHTML = `
+      <div class="row1">
+        <div>
+          <div class="name">${escapeHtml(it.name || "—")}</div>
+          <div class="meta">${escapeHtml(it.phone || "")}</div>
+        </div>
+        <span class="pillS ${statusClass(it.status)}">
+          <span class="dot"></span>
+          <span>${statusText(it.status)}</span>
+        </span>
+      </div>
+      <div class="meta" style="margin-top:.55rem;">
+        <b>${escapeHtml(it.date)}</b> • ${escapeHtml(it.time)} • ${escapeHtml(String(it.person))} kişi
+      </div>
+    `;
+
+    card.addEventListener("click", () => selectItem(it.id));
+    return card;
+  }
+
+  function buildTimelineGroup(time, items){
+    const slot = document.createElement("div");
+    slot.className = "slot";
+    slot.innerHTML = `
+      <div class="slotHead">
+        <div class="slotTime">${escapeHtml(time)}</div>
+        <div style="color:rgba(255,255,255,.70); font-weight:850;">${items.length} kayıt</div>
+      </div>
+      <div class="slotBody"></div>
+    `;
+    const body = slot.querySelector(".slotBody");
+    items.forEach(it => body.appendChild(buildCard(it)));
+    return slot;
+  }
+
+  function render(){
+    const visible = storeItems.filter(matchesFilter);
+
+    setVisibleCount(visible.length);
+    updateColumnCounts(visible);
+
+    // clear kanban bodies
+    Object.values(colBodies).forEach(b => b.innerHTML = "");
+    visible.forEach(it => {
+      const b = colBodies[it.status];
+      if(b) b.appendChild(buildCard(it));
+    });
+
+    // timeline render (group by time for selected day)
+    timeline.innerHTML = "";
+    const visibleForTimeline = visible
+      .sort((a,b) => a.time.localeCompare(b.time));
+
+    const groups = new Map();
+    visibleForTimeline.forEach(it => {
+      const k = it.time || "—";
+      if(!groups.has(k)) groups.set(k, []);
+      groups.get(k).push(it);
+    });
+
+    for(const [time, items] of groups.entries()){
+      timeline.appendChild(buildTimelineGroup(time, items));
+    }
+
+    // keep selection highlight if still visible
+    if(selectedId && !visible.some(x => x.id === selectedId)){
+      clearSelection();
+    } else {
+      // re-apply active class to cards after render
+      document.querySelectorAll(`.item[data-id="${selectedId}"]`).forEach(el => el.classList.add("active"));
+    }
+  }
+
+  function clearSelection(){
+    selectedId = null;
+    detailEmpty.classList.remove("hidden");
+    detailBody.classList.add("hidden");
+    detailStatus.innerHTML = `<span class="dot"></span><span>Seçim yok</span>`;
+    document.querySelectorAll(".item.active").forEach(el => el.classList.remove("active"));
+  }
+
+  function selectItem(id){
+    selectedId = String(id);
+    const it = storeItems.find(x => x.id === selectedId);
+    if(!it) return;
+
+    document.querySelectorAll(".item.active").forEach(el => el.classList.remove("active"));
+    document.querySelectorAll(`.item[data-id="${selectedId}"]`).forEach(el => el.classList.add("active"));
+
+    detailEmpty.classList.add("hidden");
+    detailBody.classList.remove("hidden");
+
+    dName.textContent = it.name || "";
+    dEmail.textContent = it.email || "";
+    dPhone.textContent = it.phone || "";
+    dDate.textContent = it.date || "";
+    dTime.textContent = it.time || "";
+    dPerson.textContent = it.person || "";
+    dMsg.textContent = it.message || "—";
+
+    // delete link (UI MVC route)
+    delLink.href = `/Rezervation/DeleteRezervation/${it.id}`;
+
+    // status pill
+    detailStatus.className = `pillS ${statusClass(it.status)}`;
+    detailStatus.innerHTML = `<span class="dot"></span><span>${statusText(it.status)}</span>`;
+  }
+
+  // tabs
+  viewTabs.addEventListener("click", (e) => {
+    const btn = e.target.closest(".tab");
+    if(!btn) return;
+    activeView = btn.dataset.view;
+
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+
+    if(activeView === "kanban"){
+      viewKanban.classList.remove("hidden");
+      viewTimeline.classList.add("hidden");
+    } else {
+      viewKanban.classList.add("hidden");
+      viewTimeline.classList.remove("hidden");
+    }
+  });
+
+  // filters
+  dayPick.addEventListener("input", render);
+  q.addEventListener("input", render);
+
+  // set default day: today (optional)
+  // dayPick.value = new Date().toISOString().slice(0,10);
+
+  // status change (AJAX)
+  document.getElementById("detail").addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-act]");
+    if(!btn) return;
+    if(!selectedId) return;
+
+    const statusKey = btn.getAttribute("data-act"); // Approved | Pending | Canceled
+    btn.disabled = true;
+
+    try{
+      const url = `${apiBase}/api/Rezervations/ChangeStatus/${selectedId}?status=${encodeURIComponent(statusKey)}`;
+      const res = await fetch(url, { method: "PUT", headers: { "accept": "application/json" } });
+
+      if(!res.ok) throw new Error("Status update failed");
+
+      // server returns dto/entity -> we only need new status, but keep robust:
+      const data = await res.json().catch(()=>null);
+
+      // derive new status int from our mapping:
+      const newStatus = (statusKey === "Approved") ? 2 : (statusKey === "Pending" ? 1 : 3);
+
+      const it = storeItems.find(x => x.id === selectedId);
+      if(it){
+        it.status = newStatus;
+        it.el.dataset.status = String(newStatus);
+      }
+
+      // re-render and re-select
+      render();
+      selectItem(selectedId);
+
+    }catch(err){
+      console.error(err);
+      alert("Status değişmedi. API adresi/port veya CORS kontrol et.");
+    }finally{
+      btn.disabled = false;
+    }
+  });
+
+  function escapeHtml(s){
+    return String(s ?? "")
+      .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+  }
+
+  // init
+  render();
+})();
+</script>
+}

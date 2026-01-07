@@ -1,3 +1,5 @@
+using YummyAPI.Entities;
+
 namespace YummyAPI.DTOs.RezervationDTO
 {
     public class CreateRezervationDto
@@ -8,6 +10,8 @@ namespace YummyAPI.DTOs.RezervationDTO
         public TimeOnly Date { get; set; }
         public DateOnly Clock { get; set; }
         public int PersonCount { get; set; }
-        public bool RezervationStatus { get; set; } = false;
+        public RezervationStatus RezervationStatus { get; set; }
+
+
     }
 }

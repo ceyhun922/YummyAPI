@@ -11,7 +11,7 @@ namespace YummyAPI.Controllers
 
     public class RezervationsController : ControllerBase
     {
-         private readonly ApiContext _context;
+        private readonly ApiContext _context;
         private readonly IMapper _mapper;
 
         public RezervationsController(ApiContext context, IMapper mapper)
@@ -70,5 +70,40 @@ namespace YummyAPI.Controllers
 
             return Ok(mapper);
         }
+
+        [HttpGet("ApprovedRezervastion")]
+        public IActionResult ApprovedRezervastion()
+        {
+            var value = _context.Rezervations?.Where(x => x.RezervationStatus == RezervationStatus.Approved).ToList(); ;
+            return Ok(value);
+        }
+
+        [HttpPut("ChangeStatus/{id}")]
+        public IActionResult ChangeStatus(int id, [FromQuery] string status)
+        {
+            var rez = _context.Rezervations?.Find(id);
+            if (rez == null) return NotFound();
+
+            var map = new Dictionary<string, RezervationStatus>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["Approved"] = RezervationStatus.Approved,
+                ["Pending"] = RezervationStatus.OnHold,
+                ["Canceled"] = RezervationStatus.Canceled
+            };
+
+            rez.RezervationStatus = map.TryGetValue(status, out var newStatus)
+                ? newStatus
+                : RezervationStatus.Pending;
+
+            _context.SaveChanges();
+
+            // istəsən entity qaytar:
+            // return Ok(rez);
+
+            // daha yaxşısı: DTO qaytar
+            var dto = _mapper.Map<ResultRezervationDto>(rez);
+            return Ok(dto);
+        }
+
     }
 }

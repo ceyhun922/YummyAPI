@@ -74,6 +74,12 @@ namespace YummyUI.Controllers
             }
             return RedirectToAction("OrganizationList");
         }
+
+        public async Task<IActionResult> DeleteOrganization(int id)
+        {
+            var client =_httpClientFactory.CreateClient();
+            await client.DeleteAsync($"http://localhost:5289/api/Organizations?id={id}");
+            return RedirectToAction("OrganizationList");
+        }
     }
 }
-//http://localhost:5289/api/Organizations/2

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YummyAPI.Context;
 
@@ -11,9 +12,11 @@ using YummyAPI.Context;
 namespace YummyAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20260106095914_mig-7")]
+    partial class mig7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -358,8 +361,8 @@ namespace YummyAPI.Migrations
                     b.Property<DateOnly>("RezervationDate")
                         .HasColumnType("date");
 
-                    b.Property<int>("RezervationStatus")
-                        .HasColumnType("int");
+                    b.Property<bool>("RezervationStatus")
+                        .HasColumnType("bit");
 
                     b.HasKey("RezervationId");
 
