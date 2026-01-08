@@ -196,7 +196,6 @@
     object-fit:cover;
     display:block;
   }
-  /* initial fallback if image fails */
   .t-initial{
     position:absolute; inset:0;
     display:grid; place-items:center;
@@ -235,6 +234,7 @@
     text-overflow: ellipsis;
   }
 
+  /* ✅ status = button */
   .t-status{
     margin-left: auto;
     display:inline-flex;
@@ -248,7 +248,11 @@
     border: 1px solid rgba(255,255,255,.12);
     background: rgba(255,255,255,.06);
     color: rgba(255,255,255,.86);
+    cursor:pointer;
+    transition: transform .15s ease, background .15s ease;
   }
+  .t-status:hover{ transform: translateY(-1px); background: rgba(255,255,255,.09); }
+  .t-status:disabled{ opacity:.6; cursor:not-allowed; transform:none; }
 
   .dot{
     width:10px;
@@ -257,7 +261,7 @@
     background: rgba(245,158,11,.95);
     box-shadow: 0 0 18px rgba(245,158,11,.55);
   }
-  .active .dot{
+  .t-status.active .dot{
     background: rgba(34,197,94,.95);
     box-shadow: 0 0 18px rgba(34,197,94,.55);
   }
@@ -269,7 +273,6 @@
     margin: 0;
   }
 
-  /* nice quote style */
   .t-quote{
     position: relative;
     padding-left: 1.1rem;
@@ -285,7 +288,6 @@
     text-shadow: 0 10px 25px rgba(102,126,234,.35);
   }
 
-  /* clamp + read more */
   .t-clamp{
     display:-webkit-box;
     -webkit-line-clamp:3;
@@ -332,7 +334,6 @@
   .btn-del{ background: linear-gradient(135deg,#ef4444,#dc2626); }
   .btn-edit{ background: linear-gradient(135deg,#fbbf24,#f59e0b); color:#1a1a1a; }
 
-  /* empty state */
   .empty-state{
     border-radius: 28px;
     border: 1px solid rgba(255,255,255,.12);
@@ -350,6 +351,24 @@
   }
   .empty-state p{ margin:0 0 1.2rem 0; color: rgba(255,255,255,.70); }
 
+  /* ✅ toast */
+  .toast{
+    position:fixed; right:18px; bottom:18px;
+    padding:12px 14px; border-radius:16px;
+    background:rgba(15,23,42,.72);
+    border:1px solid rgba(255,255,255,.14);
+    backdrop-filter:blur(14px);
+    color:rgba(255,255,255,.9);
+    box-shadow:0 30px 70px rgba(0,0,0,.5);
+    display:none; gap:10px; align-items:flex-start;
+    max-width:340px; z-index:9999;
+  }
+  .toast.show{ display:flex; animation: pop .18s ease-out; }
+  @@keyframes pop{ from{ transform:translateY(8px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
+  .toast .t-title{ font-weight:900; margin:0; font-size:.9rem; }
+  .toast .t-desc{ margin:.15rem 0 0; color:rgba(255,255,255,.72); font-weight:650; font-size:.85rem; }
+  .toast .x{ margin-left:auto; cursor:pointer; opacity:.85; }
+
   @@media (max-width: 900px){
     .ai-powered-container{ padding: 1.1rem; }
     .page-title{ font-size: 1.6rem; }
@@ -361,6 +380,11 @@
   <div class="orb b"></div>
   <div class="orb c"></div>
   <div class="grid-overlay"></div>
+
+  <!-- ✅ global token -->
+  <form id="antiForgeryForm" style="display:none;">
+    @Html.AntiForgeryToken()
+  </form>
 
   <div class="content-wrapper">
     <div class="page-header">
@@ -414,10 +438,14 @@
                 <p class="t-title">@item.TestimonialTitle</p>
               </div>
 
-              <div class="t-status @(item.TestimonialStatus ? "active" : "")">
+              <!-- ✅ Toggle status button -->
+              <button type="button"
+                      class="t-status js-toggle @(item.TestimonialStatus ? "active" : "")"
+                      data-id="@item.TestimonialId"
+                      data-post="@Url.Action("ChangeTestimonialStatus","Testimonial", new { id = item.TestimonialId })">
                 <span class="dot"></span>
                 @(item.TestimonialStatus ? "Aktif" : "Pasif")
-              </div>
+              </button>
             </div>
 
             <div class="t-quote">
@@ -457,22 +485,49 @@
       </div>
     }
   </div>
+
+  <!-- ✅ Toast -->
+  <div class="toast" id="toast">
+    <div>
+      <p class="t-title" id="tTitle">Bildirim</p>
+      <p class="t-desc" id="tDesc">İşlem tamamlandı.</p>
+    </div>
+    <div class="x" id="tClose">✖</div>
+  </div>
 </div>
 
 @section Scripts{
 <script>
 (function(){
-  // Search + Filter
+  // ===== Toast =====
+  const toastEl = document.getElementById("toast");
+  const tTitle  = document.getElementById("tTitle");
+  const tDesc   = document.getElementById("tDesc");
+  const tClose  = document.getElementById("tClose");
+
+  function toast(title, desc){
+    if(!toastEl) return;
+    tTitle.textContent = title || "Bildirim";
+    tDesc.textContent  = desc || "";
+    toastEl.classList.add("show");
+    clearTimeout(window.__t);
+    window.__t = setTimeout(()=> toastEl.classList.remove("show"), 2600);
+  }
+  tClose?.addEventListener("click", ()=> toastEl?.classList.remove("show"));
+
+  // ✅ AntiForgery token
+  const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value || "";
+
+  // ===== Search + Filter =====
   const search = document.getElementById("TSearch");
   const chips = document.querySelectorAll(".t-chip");
-  const cards = Array.from(document.querySelectorAll(".t-card"));
 
   let currentFilter = "all";
 
   function apply(){
     const q = (search?.value || "").trim().toLowerCase();
-    cards.forEach(c=>{
-      const st = c.getAttribute("data-status");
+    document.querySelectorAll(".t-card").forEach(c=>{
+      const st = c.getAttribute("data-status") || "passive";
       const txt = c.getAttribute("data-text") || "";
       const okFilter = (currentFilter==="all") || (st===currentFilter);
       const okSearch = !q || txt.includes(q);
@@ -480,66 +535,119 @@
     });
   }
 
-  if(search){
-    search.addEventListener("input", apply);
-  }
+  search?.addEventListener("input", apply);
 
   chips.forEach(ch=>{
     ch.addEventListener("click", ()=>{
       chips.forEach(x=>x.classList.remove("active"));
       ch.classList.add("active");
-      currentFilter = ch.getAttribute("data-filter");
+      currentFilter = ch.getAttribute("data-filter") || "all";
       apply();
     });
   });
 
-  // Read more / less
-  document.querySelectorAll(".t-more").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const id = btn.getAttribute("data-target");
-      const p = document.getElementById(id);
-      if(!p) return;
+  // ===== Read more / less (delegation) =====
+  document.addEventListener("click", (e)=>{
+    const btn = e.target.closest(".t-more");
+    if(!btn) return;
 
-      const isClamped = p.classList.contains("t-clamp");
-      if(isClamped){
-        p.classList.remove("t-clamp");
-        btn.textContent = "Daha az";
-      }else{
-        p.classList.add("t-clamp");
-        btn.textContent = "Daha çox";
-      }
-    });
+    const id = btn.getAttribute("data-target");
+    const p = document.getElementById(id);
+    if(!p) return;
+
+    const isClamped = p.classList.contains("t-clamp");
+    if(isClamped){
+      p.classList.remove("t-clamp");
+      btn.textContent = "Daha az";
+    }else{
+      p.classList.add("t-clamp");
+      btn.textContent = "Daha çox";
+    }
   });
 
-  // SweetAlert2 delete confirm (layoutta sweetalert2 yüklü olmalıdır)
-  document.querySelectorAll(".js-del").forEach(a=>{
-    a.addEventListener("click", async ()=>{
-      const id = a.getAttribute("data-id");
-      const name = a.getAttribute("data-name") || "Kayıt";
+  // ===== Delete confirm (delegation) =====
+  document.addEventListener("click", async (e)=>{
+    const a = e.target.closest(".js-del");
+    if(!a) return;
 
-      if (typeof Swal === "undefined") {
-        // fallback
-        if (confirm(name + " yorumu silinsin mi?")) {
-          window.location.href = `/Testimonial/DeleteTestimonial/${id}`;
-        }
-        return;
-      }
+    const id = a.getAttribute("data-id");
+    const name = a.getAttribute("data-name") || "Kayıt";
 
-      const res = await Swal.fire({
-        title: "Silinsin mi?",
-        html: `<div style="opacity:.9"><b>${name}</b> yorumu silinecek.</div>`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Evet, sil",
-        cancelButtonText: "Vazgeç",
-        confirmButtonColor: "#ef4444"
-      });
-
-      if(res.isConfirmed){
+    if (typeof Swal === "undefined") {
+      if (confirm(name + " yorumu silinsin mi?")) {
         window.location.href = `/Testimonial/DeleteTestimonial/${id}`;
       }
+      return;
+    }
+
+    const res = await Swal.fire({
+      title: "Silinsin mi?",
+      html: `<div style="opacity:.9"><b>${name}</b> yorumu silinecek.</div>`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Evet, sil",
+      cancelButtonText: "Vazgeç",
+      confirmButtonColor: "#ef4444"
     });
+
+    if(res.isConfirmed){
+      window.location.href = `/Testimonial/DeleteTestimonial/${id}`;
+    }
   });
+
+  // ===== ✅ Toggle Status (NO refresh) =====
+  async function toggleStatus(btn){
+    const url = btn.getAttribute("data-post");
+    if(!url) return;
+
+    btn.disabled = true;
+
+    try{
+      const res = await fetch(url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "RequestVerificationToken": token }
+      });
+
+      const raw = await res.text();
+      if(!res.ok) throw new Error(`HTTP ${res.status} -> ${raw}`);
+
+      let data;
+      try { data = JSON.parse(raw); }
+      catch { throw new Error("JSON parse failed -> " + raw); }
+
+      if(!data || data.success !== true)
+        throw new Error(data?.message || "Operation failed");
+
+      const card = btn.closest(".t-card");
+      const isActive = data.status === true;
+
+      // UI update
+      btn.classList.toggle("active", isActive);
+      btn.innerHTML = `<span class="dot"></span> ${isActive ? "Aktif" : "Pasif"}`;
+
+      // filter data update
+      card?.setAttribute("data-status", isActive ? "active" : "passive");
+
+      toast("Durum güncellendi", data.message || (isActive ? "Aktif edildi." : "Pasife alındı."));
+      apply();
+
+    }catch(err){
+      console.error("TOGGLE ERROR:", err);
+      toast("Hata", err.message || "Durum güncellenemedi.");
+    }finally{
+      btn.disabled = false;
+    }
+  }
+
+  document.addEventListener("click", (e)=>{
+    const btn = e.target.closest(".js-toggle");
+    if(!btn) return;
+    toggleStatus(btn);
+  });
+
+  // init
+  apply();
 })();
 </script>
 }

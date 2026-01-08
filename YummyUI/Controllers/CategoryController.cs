@@ -15,6 +15,13 @@ namespace YummyUI.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+        private class ToggleStatusResponse
+        {
+            public bool success { get; set; }
+            public bool status { get; set; }
+            public string message { get; set; }
+        }
+
         public async Task<IActionResult> CategoryList()
         {
             var list = _httpClientFactory.CreateClient();
@@ -75,20 +82,26 @@ namespace YummyUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CategoryUpdate(GetCategoryByIdDto model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeCategoryStatus(int id)
         {
             var client = _httpClientFactory.CreateClient();
 
-            var jsonData = JsonConvert.SerializeObject(model);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            var response = await client.PutAsync("http://localhost:5289/api/Categories", content);
+            var response = await client.PostAsync(
+                $"http://localhost:5289/api/Categories/toggle-status/{id}",
+                null
+            );
 
             if (!response.IsSuccessStatusCode)
-                return View(model);
+                return Json(new { success = false, message = "API isteği başarısız." });
 
-            return RedirectToAction("CategoryList");
+            var json = await response.Content.ReadAsStringAsync();
+            return Content(json, "application/json");
         }
+
+
+
+
 
 
 

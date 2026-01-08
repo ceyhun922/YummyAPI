@@ -31,7 +31,7 @@ namespace YummyAPI.Controllers
         [HttpGet]
         public IActionResult CategoryList()
         {
-            var values =_context.Categories?.ToList();
+            var values = _context.Categories?.ToList();
             var mapper = _mapper.Map<List<ResultCategoryDTOs>>(values);
             return Ok(mapper);
         }
@@ -39,7 +39,7 @@ namespace YummyAPI.Controllers
         [HttpPut]
         public IActionResult UpdateCategory(UpdateCategoryDTOs updateCategoryDTOs)
         {
-            var values =_mapper.Map<Category>(updateCategoryDTOs);
+            var values = _mapper.Map<Category>(updateCategoryDTOs);
             _context.Categories?.Update(values);
             _context.SaveChanges();
             return Ok();
@@ -47,7 +47,7 @@ namespace YummyAPI.Controllers
         [HttpDelete]
         public IActionResult DeleteCategory(int id)
         {
-            var value =_context.Categories?.Find(id);
+            var value = _context.Categories?.Find(id);
 
             if (value == null)
             {
@@ -62,13 +62,34 @@ namespace YummyAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult GetByIdCategory(int id)
         {
-            var value =_context.Categories?.Find(id);
+            var value = _context.Categories?.Find(id);
             if (value == null)
             {
-                return Ok(new {message ="Bulunamadı"});
+                return Ok(new { message = "Bulunamadı" });
             }
-            var mapper =_mapper.Map<GetCategoryByIdDto>(value);
+            var mapper = _mapper.Map<GetCategoryByIdDto>(value);
             return Ok(mapper);
         }
+
+
+        [HttpPost("toggle-status/{id:int}")]
+        public async Task<IActionResult> ToggleStatus(int id)
+        {
+            var value = await _context.Categories.FindAsync(id);
+            if (value == null)
+                return NotFound(new { success = false, message = "Kategori bulunamadı." });
+
+            value.CategoryStatus = !value.CategoryStatus;
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                success = true,
+                status = value.CategoryStatus,
+                message = value.CategoryStatus ? "Kategori aktif edildi." : "Kategori pasife edildi."
+            });
+        }
+
+
     }
 }

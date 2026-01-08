@@ -1,263 +1,467 @@
 @using YummyUI.DTOs.CategoryDTOs
 @model List<ResultCategoryDto>
 @{
-    Layout = "_AdminLayout";
-    var count = 0;
+  Layout = "_AdminLayout";
 }
 
+@section Styles{
 <style>
-/* ===== AI BACKGROUND ===== */
-.ai-category-container,
-.ai-category-container * {
-  box-sizing: border-box;
-}
+/* ===== BACKGROUND (nebula + stars) ===== */
+.cat-page, .cat-page * { box-sizing:border-box; }
 
-.ai-category-container {
-  min-height: 100%;
-  padding: 1.6rem 2rem;
-  position: relative;
-  overflow: hidden;
+.cat-page{
+  min-height:100%;
+  padding:1.6rem 2rem 2.5rem;
+  position:relative;
+  overflow:hidden;
+  border-radius:22px;
 
   background:
-    radial-gradient(1200px 600px at 70% 80%, rgba(56,189,248,0.25), transparent 60%),
-    radial-gradient(900px 500px at 15% 20%, rgba(139,92,246,0.28), transparent 60%),
-    radial-gradient(800px 420px at 90% 10%, rgba(99,102,241,0.22), transparent 55%),
-    linear-gradient(135deg, #070b1f 0%, #0a1030 40%, #050818 100%);
+    radial-gradient(900px 520px at 55% 55%, rgba(142, 97, 255,.20), transparent 60%),
+    radial-gradient(760px 420px at 75% 35%, rgba(56,189,248,.18), transparent 60%),
+    radial-gradient(700px 380px at 35% 70%, rgba(250,204,21,.10), transparent 55%),
+    linear-gradient(135deg, #070b1f 0%, #0a1030 45%, #050818 100%);
 }
 
-/* floating orbs */
-.orb {
-  position:absolute;
-  border-radius:999px;
-  filter:blur(90px);
-  opacity:.55;
+.cat-page:before{
+  content:"";
+  position:absolute; inset:-40px;
+  background:
+    radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.65) 40%, transparent 41%),
+    radial-gradient(2px 2px at 25% 70%, rgba(255,255,255,.45) 40%, transparent 41%),
+    radial-gradient(1.5px 1.5px at 55% 30%, rgba(255,255,255,.55) 40%, transparent 41%),
+    radial-gradient(1.5px 1.5px at 85% 60%, rgba(255,255,255,.45) 40%, transparent 41%),
+    radial-gradient(2px 2px at 75% 85%, rgba(255,255,255,.50) 40%, transparent 41%);
+  opacity:.35;
+  filter: blur(.2px);
   pointer-events:none;
-  animation: floaty 14s ease-in-out infinite;
-}
-.orb.a { width:480px;height:480px;left:-150px;top:-150px;background:rgba(139,92,246,.45); }
-.orb.b { width:420px;height:420px;right:-160px;top:120px;background:rgba(56,189,248,.40);animation-delay:3s; }
-.orb.c { width:520px;height:520px;left:35%;bottom:-240px;background:rgba(99,102,241,.35);animation-delay:6s; }
-
-@@keyframes floaty {
-  0%,100% { transform:translate(0,0) scale(1); }
-  50% { transform:translate(16px,-12px) scale(1.04); }
 }
 
-/* ===== HEADER ===== */
-.page-header {
+.orb{position:absolute;border-radius:999px;filter:blur(95px);opacity:.55;pointer-events:none;animation:floaty 14s ease-in-out infinite;}
+.orb.a{width:520px;height:520px;left:-170px;top:-170px;background:rgba(139,92,246,.45);}
+.orb.b{width:460px;height:460px;right:-200px;top:80px;background:rgba(56,189,248,.36);animation-delay:3s;}
+.orb.c{width:620px;height:620px;left:30%;bottom:-320px;background:rgba(99,102,241,.30);animation-delay:6s;}
+@@keyframes floaty{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(16px,-12px) scale(1.04);}}
+
+/* ===== TOP BAR (search + pills right) ===== */
+.topbar{
   display:flex;
-  justify-content:space-between;
+  gap:14px;
   align-items:center;
-  margin-bottom:1.4rem;
+  margin-bottom:18px;
 }
 
-.header-left {
+.searchbar{
+  flex:1;
   display:flex;
   align-items:center;
-  gap:.9rem;
+  gap:12px;
+  padding:14px 16px;
+  border-radius:999px;
+  background:rgba(10,14,39,.35);
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+}
+.searchbar .ico{opacity:.85; font-size:18px;}
+.searchbar input{
+  width:100%;
+  background:transparent;
+  border:none;
+  outline:none;
+  color:rgba(255,255,255,.92);
+  font-weight:800;
+  font-size:14px;
 }
 
-.header-badge {
-  width:52px;
-  height:52px;
-  border-radius:16px;
+.pill-group{display:flex; gap:10px; align-items:center;}
+.pill{
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.82);
+  font-weight:900;
+  cursor:pointer;
+  user-select:none;
+  transition:.18s ease;
+  box-shadow: 0 14px 40px rgba(0,0,0,.25);
+}
+.pill:hover{transform:translateY(-1px); filter:brightness(1.05);}
+.pill.active{
+  background:linear-gradient(135deg, rgba(139,92,246,.75), rgba(99,102,241,.65));
+  border-color:rgba(255,255,255,.22);
+  color:#fff;
+  box-shadow: 0 18px 60px rgba(139,92,246,.25);
+}
+
+/* ===== GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap:18px;
+}
+@@media (max-width: 1100px){
+  .grid{grid-template-columns:1fr;}
+}
+
+/* ===== CARD (like screenshot) ===== */
+.card{
+  position:relative;
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(10, 14, 39, .40);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 40px 90px rgba(0,0,0,.45);
+  padding:18px;
+  overflow:hidden;
+}
+
+.card:before{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(900px 220px at 20% 0%, rgba(162, 113, 255,.25), transparent 55%),
+    radial-gradient(700px 240px at 85% 20%, rgba(56,189,248,.18), transparent 60%),
+    radial-gradient(600px 240px at 70% 90%, rgba(250,204,21,.08), transparent 55%);
+  opacity:.9;
+  pointer-events:none;
+}
+
+.card-inner{position:relative; z-index:2;}
+
+.row1{
+  display:flex;
+  align-items:center;
+  gap:14px;
+}
+
+.avatar{
+  width:56px; height:56px;
+  border-radius:18px;
   display:grid;
   place-items:center;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  box-shadow:0 12px 35px rgba(102,126,234,.6);
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  overflow:hidden;
 }
+.avatar span{font-size:22px; opacity:.92;}
 
-.header-badge span {
-  font-size:1.6rem;
+.title{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
 }
-
-.page-title {
+.title h3{
   margin:0;
-  font-size:2rem;
-  font-weight:900;
-  background:linear-gradient(135deg,#ffffff,#a8b9ff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+  font-size:20px;
+  font-weight:1000;
+  color:rgba(255,255,255,.95);
+  letter-spacing:.2px;
+}
+.title p{
+  margin:0;
+  color:rgba(255,255,255,.70);
+  font-weight:750;
 }
 
-/* ===== GLASS CARD ===== */
-.glass-card {
-  background:rgba(15,23,42,.55);
-  border-radius:28px;
-  border:1px solid rgba(255,255,255,.12);
-  backdrop-filter:blur(16px);
-  box-shadow:0 40px 80px rgba(0,0,0,.45);
-  padding:1.4rem;
-}
-
-/* ===== TABLE ===== */
-.table-wrap {
-  overflow:auto;
-}
-
-.ai-table {
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-}
-
-.ai-table thead th {
-  text-align:left;
-  padding:1rem;
-  font-size:.8rem;
-  letter-spacing:.4px;
-  color:rgba(255,255,255,.85);
-  background:rgba(10,14,39,.75);
-  backdrop-filter:blur(12px);
-  position:sticky;
-  top:0;
-  z-index:5;
-}
-
-.ai-table tbody td {
-  padding:1.2rem 1rem;
-  color:rgba(255,255,255,.78);
-  border-bottom:1px solid rgba(255,255,255,.06);
-}
-
-.ai-table tbody tr:hover {
-  background:rgba(102,126,234,.08);
-}
-
-/* ===== STATUS CHIP ===== */
-.status-btn {
-  border:none;
-  padding:.55rem 1.4rem;
-  border-radius:999px;
-  font-weight:800;
-  font-size:.8rem;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.status-btn:hover { transform:translateY(-1px); }
-
-.btn-outline-success {
-  background:linear-gradient(135deg,#22c55e,#16a34a);
-  color:#052e16;
-}
-
-.btn-outline-danger {
-  background:linear-gradient(135deg,#f59e0b,#f97316);
-  color:#1a1a1a;
-}
-
-/* ===== ACTION BUTTONS ===== */
-.action-btn {
-  border:none;
-  padding:.55rem .9rem;
-  border-radius:14px;
-  font-weight:800;
-  font-size:.8rem;
-  cursor:pointer;
-  text-decoration:none;
-  color:#fff;
+/* status chip top-right like screenshot */
+.status-chip{
+  margin-left:auto;
   display:inline-flex;
   align-items:center;
-  gap:.4rem;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  cursor:pointer;
+  font-weight:950;
+  color:rgba(255,255,255,.88);
+  transition:.18s;
+}
+.status-chip:hover{transform:translateY(-1px); filter:brightness(1.05);}
+.status-chip:disabled{opacity:.6; cursor:not-allowed; transform:none;}
+.dot{
+  width:10px;height:10px;border-radius:999px;
+  background:#22c55e;
+  box-shadow:0 0 0 6px rgba(34,197,94,.14);
+}
+.status-chip.passive .dot{
+  background:#f59e0b;
+  box-shadow:0 0 0 6px rgba(245,158,11,.12);
 }
 
-.btn-danger {
+.quote{
+  margin-top:14px;
+  color:rgba(255,255,255,.80);
+  font-weight:750;
+  line-height:1.45;
+  font-size:14px;
+}
+.quote strong{color:rgba(255,255,255,.92);}
+
+.actions{
+  margin-top:16px;
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 16px;
+  border-radius:18px;
+  font-weight:1000;
+  text-decoration:none;
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 18px 55px rgba(0,0,0,.28);
+  transition:.18s;
+}
+.btn:hover{transform:translateY(-1px); filter:brightness(1.04);}
+.btn.danger{
   background:linear-gradient(135deg,#ef4444,#dc2626);
+  color:#fff;
 }
-
-.btn-warning {
+.btn.primary{
   background:linear-gradient(135deg,#fbbf24,#f59e0b);
   color:#1a1a1a;
 }
 
-/* ===== ADD BUTTON ===== */
-.btn-add {
-  margin-top:1.5rem;
+/* ===== FAB add button (optional: like premium) ===== */
+.add-wrap{margin-top:18px; display:flex; justify-content:flex-end;}
+.btn-add{
   display:inline-flex;
   align-items:center;
-  gap:.6rem;
-  padding:1rem 1.5rem;
-  border-radius:16px;
-  font-weight:900;
-  color:#fff;
+  gap:10px;
+  padding:14px 18px;
+  border-radius:20px;
+  font-weight:1000;
+  color:#1a1a1a;
   text-decoration:none;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  box-shadow:0 14px 40px rgba(102,126,234,.6);
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 18px 65px rgba(245,158,11,.25);
 }
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed; right:18px; bottom:18px;
+  padding:14px 16px;
+  border-radius:18px;
+  background:rgba(15,23,42,.78);
+  border:1px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(16px);
+  color:rgba(255,255,255,.92);
+  box-shadow:0 30px 80px rgba(0,0,0,.55);
+  display:none;
+  gap:12px;
+  align-items:flex-start;
+  max-width:380px;
+  z-index:9999;
+}
+.toast.show{display:flex; animation:pop .18s ease-out;}
+@@keyframes pop{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+.toast .t-title{font-weight:1000; margin:0; font-size:16px;}
+.toast .t-desc{margin:.25rem 0 0; color:rgba(255,255,255,.72); font-weight:800; font-size:14px;}
+.toast .x{margin-left:auto; cursor:pointer; opacity:.85; font-weight:900;}
 </style>
+}
 
-<div class="ai-category-container">
-  <div class="orb a"></div>
-  <div class="orb b"></div>
-  <div class="orb c"></div>
+<div class="cat-page">
+  <div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
 
-  <div class="page-header">
-    <div class="header-left">
-      <div class="header-badge"><span>📂</span></div>
-      <h1 class="page-title">Kategoriler</h1>
+  <!-- antiforgery token -->
+  <form id="antiForgeryForm" style="display:none;">
+    @Html.AntiForgeryToken()
+  </form>
+
+  <div class="topbar">
+    <div class="searchbar">
+      <span class="ico">🔎</span>
+      <input id="q" type="text" placeholder="İsim, ünvan, mesajda axtar..." autocomplete="off" />
     </div>
 
-    <a asp-action="CreateCategory" asp-controller="Category" class="btn-add">
-      ➕ Yeni Kategori
-    </a>
+    <div class="pill-group">
+      <div class="pill active" data-filter="all">Hepsi</div>
+      <div class="pill" data-filter="active">Aktif</div>
+      <div class="pill" data-filter="passive">Pasif</div>
+    </div>
   </div>
 
-  <div class="glass-card">
-    @if (Model != null && Model.Any())
-    {
-      <div class="table-wrap">
-        <table class="ai-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Kategori Adı</th>
-              <th>Durum</th>
-              <th>Sil</th>
-              <th>Güncelle</th>
-            </tr>
-          </thead>
-          <tbody>
-            @foreach (var category in Model)
-            {
-              @Html.AntiForgeryToken()
-              <tr>
-                <td>@(++count)</td>
-                <td>@category.CategoryName</td>
-                <td>
-                  <button type="button"
-                          class="status-btn @(category.CategoryStatus ? "btn-outline-danger" : "btn-outline-success")"
-                          data-url="@Url.Action("ChangeCategoryStatus", "Admin", new { id = category.CategoryId })">
-                    @(category.CategoryStatus ? "Pasif Et" : "Aktif Et")
-                  </button>
-                </td>
-                <td>
-                  <a asp-action="CategoryDelete"
-                     asp-controller="Category"
-                     asp-route-id="@category.CategoryId"
-                     class="action-btn btn-danger">
-                    🗑️ Sil
-                  </a>
-                </td>
-                <td>
-                  <a asp-action="CategoryUpdate"
-                     asp-controller="Category"
-                     asp-route-id="@category.CategoryId"
-                     class="action-btn btn-warning">
-                    ✏️ Güncelle
-                  </a>
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    }
-    else
-    {
-      <div style="padding:2rem;color:rgba(255,255,255,.7)">
-        Henüz kategori yok.
-      </div>
-    }
+  @if (Model != null && Model.Any())
+  {
+    <div class="grid" id="grid">
+      @foreach (var category in Model)
+      {
+        <div class="card"
+             data-name="@category.CategoryName"
+             data-status="@(category.CategoryStatus ? "active" : "passive")">
+          <div class="card-inner">
+            <div class="row1">
+              <div class="avatar"><span>📁</span></div>
+
+              <div class="title">
+                <h3>@category.CategoryName</h3>
+                <p>Category</p>
+              </div>
+
+              <button type="button"
+                      class="status-chip @(category.CategoryStatus ? "" : "passive")"
+                      data-post="@Url.Action("ChangeCategoryStatus", "Category", new { id = category.CategoryId })">
+                <span class="dot"></span>
+                <span class="txt">@(category.CategoryStatus ? "Aktif" : "Pasif")</span>
+              </button>
+            </div>
+
+            <div class="quote">
+              <strong>“</strong> Bu kategori hazırda @(category.CategoryStatus ? "aktiv" : "passiv") durumdadır. <strong>”</strong>
+            </div>
+
+            <div class="actions">
+              <a asp-action="CategoryDelete"
+                 asp-controller="Category"
+                 asp-route-id="@category.CategoryId"
+                 class="btn danger">
+                🗑️ Sil
+              </a>
+
+              <a asp-action="CategoryUpdate"
+                 asp-controller="Category"
+                 asp-route-id="@category.CategoryId"
+                 class="btn primary">
+                ✏️ Güncelle
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="add-wrap">
+      <a asp-action="CreateCategory" asp-controller="Category" class="btn-add">➕ Yeni Kategori</a>
+    </div>
+  }
+  else
+  {
+    <div style="margin-top:18px;color:rgba(255,255,255,.75);font-weight:900">
+      Henüz kategori yok.
+    </div>
+  }
+
+  <div class="toast" id="toast">
+    <div>
+      <p class="t-title" id="tTitle">Bildirim</p>
+      <p class="t-desc" id="tDesc">İşlem tamamlandı.</p>
+    </div>
+    <div class="x" id="tClose">✖</div>
   </div>
 </div>
+
+@section Scripts{
+<script>
+(() => {
+  const q = document.getElementById("q");
+  const pills = document.querySelectorAll(".pill");
+  const grid = document.getElementById("grid");
+
+  const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value || "";
+
+  const toastEl = document.getElementById("toast");
+  const tTitle  = document.getElementById("tTitle");
+  const tDesc   = document.getElementById("tDesc");
+  const tClose  = document.getElementById("tClose");
+
+  let activeFilter = "all";
+
+  function toast(title, desc){
+    if (!toastEl) return;
+    tTitle.textContent = title || "Bildirim";
+    tDesc.textContent  = desc || "";
+    toastEl.classList.add("show");
+    clearTimeout(window.__t);
+    window.__t = setTimeout(() => toastEl.classList.remove("show"), 3200);
+  }
+  tClose?.addEventListener("click", () => toastEl.classList.remove("show"));
+
+  function applyFilters(){
+    if(!grid) return;
+    const cards = grid.querySelectorAll(".card");
+    const query = (q?.value || "").toLowerCase().trim();
+
+    cards.forEach(c => {
+      const name = (c.getAttribute("data-name") || "").toLowerCase();
+      const st   = (c.getAttribute("data-status") || "passive");
+
+      const okText = !query || name.includes(query);
+      const okStat = activeFilter === "all" || activeFilter === st;
+
+      c.style.display = (okText && okStat) ? "" : "none";
+    });
+  }
+
+  q?.addEventListener("input", applyFilters);
+
+  pills.forEach(p => {
+    p.addEventListener("click", () => {
+      pills.forEach(x => x.classList.remove("active"));
+      p.classList.add("active");
+      activeFilter = p.getAttribute("data-filter") || "all";
+      applyFilters();
+    });
+  });
+
+  async function toggleStatus(btn){
+    const url = btn.getAttribute("data-post");
+    if(!url) return;
+
+    btn.disabled = true;
+
+    try{
+      const res = await fetch(url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "RequestVerificationToken": token }
+      });
+
+      const raw = await res.text();
+      if(!res.ok) throw new Error(`HTTP ${res.status} -> ${raw}`);
+
+      let data;
+      try { data = JSON.parse(raw); }
+      catch { throw new Error("JSON parse failed -> " + raw); }
+
+      if(!data || data.success !== true)
+        throw new Error(data?.message || "Operation failed");
+
+      const card = btn.closest(".card");
+      const isActive = data.status === true;
+
+      // UI update
+      btn.classList.toggle("passive", !isActive);
+      btn.querySelector(".txt").textContent = isActive ? "Aktif" : "Pasif";
+      card?.setAttribute("data-status", isActive ? "active" : "passive");
+
+      toast("Durum güncellendi", data.message || (isActive ? "Kategori aktif edildi." : "Kategori pasife alındı."));
+      applyFilters();
+
+    }catch(err){
+      console.error("TOGGLE ERROR:", err);
+      toast("Hata", err.message || "Durum güncellenemedi.");
+    }finally{
+      btn.disabled = false;
+    }
+  }
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".status-chip");
+    if(!btn) return;
+    toggleStatus(btn);
+  });
+
+  applyFilters();
+})();
+</script>
+}
