@@ -61,7 +61,7 @@ namespace YummyAPI.Controllers
             _context.Contacts?.Update(mapper);
             _context.SaveChanges();
             return Ok(mapper);
-        } 
+        }
 
         [HttpGet("{id}")]
         public IActionResult GetMessage(int id)
@@ -90,15 +90,29 @@ namespace YummyAPI.Controllers
         [HttpPost("message/message-archive")]
         public async Task<IActionResult> MessageMoveToArchive(int id)
         {
-            var msj =await _context.Contacts.FindAsync(id);
+            var msj = await _context.Contacts.FindAsync(id);
             if (msj == null)
             {
-                return Ok(new {success = false, message ="Mesaj bulunmadı"});
+                return Ok(new { success = false, message = "Mesaj bulunmadı" });
             }
             msj.messageBox = MessageBoxType.Archived;
-            msj.IsRead =false;
+            msj.IsRead = false;
             await _context.SaveChangesAsync();
-            return Ok(new {success =true,message ="Arşive taşındı"});
+            return Ok(new { success = true, message = "Arşive taşındı" });
+        }
+
+        [HttpPost("message/message-restore")]
+        public async Task<IActionResult> MessageRestore(int id)
+        {
+            var msj = await _context.Contacts.FindAsync(id);
+            if (msj == null)
+            {
+                return Ok(new { success = false, message = "Mesaj bulunmadı" });
+            }
+            msj.messageBox =MessageBoxType.Inbox;
+            msj.IsRead =true;
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true, message = "Mesaj Geri Alındı" });
         }
 
         [HttpGet("message/message-achive-list")]
@@ -116,6 +130,15 @@ namespace YummyAPI.Controllers
         {
             var values = _context.Contacts?
                 .Where(x => x.messageBox == MessageBoxType.Trash)
+                .ToList();
+
+            return Ok(values);
+        }
+        [HttpGet("message/message-restore-list")]
+        public IActionResult MessageMoveTorestoreList()
+        {
+            var values = _context.Contacts?
+                .Where(x => x.messageBox == MessageBoxType.Inbox)
                 .ToList();
 
             return Ok(values);

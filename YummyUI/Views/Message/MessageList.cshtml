@@ -4,8 +4,7 @@
 @{
   Layout = "_AdminLayout";
 
-  // server-side: Controller'dan bas
-  var active = (ViewBag.ActiveBox as string ?? "inbox").ToLower(); // inbox | archive | trash
+  var active = (ViewBag.ActiveBox as string ?? "inbox").ToLower();
   int cntInbox = ViewBag.CntInbox ?? 0;
   int cntArchive = ViewBag.CntArchive ?? 0;
   int cntTrash = ViewBag.CntTrash ?? 0;
@@ -533,23 +532,42 @@
               {
                 <form class="actForm" method="post" action="/Message/MessageRestore">
                   <input type="hidden" name="id" value="@m.ContactId" />
+                  <input type="hidden" name="box" value="@active" />
+                  <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
                   <button type="submit" class="btnMini purple">↩ Geri Al</button>
                 </form>
 
+                <button type="button" data-id="@m.ContactId" class="btnMini purple js-archive">Arşivle</button>
+
                 <form class="actForm" method="post" action="/Message/MessageDelete">
                   <input type="hidden" name="id" value="@m.ContactId" />
+                  <input type="hidden" name="box" value="@active" />
+                  <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
                   <button type="submit" class="btnMini danger">🗑 Kalıcı Sil</button>
                 </form>
               }
+              else if (active == "archive")
+              {
+                <form class="actForm" method="post" action="/Message/MessageRestore">
+                  <input type="hidden" name="id" value="@m.ContactId" />
+                  <input type="hidden" name="box" value="@active" />
+                  <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                  <button type="submit" class="btnMini purple">↩ Geri Al</button>
+                </form>
+
+                <button type="button" data-id="@m.ContactId" class="btnMini danger js-trash">🗑 Çöpe Taşı</button>
+
+              }
               else
               {
-                <button type="button" data-id="@m.ContactId" class="btnMini purple js-archive"> Arşivle</button>
+                <button type="button" data-id="@m.ContactId" class="btnMini purple js-archive">Arşivle</button>
 
-                <form class="actForm" method="post" action="/Message/MessageTrash">
-                  <input type="hidden" name="id" value="@m.ContactId" />
-                  <button type="submit" class="btnMini danger">🗑 Çöpe Taşı</button>
-                </form>
+
+                <button type="button" data-id="@m.ContactId" class="btnMini danger js-trash">🗑 Çöpe Taşı</button>
+
               }
+
+
             </div>
           </div>
         }
@@ -596,45 +614,10 @@
       tClose?.addEventListener("click", () => toastEl?.classList.remove("show"));
 
 
-      //----- ARCHIVED FETCH-----
-      document.addEventListener("click", async (e) => {
-        const btn = e.target.closest(".js-archive");
-        if (!btn) return;
-
-        const id = btn.getAttribute("data-id");
-
-        if (!id) return;
-
-        btn.disabled = true;
-
-        try {
-          const res = await fetch("/Message/MessageArchive", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: "id=" + encodeURIComponent(id)
-          });
-
-          if (!res.ok) throw new Error("Server error");
-
-          const item = btn.closest(".item");
-          if (item) item.remove();
-
-          toast("Arşivlendi", "Başarılı");
 
 
 
-        } catch (err) {
-          console.error(err);
-          toast("Arşivlenemedi", "Hata!");
-          btn.disabled = false;
-        }
-
-      })
-
-
-      // ---- Search ----
+      //? ---- Search START----
       const q = document.getElementById("q");
       const list = document.getElementById("list");
       if (!q || !list) return;
@@ -665,6 +648,78 @@
         else toast("İşlem yapılıyor…", "İşleniyor ⏳");
       });
 
+      //----- ARCHIVED FETCH-----
+      document.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".js-archive");
+        if (!btn) return;
+
+        const id = btn.getAttribute("data-id");
+
+        if (!id) return;
+
+        btn.disabled = true;
+
+        try {
+          const res = await fetch("/Message/MessageArchive", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "id=" + encodeURIComponent(id)
+          });
+
+          if (!res.ok) throw new Error("Server error");
+
+          const item = btn.closest(".item");
+          if (item) item.remove();
+
+          toast("Arşivlendi", "Başarılı");
+
+        } catch (err) {
+          console.error(err);
+          toast("Arşivlenemedi", "Hata!");
+          btn.disabled = false;
+        }
+      })
+
+      //------FETCH TRASH START
+      document.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".js-trash")
+        if (!btn) return;
+
+        const id = btn.getAttribute("data-id");
+
+        if (!id) return
+
+        btn.disabled = true;
+
+        try {
+          const res = await fetch("/Message/MessageTrash", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "id=" + encodeURIComponent(id)
+          })
+          if (!res.ok) throw new Error("Server Error")
+
+          const item = btn.closest(".item")
+
+          if (item) item.remove()
+          toast("Çöpe Taşındı", "Başarılı")
+          console.log(item)
+
+
+        } catch (err) {
+          console.error(err)
+          toast("Çöpe taşınırken hata oluştu", "Hata!")
+          btn.disabled = false;
+        }
+      })
+      //------FETCH TRASH END
+
+
+
       // ---- TempData toast (redirect sonrası) ----
       const serverMsg = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ToastMessage"]));
       const serverTitle = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ToastTitle"]));
@@ -672,6 +727,8 @@
       if (serverMsg) {
         toast(serverMsg, serverTitle || "Tamam ✅");
       }
+
+
 
 
     })();

@@ -22,7 +22,6 @@ namespace YummyUI.Controllers
 
             var client = _httpClientFactory.CreateClient();
 
-            // 1) hansı list göstəriləcək?
             string listUrl = box switch
             {
                 "trash" => "http://localhost:5289/api/Contacts/message/message-trash-list",
@@ -30,7 +29,7 @@ namespace YummyUI.Controllers
                 _ => "http://localhost:5289/api/Contacts"
             };
 
-            // 2) list datanı çək
+
             var values = new List<ResultMessageDto>();
             var res = await client.GetAsync(listUrl);
             if (res.IsSuccessStatusCode)
@@ -39,8 +38,6 @@ namespace YummyUI.Controllers
                 values = JsonConvert.DeserializeObject<List<ResultMessageDto>>(json) ?? new();
             }
 
-            // 3) count-ları doldur (ayrı call lazımdır)
-            // inbox count
             var inboxCount = 0;
             var inboxRes = await client.GetAsync("http://localhost:5289/api/Contacts");
             if (inboxRes.IsSuccessStatusCode)
@@ -49,7 +46,6 @@ namespace YummyUI.Controllers
                 inboxCount = (JsonConvert.DeserializeObject<List<ResultMessageDto>>(j) ?? new()).Count;
             }
 
-            // trash count
             var trashCount = 0;
             var trashRes = await client.GetAsync("http://localhost:5289/api/Contacts/message/message-trash-list");
             if (trashRes.IsSuccessStatusCode)
@@ -58,19 +54,19 @@ namespace YummyUI.Controllers
                 trashCount = (JsonConvert.DeserializeObject<List<ResultMessageDto>>(j) ?? new()).Count;
             }
 
-            var achiveCount =0; 
-            var achiveRes =await client.GetAsync("http://localhost:5289/api/Contacts/message/message-achive-list");
+            var achiveCount = 0;
+            var achiveRes = await client.GetAsync("http://localhost:5289/api/Contacts/message/message-achive-list");
             if (achiveRes.IsSuccessStatusCode)
             {
-                var j =await achiveRes.Content.ReadAsStringAsync();
-                achiveCount =(JsonConvert.DeserializeObject<List<ResultMessageDto>>(j) ?? new()).Count;
+                var j = await achiveRes.Content.ReadAsStringAsync();
+                achiveCount = (JsonConvert.DeserializeObject<List<ResultMessageDto>>(j) ?? new()).Count;
             }
 
             ViewBag.CntInbox = inboxCount;
             ViewBag.CntTrash = trashCount;
-            ViewBag.CntArchive = achiveCount; 
+            ViewBag.CntArchive = achiveCount;
 
-            return View(values); 
+            return View(values);
         }
 
 
@@ -97,7 +93,7 @@ namespace YummyUI.Controllers
                 return BadRequest(new { success = false, message = "Taşınamadı" });
 
             TempData["ToastMessage"] = "Çöpe taşındı.";
-            return RedirectToAction("MessageList", new { box = "inbox" });
+            return RedirectToAction("MessageList", new { box = "trash" });
         }
 
         public async Task<IActionResult> MessageDelete(int id)
@@ -120,7 +116,8 @@ namespace YummyUI.Controllers
             if (!res.IsSuccessStatusCode)
                 return BadRequest();
 
-            return Ok(new { success = true });
+            return RedirectToAction("MessageList", new { box = "archive" });
+
         }
 
 
