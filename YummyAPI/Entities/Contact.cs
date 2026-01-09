@@ -11,6 +11,9 @@ namespace YummyAPI.Entities
         public string? Subject { get; set; }
         public string? Message { get; set; }
 
-        public bool IsRead {get;set;}
+        public MessageBoxType messageBox {get;set;}=MessageBoxType.Inbox;
+
+        public bool IsRead {get;set;} =true;
+
     }
 }

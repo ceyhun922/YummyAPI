@@ -1,0 +1,335 @@
+@using YummyUI.DTOs.MessageDTOs
+@model GetByIdMessageDto
+@{
+  Layout = "_AdminLayout";
+}
+
+<form id="antiForgeryForm" style="display:none;">
+  @Html.AntiForgeryToken()
+</form>
+@section Styles{
+<style>
+/* ===== PREMIUM GLASS BASE (same as list) ===== */
+.ai-detail, .ai-detail *{ box-sizing:border-box; }
+.ai-detail{
+  min-height:100%;
+  padding:1.6rem 2rem 2.5rem;
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(1200px 600px at 70% 80%, rgba(56,189,248,.18), transparent 60%),
+    radial-gradient(900px 500px at 15% 20%, rgba(139,92,246,.22), transparent 60%),
+    radial-gradient(800px 420px at 90% 10%, rgba(99,102,241,.18), transparent 55%),
+    linear-gradient(135deg, #070b1f 0%, #0a1030 40%, #050818 100%);
+}
+.orb{position:absolute;border-radius:999px;filter:blur(90px);opacity:.55;pointer-events:none;animation:floaty 14s ease-in-out infinite;}
+.orb.a{width:480px;height:480px;left:-150px;top:-150px;background:rgba(139,92,246,.40);}
+.orb.b{width:420px;height:420px;right:-160px;top:120px;background:rgba(56,189,248,.34);animation-delay:3s;}
+.orb.c{width:520px;height:520px;left:35%;bottom:-240px;background:rgba(99,102,241,.30);animation-delay:6s;}
+@@keyframes floaty{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(16px,-12px) scale(1.04);}}
+
+/* header */
+.head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem;position:relative;z-index:3;}
+.head-left{display:flex;align-items:center;gap:.9rem;}
+.badge{
+  width:56px;height:56px;border-radius:18px;display:grid;place-items:center;
+  background:linear-gradient(135deg, rgba(99,102,241,.55), rgba(139,92,246,.55));
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 18px 50px rgba(99,102,241,.35);
+  backdrop-filter:blur(12px);
+}
+.badge span{font-size:1.7rem;}
+.titles h1{
+  margin:0;font-size:2.1rem;font-weight:900;letter-spacing:.2px;
+  background:linear-gradient(135deg,#ffffff,#a8b9ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.titles p{margin:.2rem 0 0;color:rgba(255,255,255,.65);font-weight:600;}
+
+.actionsTop{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;justify-content:flex-end;}
+.btnMini{
+  border:none;border-radius:14px;padding:.65rem .9rem;
+  font-weight:950;cursor:pointer;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  display:inline-flex;align-items:center;gap:.45rem;
+}
+.btnMini.danger{background:linear-gradient(135deg,#ef4444,#dc2626);border:none;}
+.btnMini.primary{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a1a;border:none;}
+.btnMini.purple{background:linear-gradient(135deg, rgba(99,102,241,.7), rgba(139,92,246,.7));border:none;}
+.btnMini:hover{transform:translateY(-1px);transition:.2s;}
+.btnMini:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+a.btnMini{text-decoration:none}
+
+/* glass container */
+.glass{
+  background:rgba(15,23,42,.55);
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(16px);
+  box-shadow:0 40px 90px rgba(0,0,0,.45);
+  overflow:hidden;
+  position:relative;z-index:3;
+}
+.section{
+  padding:1.1rem 1.2rem;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(180deg, rgba(10,14,39,.45), rgba(10,14,39,.18));
+}
+.grid{
+  display:grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap:1rem;
+}
+@@media (max-width: 980px){ .grid{grid-template-columns:1fr;} }
+
+.card{
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  padding:1rem;
+}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:.55rem .8rem;align-items:start;}
+.k{color:rgba(255,255,255,.65);font-weight:850;}
+.v{color:rgba(255,255,255,.92);font-weight:850;word-break:break-word;}
+
+.tag{
+  padding:.45rem .8rem;border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.82);
+  font-weight:900;font-size:.78rem;
+  display:inline-flex;align-items:center;gap:.45rem;
+}
+.dot{width:10px;height:10px;border-radius:999px;background:rgba(245,158,11,.95);box-shadow:0 0 18px rgba(245,158,11,.55);}
+.tag.read .dot{background:rgba(148,163,184,.95);box-shadow:0 0 18px rgba(148,163,184,.25);}
+.tag.new .dot{background:rgba(245,158,11,.95);box-shadow:0 0 18px rgba(245,158,11,.55);}
+
+.bodyBox{
+  padding:1.2rem;
+}
+.msgTitle{
+  margin:0 0 .35rem 0;
+  color:#fff;
+  font-weight:950;
+  font-size:1.05rem;
+}
+.msgText{
+  white-space:pre-wrap;
+  line-height:1.65;
+  color:rgba(255,255,255,.82);
+  font-weight:650;
+  margin:0;
+}
+
+/* reply */
+.textarea{
+  width:100%;
+  min-height:190px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(7,10,25,.45);
+  color:rgba(255,255,255,.92);
+  padding:.9rem 1rem;
+  outline:none;
+  font-weight:750;
+  resize:vertical;
+}
+.m-actions{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:flex-end;margin-top:.7rem;}
+
+/* toast */
+.toast{
+  position:fixed;right:18px;bottom:18px;
+  padding:12px 14px;border-radius:16px;
+  background:rgba(15,23,42,.72);
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter:blur(14px);
+  color:rgba(255,255,255,.9);
+  box-shadow:0 30px 70px rgba(0,0,0,.5);
+  display:none;gap:10px;align-items:flex-start;
+  max-width:340px;z-index:9999;
+}
+.toast.show{display:flex;animation:pop .18s ease-out;}
+@@keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
+.toast .t-title{font-weight:950;margin:0;font-size:.95rem;}
+.toast .t-desc{margin:.15rem 0 0;color:rgba(255,255,255,.72);font-weight:650;font-size:.85rem;}
+.toast .x{margin-left:auto;cursor:pointer;opacity:.85;}
+</style>
+}
+<div class="ai-detail">
+  <div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
+
+  <div class="head">
+    <div class="head-left">
+      <div class="badge"><span>🧾</span></div>
+      <div class="titles">
+        <h1>Mesaj Detay</h1>
+        <p>Detay • AI cevap alanı • gönderim (UI)</p>
+      </div>
+    </div>
+
+    <div class="actionsTop">
+      <a class="btnMini" asp-action="MessageList">⬅ Geri</a>
+      <button type="button" class="btnMini purple" id="btnArchive">📦 Arşivle</button>
+      <button type="button" class="btnMini danger" id="btnTrash">🗑 Sil</button>
+    </div>
+  </div>
+
+  <div class="glass">
+    <div class="section">
+      <div class="grid">
+        <!-- Left: Sender info -->
+        <div class="card">
+          <div class="kv">
+            <div class="k">İsim</div><div class="v" id="dName">@Model?.FullName</div>
+            <div class="k">Mail</div><div class="v" id="dMail">@Model?.Email</div>
+            <div class="k">Subject</div><div class="v" id="dSubj">@Model?.Subject</div>
+            <div class="k">Tarih</div><div class="v" id="dDate">@Model?.GetDate.ToString("yyyy-MM-dd HH:mm")</div>
+          </div>
+        </div>
+
+        <!-- Right: status -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;">
+            <div class="msgTitle" style="margin:0">Durum</div>
+
+            @{
+              var isRead = Model?.IsRead ?? false;
+              var cls = isRead ? "read" : "new";
+              var txt = isRead ? "Okundu" : "Yeni";
+            }
+            <div class="tag @cls" id="dStatus">
+              <span class="dot"></span> @txt
+            </div>
+          </div>
+
+          <div style="height:10px"></div>
+
+          <div class="kv" style="grid-template-columns:140px 1fr;">
+            <div class="k">Kutu</div><div class="v">@Model?.Message.ToString()</div>
+            <div class="k">Mesaj ID</div><div class="v">@Model?.ContactId</div>
+          </div>
+
+          <div style="margin-top:.9rem;color:rgba(255,255,255,.65);font-weight:750;font-size:.88rem;line-height:1.5">
+            Buradaki butonlar şimdilik UI. Backend ekleyince arşiv/sil aksiyonlarını buraya bağlayacağıq.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message body -->
+    <div class="bodyBox">
+      <h3 class="msgTitle">Mesaj</h3>
+      <p class="msgText" id="dBody">@Model?.Message</p>
+    </div>
+
+    <!-- Reply area -->
+    <div class="section" style="border-bottom:none;">
+      <div class="grid">
+        <div class="card">
+          <h3 class="msgTitle">AI Cevap Alanı</h3>
+          <textarea class="textarea" id="replyBox" placeholder="Buraya AI otomatik cevap gelecek..."></textarea>
+
+          <div class="m-actions">
+            <button type="button" class="btnMini purple" id="btnAI">🤖 AI oto mesaj</button>
+            <button type="button" class="btnMini primary" id="btnSend">📩 Sent mesaj</button>
+          </div>
+
+          <div style="margin-top:.8rem;color:rgba(255,255,255,.65);font-weight:750;font-size:.85rem">
+            “Sent mesaj” backend bağlanınca mail olaraq göndərəcək.
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="msgTitle">Quick Templates</h3>
+          <div style="display:flex;gap:.55rem;flex-wrap:wrap;">
+            <button type="button" class="btnMini" data-tpl="thanks">🙏 Teşekkür</button>
+            <button type="button" class="btnMini" data-tpl="info">ℹ️ Bilgi</button>
+            <button type="button" class="btnMini" data-tpl="pricing">💰 Fiyat</button>
+          </div>
+
+          <div style="margin-top:1rem;color:rgba(255,255,255,.65);font-weight:750;line-height:1.6">
+            Bunlar da UI rahatlığı üçün. İstəsən sonra bunları DB-dən dinamik edərik.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <div>
+      <p class="t-title" id="tTitle">Vaooo ✨</p>
+      <p class="t-desc" id="tDesc">İşlem tamamlandı.</p>
+    </div>
+    <div class="x" id="tClose">✖</div>
+  </div>
+</div>
+
+@section Scripts{
+<script>
+(() => {
+  // toast (UI only)
+  const toastEl = document.getElementById("toast");
+  const tTitle  = document.getElementById("tTitle");
+  const tDesc   = document.getElementById("tDesc");
+  const tClose  = document.getElementById("tClose");
+
+  function toast(desc, title="Vaooo ✨"){
+    if (!toastEl) return;
+    tTitle.textContent = title;
+    tDesc.textContent  = desc || "";
+    toastEl.classList.add("show");
+    clearTimeout(window.__t);
+    window.__t = setTimeout(()=>toastEl.classList.remove("show"), 2200);
+  }
+  tClose?.addEventListener("click", ()=>toastEl.classList.remove("show"));
+
+  // AI placeholder
+  const btnAI = document.getElementById("btnAI");
+  const replyBox = document.getElementById("replyBox");
+
+  btnAI?.addEventListener("click", ()=>{
+    const name = document.getElementById("dName")?.textContent?.trim() || "";
+    const subj = document.getElementById("dSubj")?.textContent?.trim() || "";
+    replyBox.value =
+`Salam ${name},
+
+Mesajınızı aldıq: “${subj}”.
+Qısa zamanda sizə geri dönüş edəcəyik.
+
+Təşəkkürlər!`;
+    toast("AI cavab hazırlandı.");
+  });
+
+  // templates
+  document.addEventListener("click", (e)=>{
+    const b = e.target.closest("[data-tpl]");
+    if(!b) return;
+    const tpl = b.getAttribute("data-tpl");
+    const name = document.getElementById("dName")?.textContent?.trim() || "";
+    if(tpl === "thanks"){
+      replyBox.value = `Salam ${name},\n\nYazdığınız üçün təşəkkür edirik. Sizə tezliklə geri dönüş edəcəyik.\n\nHörmətlə,`;
+    }
+    if(tpl === "info"){
+      replyBox.value = `Salam ${name},\n\nDaha dəqiq məlumat vermək üçün bir neçə detal lazım olacaq. Zəhmət olmasa…\n\nHörmətlə,`;
+    }
+    if(tpl === "pricing"){
+      replyBox.value = `Salam ${name},\n\nQiymətlər və paketlər haqqında məlumat:\n- ...\n\nHörmətlə,`;
+    }
+    toast("Template əlavə olundu.");
+  });
+
+  // UI buttons
+  document.getElementById("btnSend")?.addEventListener("click", ()=>{
+    toast("Gönderim backend bağlanacaq. (UI)");
+  });
+  document.getElementById("btnArchive")?.addEventListener("click", ()=>{
+    toast("Arşivleme backend bağlanacaq. (UI)");
+  });
+  document.getElementById("btnTrash")?.addEventListener("click", ()=>{
+    toast("Silme backend bağlanacak. (UI)");
+  });
+})();
+</script>
+}

@@ -83,6 +83,8 @@ namespace YummyAPI.Mapping
             CreateMap<Contact, ResultContactDto>().ReverseMap();
             CreateMap<Contact, CreateContactDto>().ReverseMap();
             CreateMap<Contact, UpdateContactDto>().ReverseMap();
+            CreateMap<Contact, GetByIdContactDto>().ReverseMap();
+            
 
             //feature
             CreateMap<Feature, ResultFeatureDto>().ReverseMap();

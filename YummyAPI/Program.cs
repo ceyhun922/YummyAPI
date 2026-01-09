@@ -8,6 +8,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddDbContext<ApiContext>();
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy("YummyAPI",policy =>
+    {
+         policy.WithOrigins("http://localhost:5016")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -16,6 +25,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("YummyAPI");
 app.UseHttpsRedirection();
 app.MapControllers();
 

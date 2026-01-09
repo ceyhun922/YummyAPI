@@ -1,3 +1,5 @@
+using YummyAPI.Entities;
+
 namespace YummyAPI.DTOs.ContactDTO
 {
     public class ResultContactDto
@@ -7,5 +9,7 @@ namespace YummyAPI.DTOs.ContactDTO
         public string? Email { get; set; }
         public string? Subject { get; set; }
         public string? Message { get; set; }
+        public MessageBoxType messageBox {get;set;}
+
     }
 }

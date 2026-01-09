@@ -2,9 +2,9 @@ using YummyAPI.Entities;
 
 namespace YummyAPI.DTOs.ContactDTO
 {
-    public class UpdateContactDto
+    public class GetByIdContactDto
     {
-        public int ContactId { get; set; }
+          public int ContactId { get; set; }
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? Subject { get; set; }

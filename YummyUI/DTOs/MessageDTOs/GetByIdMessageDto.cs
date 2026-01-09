@@ -1,15 +1,13 @@
-using YummyAPI.Entities;
-
-namespace YummyAPI.DTOs.ContactDTO
+namespace YummyUI.DTOs.MessageDTOs
 {
-    public class UpdateContactDto
+    public class GetByIdMessageDto
     {
         public int ContactId { get; set; }
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? Subject { get; set; }
         public string? Message { get; set; }
-        public MessageBoxType messageBox {get;set;}
-
+        public DateTime GetDate { get; set; } = DateTime.Now;
+        public bool IsRead { get; set; } = false;
     }
 }
