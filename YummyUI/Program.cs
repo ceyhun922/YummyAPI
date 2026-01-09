@@ -7,8 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 
-builder.Services.Configure<ApiSetting>(
-    builder.Configuration.GetSection("ApiSetting"));
+
+builder.Services.Configure<OpenAISetting>(
+    builder.Configuration.GetSection("OpenAI"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
