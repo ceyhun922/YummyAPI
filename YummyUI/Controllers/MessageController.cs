@@ -26,6 +26,7 @@ namespace YummyUI.Controllers
             string listUrl = box switch
             {
                 "trash" => "http://localhost:5289/api/Contacts/message/message-trash-list",
+                "archive" => "http://localhost:5289/api/Contacts/message/message-achive-list",
                 _ => "http://localhost:5289/api/Contacts"
             };
 
@@ -57,11 +58,19 @@ namespace YummyUI.Controllers
                 trashCount = (JsonConvert.DeserializeObject<List<ResultMessageDto>>(j) ?? new()).Count;
             }
 
+            var achiveCount =0; 
+            var achiveRes =await client.GetAsync("http://localhost:5289/api/Contacts/message/message-achive-list");
+            if (achiveRes.IsSuccessStatusCode)
+            {
+                var j =await achiveRes.Content.ReadAsStringAsync();
+                achiveCount =(JsonConvert.DeserializeObject<List<ResultMessageDto>>(j) ?? new()).Count;
+            }
+
             ViewBag.CntInbox = inboxCount;
             ViewBag.CntTrash = trashCount;
-            ViewBag.CntArchive = 0; // archive endpointin yoxdur hələ
+            ViewBag.CntArchive = achiveCount; 
 
-            return View(values); // MessageList.cshtml
+            return View(values); 
         }
 
 
@@ -91,18 +100,6 @@ namespace YummyUI.Controllers
             return RedirectToAction("MessageList", new { box = "inbox" });
         }
 
-        public async Task<IActionResult> MessageTrashList()
-        {
-            var client = _httpClientFactory.CreateClient();
-            var res = await client.GetAsync("http://localhost:5289/api/Contacts/message/message-trash-list");
-            if (!res.IsSuccessStatusCode)
-                return Json(new List<ResultMessageDto>());
-
-            var json = await res.Content.ReadAsStringAsync();
-            var data = JsonConvert.DeserializeObject<List<ResultMessageDto>>(json);
-            return Json(data);
-        }
-
         public async Task<IActionResult> MessageDelete(int id)
         {
             var client = _httpClientFactory.CreateClient();
@@ -111,7 +108,19 @@ namespace YummyUI.Controllers
             if (!res.IsSuccessStatusCode)
                 return BadRequest(new { success = false, message = "Silinemedi" });
 
-            return RedirectToAction("MessageList");
+            return RedirectToAction("MessageList", new { box = "trash" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MessageArchive(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var res = await client.PostAsync("http://localhost:5289/api/Contacts/message/message-archive?id=" + id, null);
+
+            if (!res.IsSuccessStatusCode)
+                return BadRequest();
+
+            return Ok(new { success = true });
         }
 
 
