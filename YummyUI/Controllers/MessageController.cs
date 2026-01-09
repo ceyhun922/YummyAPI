@@ -45,21 +45,19 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> MessageTrash(int id)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.PostAsync($"http://localhost:5289/api/Contacts/message/MessageTrash?id={id}", null);
+            var response = await client.PostAsync($"http://localhost:5289/api/Contacts/message/message-trash?id={id}", null);
 
             if (!response.IsSuccessStatusCode)
                 return BadRequest(new { success = false, message = "Taşınamadı" });
 
-            TempData["ToastTitle"] = "Başarılı ✅";
-            TempData["ToastMessage"] = "Çöp kutusuna taşındı.";
+            TempData["ToastMessage"] = "Çöpe taşındı.";
             return RedirectToAction("MessageList", new { box = "inbox" });
-
         }
 
         public async Task<IActionResult> MessageTrashList()
         {
             var client = _httpClientFactory.CreateClient();
-            var res = await client.GetAsync("http://localhost:5289/api/Contacts/message/MessageTrashList");
+            var res = await client.GetAsync("http://localhost:5289/api/Contacts/message/message-trash-list");
             if (!res.IsSuccessStatusCode)
                 return Json(new List<ResultMessageDto>());
 
@@ -76,7 +74,7 @@ namespace YummyUI.Controllers
             if (!res.IsSuccessStatusCode)
                 return BadRequest(new { success = false, message = "Silinemedi" });
 
-            return Ok(new { success = true, message = "Kalıcı olarak silindi." });
+           return RedirectToAction("MessageList");
         }
 
 

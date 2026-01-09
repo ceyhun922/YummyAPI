@@ -72,7 +72,7 @@ namespace YummyAPI.Controllers
         }
 
 
-        [HttpPost("message/MessageTrash")]
+        [HttpPost("message/message-trash")]
 
         public async Task<IActionResult> MessageMoveTorash(int id)
         {
@@ -87,7 +87,31 @@ namespace YummyAPI.Controllers
             return Ok(new { success = true, message = "Çöp kutusuna taşındı." });
         }
 
-        [HttpGet("message/MessageTrashList")]
+        [HttpPost("message/message-archive")]
+        public async Task<IActionResult> MessageMoveToArchive(int id)
+        {
+            var msj =await _context.Contacts.FindAsync(id);
+            if (msj == null)
+            {
+                return Ok(new {success = false, message ="Mesaj bulunmadı"});
+            }
+            msj.messageBox = MessageBoxType.Archived;
+            msj.IsRead =false;
+            await _context.SaveChangesAsync();
+            return Ok(new {success =true,message ="Arşive taşındı"});
+        }
+
+        [HttpGet("message/message-achive-list")]
+        public IActionResult MessageMoveToArchiveList()
+        {
+            var values = _context.Contacts?
+                .Where(x => x.messageBox == MessageBoxType.Archived)
+                .ToList();
+
+            return Ok(values);
+        }
+
+        [HttpGet("message/message-trash-list")]
         public IActionResult MessageMoveToTrashList()
         {
             var values = _context.Contacts?

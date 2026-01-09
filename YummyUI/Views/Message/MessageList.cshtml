@@ -209,13 +209,13 @@
         </div>
 
         <div class="tabs">
-          <a class="tab @(active=="inbox" ? "active" : "")" href="/Message/MessageList?box=inbox">
+          <a class="tab @(active=="inbox" ? "active" : "")" href="/message/message-trash?box=inbox">
             Hepsi <span class="count-pill">@cntInbox</span>
           </a>
-          <a class="tab @(active=="archive" ? "active" : "")" href="/Message/MessageList?box=archive">
+          <a class="tab @(active=="archive" ? "active" : "")" href="/message/message-trash-list?box=archive">
             Arşiv <span class="count-pill">@cntArchive</span>
           </a>
-          <a class="tab @(active=="trash" ? "active" : "")" href="/Message/MessageList?box=trash">
+          <a class="tab @(active=="trash" ? "active" : "")" href="/message/message-trash-list?box=trash">
             Çöp <span class="count-pill">@cntTrash</span>
           </a>
         </div>
@@ -351,12 +351,14 @@
   });
 
   // ---- TempData toast (redirect sonrası) ----
-  const serverMsg = "@(TempData["ToastMessage"] ?? "")";
-  const serverTitle = "@(TempData["ToastTitle"] ?? "")";
+const serverMsg = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ToastMessage"]));
+const serverTitle = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["ToastTitle"]));
 
-  if(serverMsg && serverMsg.trim().length > 0){
-    toast(serverMsg, (serverTitle && serverTitle.trim().length > 0) ? serverTitle : "Tamam ✅");
-  }
+if(serverMsg){
+  toast(serverMsg, serverTitle || "Tamam ✅");
+}
+
+
 })();
 </script>
 }
