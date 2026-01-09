@@ -15,18 +15,55 @@ namespace YummyUI.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<IActionResult> MessageList()
+        public async Task<IActionResult> MessageList(string box = "inbox")
         {
+            box = (box ?? "inbox").ToLower().Trim();
+            ViewBag.ActiveBox = box;
+
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:5289/api/Contacts");
-            if (response.IsSuccessStatusCode)
+
+            // 1) hansı list göstəriləcək?
+            string listUrl = box switch
             {
-                var jsonData = await response.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResultMessageDto>>(jsonData);
-                return View(values);
+                "trash" => "http://localhost:5289/api/Contacts/message/message-trash-list",
+                _ => "http://localhost:5289/api/Contacts"
+            };
+
+            // 2) list datanı çək
+            var values = new List<ResultMessageDto>();
+            var res = await client.GetAsync(listUrl);
+            if (res.IsSuccessStatusCode)
+            {
+                var json = await res.Content.ReadAsStringAsync();
+                values = JsonConvert.DeserializeObject<List<ResultMessageDto>>(json) ?? new();
             }
-            return View();
+
+            // 3) count-ları doldur (ayrı call lazımdır)
+            // inbox count
+            var inboxCount = 0;
+            var inboxRes = await client.GetAsync("http://localhost:5289/api/Contacts");
+            if (inboxRes.IsSuccessStatusCode)
+            {
+                var j = await inboxRes.Content.ReadAsStringAsync();
+                inboxCount = (JsonConvert.DeserializeObject<List<ResultMessageDto>>(j) ?? new()).Count;
+            }
+
+            // trash count
+            var trashCount = 0;
+            var trashRes = await client.GetAsync("http://localhost:5289/api/Contacts/message/message-trash-list");
+            if (trashRes.IsSuccessStatusCode)
+            {
+                var j = await trashRes.Content.ReadAsStringAsync();
+                trashCount = (JsonConvert.DeserializeObject<List<ResultMessageDto>>(j) ?? new()).Count;
+            }
+
+            ViewBag.CntInbox = inboxCount;
+            ViewBag.CntTrash = trashCount;
+            ViewBag.CntArchive = 0; // archive endpointin yoxdur hələ
+
+            return View(values); // MessageList.cshtml
         }
+
 
         public async Task<IActionResult> MessageDetail(int id)
         {
@@ -74,7 +111,7 @@ namespace YummyUI.Controllers
             if (!res.IsSuccessStatusCode)
                 return BadRequest(new { success = false, message = "Silinemedi" });
 
-           return RedirectToAction("MessageList");
+            return RedirectToAction("MessageList");
         }
 
 

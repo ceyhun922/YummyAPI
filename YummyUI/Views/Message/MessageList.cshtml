@@ -209,13 +209,13 @@
         </div>
 
         <div class="tabs">
-          <a class="tab @(active=="inbox" ? "active" : "")" href="/message/message-trash?box=inbox">
+          <a class="tab @(active=="inbox" ? "active" : "")" href="/Message/MessageList?box=inbox">
             Hepsi <span class="count-pill">@cntInbox</span>
           </a>
-          <a class="tab @(active=="archive" ? "active" : "")" href="/message/message-trash-list?box=archive">
+          <a class="tab @(active=="archive" ? "active" : "")" href="/Message/MessageList?box=archive">
             Arşiv <span class="count-pill">@cntArchive</span>
           </a>
-          <a class="tab @(active=="trash" ? "active" : "")" href="/message/message-trash-list?box=trash">
+          <a class="tab @(active=="trash" ? "active" : "")" href="/Message/MessageList?box=trash">
             Çöp <span class="count-pill">@cntTrash</span>
           </a>
         </div>
