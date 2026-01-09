@@ -97,10 +97,6 @@ namespace YummyAPI.Controllers
 
             _context.SaveChanges();
 
-            // istəsən entity qaytar:
-            // return Ok(rez);
-
-            // daha yaxşısı: DTO qaytar
             var dto = _mapper.Map<ResultRezervationDto>(rez);
             return Ok(dto);
         }

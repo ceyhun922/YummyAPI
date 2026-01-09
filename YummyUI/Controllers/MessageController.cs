@@ -93,9 +93,9 @@ namespace YummyUI.Controllers
                 return BadRequest(new { success = false, message = "Taşınamadı" });
 
             TempData["ToastMessage"] = "Çöpe taşındı.";
-            return RedirectToAction("MessageList", new { box = "trash" });
+           return Ok();
         }
-
+        [HttpPost]
         public async Task<IActionResult> MessageDelete(int id)
         {
             var client = _httpClientFactory.CreateClient();
@@ -104,7 +104,7 @@ namespace YummyUI.Controllers
             if (!res.IsSuccessStatusCode)
                 return BadRequest(new { success = false, message = "Silinemedi" });
 
-            return RedirectToAction("MessageList", new { box = "trash" });
+            return Ok();
         }
 
         [HttpPost]
@@ -116,7 +116,7 @@ namespace YummyUI.Controllers
             if (!res.IsSuccessStatusCode)
                 return BadRequest();
 
-            return RedirectToAction("MessageList", new { box = "archive" });
+            return Ok();
         }
 
         public async Task<IActionResult> MessageRestore(int id)

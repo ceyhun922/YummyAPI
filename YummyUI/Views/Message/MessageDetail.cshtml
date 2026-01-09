@@ -170,7 +170,8 @@ a.btnMini{text-decoration:none}
 
     <div class="actionsTop">
       <a class="btnMini" asp-action="MessageList">⬅ Geri</a>
-      <button type="button" class="btnMini purple" id="btnArchive">📦 Arşivle</button>
+                      <button type="button" data-id="@Model.ContactId" class="btnMini purple js-archive">Arşivle</button>
+
       <button type="button" class="btnMini danger" id="btnTrash">🗑 Sil</button>
     </div>
   </div>
