@@ -117,7 +117,18 @@ namespace YummyUI.Controllers
                 return BadRequest();
 
             return RedirectToAction("MessageList", new { box = "archive" });
+        }
 
+        public async Task<IActionResult> MessageRestore(int id)
+        {
+            var client =_httpClientFactory.CreateClient();
+            var res = await client.PostAsync("http://localhost:5289/api/Contacts/message/message-restore?id="+id,null);
+            if (!res.IsSuccessStatusCode)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
         }
 
 

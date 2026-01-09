@@ -530,12 +530,8 @@
 
               @if (active == "trash")
               {
-                <form class="actForm" method="post" action="/Message/MessageRestore">
-                  <input type="hidden" name="id" value="@m.ContactId" />
-                  <input type="hidden" name="box" value="@active" />
-                  <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                  <button type="submit" class="btnMini purple">↩ Geri Al</button>
-                </form>
+                <button type="submit" data-id="@m.ContactId" class="btnMini purple js-restore">↩ Geri Al</button>
+
 
                 <button type="button" data-id="@m.ContactId" class="btnMini purple js-archive">Arşivle</button>
 
@@ -548,12 +544,8 @@
               }
               else if (active == "archive")
               {
-                <form class="actForm" method="post" action="/Message/MessageRestore">
-                  <input type="hidden" name="id" value="@m.ContactId" />
-                  <input type="hidden" name="box" value="@active" />
-                  <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                  <button type="submit" class="btnMini purple">↩ Geri Al</button>
-                </form>
+
+                <button type="button" data-id="@m.ContactId" class="btnMini purple js-restore">↩ Geri Al</button>
 
                 <button type="button" data-id="@m.ContactId" class="btnMini danger js-trash">🗑 Çöpe Taşı</button>
 
@@ -718,6 +710,41 @@
       })
       //------FETCH TRASH END
 
+      //-----FETCH RESTORE START-----
+
+      
+      document.addEventListener("click", async (e)=>{
+        const btn = e.target.closest(".js-restore")
+        if (!btn) return;
+
+        const id = btn.getAttribute("data-id")
+        if (!id) return;
+        btn.disabled = true;
+
+        try {
+          var res =await fetch("/Message/MessageRestore",{
+            method : "POST",
+            headers : {
+              "Content-Type" : "application/x-www-form-urlencoded"
+            },
+            body : "id=" + encodeURIComponent(id)
+          })
+
+          if(!res.ok) throw new Error("Server Error")
+
+          var item =btn.closest(".item")
+
+          if(item) item.remove()
+            toast("Mesaj geri alındı.", "Başarılı");
+          console.log(item)
+
+        } catch (err) {
+          btn.disabled = false;
+          console.error(err)
+          toast("Geri alma başarısız", "Hata!")
+        }
+      })
+      //-----FETCH RESTORE end-----
 
 
       // ---- TempData toast (redirect sonrası) ----
