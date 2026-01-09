@@ -28,19 +28,11 @@ namespace YummyAPI.Controllers
             return Ok(mapper);
         }
 
-        /*         [HttpGet("ContactListIsReadFalse")]
-                public IActionResult ContactListIsReadFalse()
-                {
-                    var values = _context.Contacts?.Where(x => x.IsRead == false).ToList().Take(2);
-
-                    return Ok(values);
-                } */
-
         [HttpPost]
         public IActionResult ContactCreate(CreateContactDto createContactDto)
         {
-            var mapper = _mapper.Map<Contact>(createContactDto);
             createContactDto.messageBox = MessageBoxType.Inbox;
+            var mapper = _mapper.Map<Contact>(createContactDto);
             _context.Contacts?.Add(mapper);
             _context.SaveChanges();
 
@@ -58,18 +50,18 @@ namespace YummyAPI.Controllers
             return Ok();
         }
 
-        /*         [HttpPut]
-                public IActionResult ContactUpdate(UpdateContactDto updateContactDto)
-                {
-                    var mapper = _mapper.Map<Contact>(updateContactDto);
-                    if (mapper == null)
-                    {
-                        return Ok(mapper);
-                    }
-                    _context.Contacts?.Update(mapper);
-                    _context.SaveChanges();
-                    return Ok(mapper);
-                } */
+        [HttpPut]
+        public IActionResult ContactUpdate(UpdateContactDto updateContactDto)
+        {
+            var mapper = _mapper.Map<Contact>(updateContactDto);
+            if (mapper == null)
+            {
+                return Ok(mapper);
+            }
+            _context.Contacts?.Update(mapper);
+            _context.SaveChanges();
+            return Ok(mapper);
+        } 
 
         [HttpGet("{id}")]
         public IActionResult GetMessage(int id)
@@ -102,7 +94,7 @@ namespace YummyAPI.Controllers
                 .Where(x => x.messageBox == MessageBoxType.Trash)
                 .ToList();
 
-            return Ok(values); 
+            return Ok(values);
         }
 
 

@@ -1,10 +1,17 @@
 @using YummyUI.DTOs.MessageDTOs
 @model List<ResultMessageDto>
+
 @{
   Layout = "_AdminLayout";
+
+  // server-side: Controller'dan bas
+  var active = (ViewBag.ActiveBox as string ?? "inbox").ToLower(); // inbox | archive | trash
+  int cntInbox = ViewBag.CntInbox ?? 0;
+  int cntArchive = ViewBag.CntArchive ?? 0;
+  int cntTrash = ViewBag.CntTrash ?? 0;
 }
-@section Styles
-{
+
+@section Styles {
 <style>
 /* ===== PREMIUM GLASS BASE ===== */
 .ai-msg, .ai-msg *{ box-sizing:border-box; }
@@ -107,7 +114,6 @@
   border:1px solid rgba(255,255,255,.08);
   background:rgba(255,255,255,.04);
   margin:.6rem;
-  cursor:pointer;
   transition:.2s;
 }
 .item:hover{transform:translateY(-1px);background:rgba(102,126,234,.08);}
@@ -125,7 +131,7 @@
 .mail{color:rgba(255,255,255,.65);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px;}
 .subj{margin:.25rem 0 0;color:rgba(255,255,255,.88);font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .snip{margin:.35rem 0 0;color:rgba(255,255,255,.70);font-weight:650;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.right{margin-left:auto;display:flex;gap:.5rem;align-items:center;}
+.right{margin-left:auto;display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
 .tag{
   padding:.45rem .8rem;border-radius:999px;
   border:1px solid rgba(255,255,255,.12);
@@ -142,6 +148,8 @@
   border:1px solid rgba(255,255,255,.12);
   background:rgba(255,255,255,.06);
   color:#fff;
+  text-decoration:none;
+  display:inline-flex;align-items:center;gap:.45rem;
 }
 .btnMini.danger{background:linear-gradient(135deg,#ef4444,#dc2626);border:none;}
 .btnMini.primary{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a1a1a;border:none;}
@@ -149,55 +157,15 @@
 .btnMini:hover{transform:translateY(-1px);transition:.2s;}
 .btnMini:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 
-/* modal */
-.backdrop{
-  position:fixed;inset:0;background:rgba(0,0,0,.55);
-  display:none;align-items:center;justify-content:center;
-  z-index:9998;
+.muted-empty{
+  padding:2rem;color:rgba(255,255,255,.7);font-weight:800
 }
-.backdrop.show{display:flex;}
-.modal{
-  width:min(920px, 92vw);
-  border-radius:28px;
-  background:rgba(15,23,42,.78);
-  border:1px solid rgba(255,255,255,.14);
-  backdrop-filter:blur(16px);
-  box-shadow:0 50px 120px rgba(0,0,0,.6);
-  overflow:hidden;
-}
-.m-head{
-  padding:1.1rem 1.2rem;
-  display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  border-bottom:1px solid rgba(255,255,255,.10);
-  background:linear-gradient(180deg, rgba(10,14,39,.55), rgba(10,14,39,.20));
-}
-.m-title{margin:0;color:#fff;font-weight:950;font-size:1.1rem;}
-.m-close{cursor:pointer;opacity:.85;font-weight:950;color:#fff;}
-.m-body{padding:1.2rem;display:grid;grid-template-columns: 1.25fr .75fr;gap:1rem;}
-@@media(max-width:900px){.m-body{grid-template-columns:1fr;}}
-.card{
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.06);
-  padding:1rem;
-}
-.kv{display:grid;grid-template-columns:110px 1fr;gap:.55rem .8rem;align-items:start;}
-.k{color:rgba(255,255,255,.65);font-weight:800;}
-.v{color:rgba(255,255,255,.92);font-weight:800;word-break:break-word;}
-.textarea{
-  width:100%;min-height:160px;
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(7,10,25,.45);
-  color:rgba(255,255,255,.92);
-  padding:.9rem 1rem;
-  outline:none;
-  font-weight:700;
-  resize:vertical;
-}
-.m-actions{display:flex;gap:.6rem;flex-wrap:wrap;justify-content:flex-end;margin-top:.7rem;}
 
-/* toast */
+/* small form reset */
+.actForm{display:inline;}
+.actForm button{appearance:none;-webkit-appearance:none;}
+
+/* ===== TOAST ===== */
 .toast{
   position:fixed;right:18px;bottom:18px;
   padding:12px 14px;border-radius:16px;
@@ -207,15 +175,16 @@
   color:rgba(255,255,255,.9);
   box-shadow:0 30px 70px rgba(0,0,0,.5);
   display:none;gap:10px;align-items:flex-start;
-  max-width:340px;z-index:9999;
+  max-width:360px;z-index:9999;
 }
 .toast.show{display:flex;animation:pop .18s ease-out;}
 @@keyframes pop{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
 .toast .t-title{font-weight:950;margin:0;font-size:.95rem;}
 .toast .t-desc{margin:.15rem 0 0;color:rgba(255,255,255,.72);font-weight:650;font-size:.85rem;}
-.toast .x{margin-left:auto;cursor:pointer;opacity:.85;}
+.toast .x{margin-left:auto;cursor:pointer;opacity:.85;font-weight:900;}
 </style>
 }
+
 <div class="ai-msg">
   <div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
 
@@ -224,11 +193,11 @@
       <div class="badge"><span>✉️</span></div>
       <div class="titles">
         <h1>Mesajlar</h1>
-        <p>Inbox • Archive • Trash • popup detay</p>
+        <p>Inbox • Archive • Trash (Server-side tab) • Only search JS</p>
       </div>
     </div>
 
-    <button type="button" class="btn-add" id="btnNew">➕ Yeni Mesaj</button>
+    <a class="btn-add" href="javascript:void(0)">➕ Yeni Mesaj</a>
   </div>
 
   <div class="glass">
@@ -239,35 +208,32 @@
           <input id="q" type="text" placeholder="İsim, mail, subject, mesaj..." autocomplete="off" />
         </div>
 
-        <!-- ✅ client-side tabs -->
         <div class="tabs">
-          <button type="button" class="tab active" data-tab="inbox">Hepsi <span class="count-pill" id="cntInbox">0</span></button>
-          <button type="button" class="tab" data-tab="archive">Arşiv <span class="count-pill" id="cntArchive">0</span></button>
-          <button type="button" class="tab" data-tab="trash">Çöp <span class="count-pill" id="cntTrash">0</span></button>
+          <a class="tab @(active=="inbox" ? "active" : "")" href="/Message/MessageList?box=inbox">
+            Hepsi <span class="count-pill">@cntInbox</span>
+          </a>
+          <a class="tab @(active=="archive" ? "active" : "")" href="/Message/MessageList?box=archive">
+            Arşiv <span class="count-pill">@cntArchive</span>
+          </a>
+          <a class="tab @(active=="trash" ? "active" : "")" href="/Message/MessageList?box=trash">
+            Çöp <span class="count-pill">@cntTrash</span>
+          </a>
         </div>
       </div>
     </div>
 
     <div class="list" id="list">
-      @if(Model != null && Model.Any())
+      @if (Model != null && Model.Any())
       {
-        foreach(var m in Model)
+        foreach (var m in Model)
         {
-          var initial = string.IsNullOrWhiteSpace(m.FullName) ? "?" : m.FullName.Trim().Substring(0,1).ToUpper();
-          var snippet = (m.Email ?? "");
-          if(snippet.Length > 120) snippet = snippet.Substring(0,120) + "...";
+          var initial = string.IsNullOrWhiteSpace(m.FullName) ? "?" : m.FullName.Trim().Substring(0, 1).ToUpper();
+          var snippet = (m.Message ?? "");
+          if (snippet.Length > 120) snippet = snippet.Substring(0, 120) + "...";
 
-          // ✅ default inbox in UI (front-only)
-          <div class="item"
-               data-ui-box="inbox"
-               data-id="@m.ContactId"
-               data-name="@m.Subject"
-               data-mail="@m.Email"
-               data-subject="@m.Subject"
-               data-body="@m.Message"
-               data-date="@m.GetDate.ToString("yyyy-MM-dd HH:mm")"
-               data-read="@m.IsRead.ToString().ToLower()">
+          var searchText = $"{m.FullName} {m.Email} {m.Subject} {m.Message}".ToLowerInvariant();
 
+          <div class="item" data-search="@searchText">
             <div class="avatar">@initial</div>
 
             <div class="meta">
@@ -281,87 +247,43 @@
 
             <div class="right">
               <div class="tag @(m.IsRead ? "" : "unread")">@(m.IsRead ? "Okundu" : "Yeni")</div>
-              <a href="/Message/MessageDetail/@m.ContactId" class="btnMini purple">
-  👁 Mesajı Aç
-</a>
 
+              <a href="/Message/MessageDetail/@m.ContactId" class="btnMini purple">👁 Mesajı Aç</a>
 
-              <button class="btnMini purple js-archive" type="button">Arşivle</button>
-              <button class="btnMini danger js-trash" type="button" data-id="@m.ContactId">Çöpe Taşı</button>
+              @if (active == "trash")
+              {
+                <form class="actForm" method="post" action="/Message/MessageRestore">
+                  <input type="hidden" name="id" value="@m.ContactId" />
+                  <button type="submit" class="btnMini purple">↩ Geri Al</button>
+                </form>
+
+                <form class="actForm" method="post" action="/Message/MessageDelete">
+                  <input type="hidden" name="id" value="@m.ContactId" />
+                  <button type="submit" class="btnMini danger">🗑 Kalıcı Sil</button>
+                </form>
+              }
+              else
+              {
+                <form class="actForm" method="post" action="/Message/MessageArchive">
+                  <input type="hidden" name="id" value="@m.ContactId" />
+                  <button type="submit" class="btnMini purple">📦 Arşivle</button>
+                </form>
+
+                <form class="actForm" method="post" action="/Message/MessageTrash">
+                  <input type="hidden" name="id" value="@m.ContactId" />
+                  <button type="submit" class="btnMini danger">🗑 Çöpe Taşı</button>
+                </form>
+              }
             </div>
           </div>
         }
       }
       else
       {
-        <div style="padding:2rem;color:rgba(255,255,255,.7);font-weight:800">
-          Mesaj yok.
+        <div class="muted-empty">
+          @(active=="trash" ? "Çöp boş." : active=="archive" ? "Arşiv boş." : "Mesaj yok.")
         </div>
       }
-    </div>
-  </div>
-
-  <!-- Detail Modal -->
-  <div class="backdrop" id="bd">
-    <div class="modal" role="dialog" aria-modal="true">
-      <div class="m-head">
-        <p class="m-title">Mesaj Detay</p>
-        <div class="m-close" id="mClose">✖</div>
-      </div>
-
-      <div class="m-body">
-        <div class="card">
-          <div class="kv">
-            <div class="k">İsim</div><div class="v" id="dName">-</div>
-            <div class="k">Mail</div><div class="v" id="dMail">-</div>
-            <div class="k">Subject</div><div class="v" id="dSubj">-</div>
-            <div class="k">Tarih</div><div class="v" id="dDate">-</div>
-          </div>
-          <div style="height:10px"></div>
-          <div class="k" style="margin-bottom:.35rem">Mesaj</div>
-          <div class="v" id="dBody" style="white-space:pre-wrap;line-height:1.6;opacity:.92"></div>
-        </div>
-
-        <div class="card">
-          <div class="k" style="margin-bottom:.35rem">Cevap (AI / Manual)</div>
-          <textarea class="textarea" id="replyBox" placeholder="Buraya AI otomatik cevap gelecek..."></textarea>
-
-          <div class="m-actions">
-            <button type="button" class="btnMini purple" id="btnAI">🤖 AI oto mesaj cevapla</button>
-            <button type="button" class="btnMini primary" id="btnSend">📩 Sent mesaj</button>
-          </div>
-
-          <div style="margin-top:.8rem;color:rgba(255,255,255,.65);font-weight:700;font-size:.85rem">
-            (Frontend demo) Şimdilik butonlar sadece UI toast verir.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- New Message Modal (UI only) -->
-  <div class="backdrop" id="bdNew">
-    <div class="modal">
-      <div class="m-head">
-        <p class="m-title">Yeni Mesaj Ekle</p>
-        <div class="m-close" id="nClose">✖</div>
-      </div>
-
-      <div class="m-body" style="grid-template-columns:1fr;">
-        <div class="card">
-          <div class="kv" style="grid-template-columns:120px 1fr;">
-            <div class="k">İsim</div><input class="textarea" style="min-height:auto;height:46px" id="nName" />
-            <div class="k">Mail</div><input class="textarea" style="min-height:auto;height:46px" id="nMail" />
-            <div class="k">Subject</div><input class="textarea" style="min-height:auto;height:46px" id="nSubj" />
-            <div class="k">Mesaj</div><textarea class="textarea" id="nBody"></textarea>
-          </div>
-
-          <div class="m-actions">
-            <button type="button" class="btnMini primary" id="nAdd">➕ Ekle</button>
-            <button type="button" class="btnMini" id="nCancel">Vazgeç</button>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -375,539 +297,66 @@
   </div>
 </div>
 
-@section Scripts{
+@section Scripts {
 <script>
+/* =========================
+   TEK JS: SEARCH + TOAST
+   ========================= */
 (() => {
-  // =========================
-  // Toast
-  // =========================
+  // ---- Toast ----
   const toastEl = document.getElementById("toast");
   const tTitle  = document.getElementById("tTitle");
   const tDesc   = document.getElementById("tDesc");
   const tClose  = document.getElementById("tClose");
 
   function toast(desc, title="Vaooo ✨"){
+    if(!toastEl) return;
     if(tTitle) tTitle.textContent = title;
     if(tDesc)  tDesc.textContent  = desc || "";
-    toastEl?.classList.add("show");
+    toastEl.classList.add("show");
     clearTimeout(window.__t);
-    window.__t = setTimeout(()=>toastEl?.classList.remove("show"), 2200);
+    window.__t = setTimeout(()=>toastEl.classList.remove("show"), 2200);
   }
   tClose?.addEventListener("click", ()=>toastEl?.classList.remove("show"));
 
-  // =========================
-  // Elements
-  // =========================
-  const q     = document.getElementById("q");
-  const list  = document.getElementById("list");
-  const tabs  = Array.from(document.querySelectorAll(".tab[data-tab]"));
+  // ---- Search ----
+  const q = document.getElementById("q");
+  const list = document.getElementById("list");
+  if(!q || !list) return;
 
-  const cntInbox   = document.getElementById("cntInbox");   // Hepsi
-  const cntArchive = document.getElementById("cntArchive");
-  const cntTrash   = document.getElementById("cntTrash");
+  const items = Array.from(list.querySelectorAll(".item"));
 
-  let activeTab = "inbox"; // inbox = Hepsi (trash olmayanlar)
-
-  function allItems(){
-    return Array.from(list?.querySelectorAll(".item") || []);
-  }
-
-  // =========================
-  // TRASH DATA (server)
-  // =========================
-  let trashData = []; // serverdən gələn list
-
-  async function fetchTrashList(){
-    try{
-      const r = await fetch("/Message/MessageTrashList", {
-        method: "GET",
-        headers: { "Accept":"application/json" },
-        credentials: "same-origin"
-      });
-
-      const ct = (r.headers.get("content-type") || "").toLowerCase();
-      const text = await r.text();
-
-      if(!r.ok){
-        console.error("TrashList HTTP:", r.status, text);
-        throw new Error("HTTP " + r.status);
-      }
-
-      // JSON deyilsə: deməli controller View/Redirect qaytarır
-      if(!ct.includes("application/json")){
-        console.error("TrashList JSON deyil. Content-Type:", ct, "Body:", text.slice(0,300));
-        throw new Error("TrashList JSON deyil (controller View qaytarır?)");
-      }
-
-      trashData = JSON.parse(text) || [];
-      return trashData;
-    }catch(err){
-      console.error("fetchTrashList ERROR:", err);
-      toast("TrashList gelmedi. Console-a bax.", "Hopp 😅");
-      return null;
-    }
-  }
-
-  // =========================
-  // Render helpers
-  // =========================
-  function escapeHtml(str){
-    return (str || "")
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
-
-  function makeItemDto(m, box="trash"){
-    const id = m.contactId ?? m.ContactId ?? m.id ?? m.Id ?? "";
-    const fullName = m.fullName ?? m.FullName ?? "-";
-    const email = m.email ?? m.Email ?? "-";
-    const subject = m.subject ?? m.Subject ?? "-";
-    const message = m.message ?? m.Message ?? "";
-    const getDate = m.getDate ?? m.GetDate ?? m.date ?? m.Date ?? "";
-    const isRead = (m.isRead ?? m.IsRead ?? false) ? true : false;
-
-    const initial = (fullName || "?").trim().slice(0,1).toUpperCase() || "?";
-    const snip = message.length > 120 ? (message.slice(0,120)+"...") : message;
-
-    const div = document.createElement("div");
-    div.className = "item";
-    div.setAttribute("data-ui-box", box);
-    div.setAttribute("data-id", id);
-    div.setAttribute("data-name", fullName);
-    div.setAttribute("data-mail", email);
-    div.setAttribute("data-subject", subject);
-    div.setAttribute("data-body", message);
-    div.setAttribute("data-date", getDate ? String(getDate).replace("T"," ").slice(0,16) : "");
-    div.setAttribute("data-read", isRead ? "true" : "false");
-
-    div.innerHTML = `
-      <div class="avatar">${escapeHtml(initial)}</div>
-      <div class="meta">
-        <div class="line1">
-          <div class="name">${escapeHtml(fullName)}</div>
-          <div class="mail">• ${escapeHtml(email)}</div>
-        </div>
-        <div class="subj">${escapeHtml(subject)}</div>
-        <div class="snip">${escapeHtml(snip)}</div>
-      </div>
-      <div class="right">
-        <div class="tag ${isRead ? "" : "unread"}">${isRead ? "Okundu" : "Yeni"}</div>
-        <a href="/Message/MessageDetail/${encodeURIComponent(id)}" class="btnMini purple">👁 Mesajı Aç</a>
-      </div>
-    `;
-
-    renderButtonsFor(div);
-    return div;
-  }
-
-  function renderTrashList(){
-    // listi boşalt, trashData render et
-    list.innerHTML = "";
-
-    if(!trashData || trashData.length === 0){
-      list.innerHTML = `<div style="padding:2rem;color:rgba(255,255,255,.7);font-weight:800">Çöp boş.</div>`;
-      return;
-    }
-
-    const frag = document.createDocumentFragment();
-    trashData.forEach(m => frag.appendChild(makeItemDto(m, "trash")));
-    list.appendChild(frag);
-  }
-
-  // =========================
-  // Counts
-  // =========================
-  function updateCounts(){
-    // Hepsi/Archive counts DOM-dan, Trash count server datadan
-    const items = allItems();
-
-    const trashCount = Array.isArray(trashData) ? trashData.length : 0;
-
-    // Hepsi: trash olmayanlar (DOM)
-    const hepsi = items.filter(x => (x.getAttribute("data-ui-box") || "inbox") !== "trash").length;
-    const arch  = items.filter(x => (x.getAttribute("data-ui-box") || "inbox") === "archive").length;
-
-    if(cntInbox)   cntInbox.textContent   = hepsi;
-    if(cntArchive) cntArchive.textContent = arch;
-    if(cntTrash)   cntTrash.textContent   = trashCount;
-  }
-
-  // =========================
-  // Filter + Tab
-  // =========================
-  function applyUI(){
-    const query = (q?.value || "").trim().toLowerCase();
-
-    // Trash tabında DOM filter yox, trash render edirik
-    if(activeTab === "trash"){
-      // trash list artıq render olunubsa, sadəcə search filter tətbiq edək
-      allItems().forEach(it => {
-        const txt = (
-          (it.getAttribute("data-name")||"") + " " +
-          (it.getAttribute("data-mail")||"") + " " +
-          (it.getAttribute("data-subject")||"") + " " +
-          (it.getAttribute("data-body")||"")
-        ).toLowerCase();
-        it.style.display = (!query || txt.includes(query)) ? "" : "none";
-      });
-      updateCounts();
-      return;
-    }
-
-    // Inbox/Archive: DOM-da filter
-    allItems().forEach(it => {
-      const box = it.getAttribute("data-ui-box") || "inbox";
-
-      const txt = (
-        (it.getAttribute("data-name")||"") + " " +
-        (it.getAttribute("data-mail")||"") + " " +
-        (it.getAttribute("data-subject")||"") + " " +
-        (it.getAttribute("data-body")||"")
-      ).toLowerCase();
-
-      const okSearch = (!query || txt.includes(query));
-
-      // Hepsi = trash olmayanlar
-      const okTab =
-        activeTab === "inbox"   ? (box !== "trash") :
-        activeTab === "archive" ? (box === "archive") :
-        true;
-
-      it.style.display = (okTab && okSearch) ? "" : "none";
+  function applySearch(){
+    const needle = (q.value || "").trim().toLowerCase();
+    items.forEach(it => {
+      const hay = (it.getAttribute("data-search") || "");
+      const ok = !needle || hay.includes(needle);
+      it.style.display = ok ? "" : "none";
     });
-
-    updateCounts();
   }
+  q.addEventListener("input", applySearch);
 
-  q?.addEventListener("input", applyUI);
+  // ---- Form submit toast (server-side post olacaq) ----
+  document.addEventListener("submit", (e) => {
+    const f = e.target;
+    if(!f || !f.matches("form.actForm")) return;
 
-  async function setActiveTab(tabName){
-    activeTab = tabName;
+    const act = (f.getAttribute("action") || "").toLowerCase();
 
-    tabs.forEach(x => x.classList.toggle("active", (x.getAttribute("data-tab") === tabName)));
+    if(act.includes("messagetrash"))        toast("Mesaj çöpe taşınıyor…", "İşleniyor ⏳");
+    else if(act.includes("messagearchive")) toast("Mesaj arşive taşınıyor…", "İşleniyor ⏳");
+    else if(act.includes("messagerestore")) toast("Mesaj geri alınıyor…", "İşleniyor ⏳");
+    else if(act.includes("messagedelete"))  toast("Mesaj kalıcı siliniyor…", "İşleniyor ⏳");
+    else                                    toast("İşlem yapılıyor…", "İşleniyor ⏳");
+  });
 
-    if(tabName === "trash"){
-      await fetchTrashList();
-      renderTrashList();
-      applyUI();
-      toast("Çöp listesi yüklendi.");
-      return;
-    }
+  // ---- TempData toast (redirect sonrası) ----
+  const serverMsg = "@(TempData["ToastMessage"] ?? "")";
+  const serverTitle = "@(TempData["ToastTitle"] ?? "")";
 
-    // Trash tabından çıxanda səhifəni yenidən serverdən reload etmirsən,
-    // çünki bu View server-side inbox model ilə gəlir.
-    // Sadəcə filter işləsin.
-    applyUI();
-    toast(`Şu an: ${tabName.toUpperCase()}`);
+  if(serverMsg && serverMsg.trim().length > 0){
+    toast(serverMsg, (serverTitle && serverTitle.trim().length > 0) ? serverTitle : "Tamam ✅");
   }
-
-  tabs.forEach(t => {
-    t.addEventListener("click", () => {
-      const tabName = t.getAttribute("data-tab") || "inbox";
-      setActiveTab(tabName);
-    });
-  });
-
-  // =========================
-  // Modal detail
-  // =========================
-  const bd      = document.getElementById("bd");
-  const mClose  = document.getElementById("mClose");
-  const dName   = document.getElementById("dName");
-  const dMail   = document.getElementById("dMail");
-  const dSubj   = document.getElementById("dSubj");
-  const dDate   = document.getElementById("dDate");
-  const dBody   = document.getElementById("dBody");
-  const replyBox= document.getElementById("replyBox");
-  const btnAI   = document.getElementById("btnAI");
-  const btnSend = document.getElementById("btnSend");
-
-  function openModal(payload){
-    dName.textContent = payload.name || "-";
-    dMail.textContent = payload.mail || "-";
-    dSubj.textContent = payload.subject || "-";
-    dDate.textContent = payload.date || "-";
-    dBody.textContent = payload.body || "";
-    bd?.classList.add("show");
-  }
-  function closeModal(){ bd?.classList.remove("show"); }
-  mClose?.addEventListener("click", closeModal);
-  bd?.addEventListener("click", (e)=>{ if(e.target === bd) closeModal(); });
-
-  document.addEventListener("click", (e)=>{
-    const it = e.target.closest(".item");
-    if(!it) return;
-
-    if(
-      e.target.closest(".js-archive") ||
-      e.target.closest(".js-trash") ||
-      e.target.closest(".js-restore") ||
-      e.target.closest(".js-deleteforever")
-    ) return;
-
-    openModal({
-      name: it.getAttribute("data-name"),
-      mail: it.getAttribute("data-mail"),
-      subject: it.getAttribute("data-subject"),
-      body: it.getAttribute("data-body"),
-      date: it.getAttribute("data-date")
-    });
-
-    const tag = it.querySelector(".tag");
-    if(tag && tag.classList.contains("unread")){
-      tag.classList.remove("unread");
-      tag.textContent = "Okundu";
-      toast("Okundu olarak işaretlendi.");
-    }
-  });
-
-  btnAI?.addEventListener("click", ()=>{
-    const name = dName.textContent || "";
-    const subj = dSubj.textContent || "";
-    replyBox.value =
-`Merhaba ${name},
-
-Mesajınızı aldık: “${subj}”.
-En kısa sürede dönüş yapacağız.
-
-Teşekkürler.`;
-    toast("AI cevap hazırlandı.");
-  });
-
-  btnSend?.addEventListener("click", ()=>{
-    const txt = (replyBox.value || "").trim();
-    if(!txt){ toast("Cevap boş olamaz.", "Hopp 😅"); return; }
-    toast("Sent ✅ (şimdilik UI demo)");
-    closeModal();
-  });
-
-  // =========================
-  // Action buttons
-  // =========================
-  function renderButtonsFor(it){
-    const right = it.querySelector(".right");
-    if(!right) return;
-
-    // yalnız button-ları sil (a link qalsın)
-    right.querySelectorAll("button").forEach(b => b.remove());
-
-    const box = it.getAttribute("data-ui-box") || "inbox";
-
-    if(box !== "trash"){
-      const b1 = document.createElement("button");
-      b1.type = "button";
-      b1.className = "btnMini purple js-archive";
-      b1.textContent = "Arşivle";
-
-      const b2 = document.createElement("button");
-      b2.type = "button";
-      b2.className = "btnMini danger js-trash";
-      b2.textContent = "Çöpe Taşı";
-
-      right.appendChild(b1);
-      right.appendChild(b2);
-    }else{
-      const b3 = document.createElement("button");
-      b3.type = "button";
-      b3.className = "btnMini purple js-restore";
-      b3.textContent = "Geri Al";
-
-      const b4 = document.createElement("button");
-      b4.type = "button";
-      b4.className = "btnMini danger js-deleteforever";
-      b4.textContent = "Kalıcı Sil";
-
-      right.appendChild(b3);
-      right.appendChild(b4);
-    }
-  }
-
-  // initial DOM items button render
-  allItems().forEach(renderButtonsFor);
-
-  // =========================
-  // API call: Trash
-  // =========================
-  async function apiTrash(id){
-    const url = `http://localhost:5289/api/Contacts/message/MessageTrash?id=${encodeURIComponent(id)}`;
-    const r = await fetch(url, { method:"POST", headers:{ "Accept":"application/json" } });
-    const text = await r.text();
-    if(!r.ok) throw new Error(`HTTP ${r.status}: ${text}`);
-
-    try { return JSON.parse(text); }
-    catch { return { success:true, message:"Çöp kutusuna taşındı." }; }
-  }
-
-  // =========================
-  // Click actions
-  // =========================
-  document.addEventListener("click", async (e)=>{
-    const it = e.target.closest(".item");
-    if(!it) return;
-
-    const btnArchive = e.target.closest(".js-archive");
-    const btnTrash   = e.target.closest(".js-trash");
-    const btnRestore = e.target.closest(".js-restore");
-    const btnForever = e.target.closest(".js-deleteforever");
-
-    // ARCHIVE (UI)
-    if(btnArchive){
-      e.preventDefault();
-      it.setAttribute("data-ui-box","archive");
-      renderButtonsFor(it);
-      toast("Arşive taşındı.");
-      applyUI();
-      return;
-    }
-
-    // TRASH (server + refresh trash list)
-    if(btnTrash){
-      e.preventDefault();
-
-      const id = it.getAttribute("data-id");
-      if(!id){ toast("Id tapılmadı.", "Hopp 😅"); return; }
-
-      btnTrash.disabled = true;
-      try{
-        const res = await apiTrash(id);
-        if(res && res.success === false){
-          toast(res.message || "Hata", "Hopp 😅");
-          btnTrash.disabled = false;
-          return;
-        }
-
-        // UI: elementi trash-a al (hepsi tabında görünməsin)
-        it.setAttribute("data-ui-box","trash");
-
-        toast(res?.message || "Çöp kutusuna taşındı.");
-
-        // trash tabı açıqdırsa yenilə
-        if(activeTab === "trash"){
-          await fetchTrashList();
-          renderTrashList();
-        }else{
-          // counts update
-          await fetchTrashList();
-        }
-
-        applyUI();
-      }catch(err){
-        console.error("TRASH ERROR:", err);
-        toast("Sunucu hatası: Console'a bak", "Hopp 😅");
-        btnTrash.disabled = false;
-      }
-      return;
-    }
-
-    // RESTORE (UI only) — istəsən backend restore endpoint əlavə edərik
-    if(btnRestore){
-      e.preventDefault();
-      it.setAttribute("data-ui-box","inbox");
-      renderButtonsFor(it);
-      toast("Geri alındı (UI).");
-      applyUI();
-      return;
-    }
-
-    // FOREVER (UI) — real silmək istəyirsənsə backend endpoint yazılmalıdır
-    if(btnForever){
-      e.preventDefault();
-      if(!confirm("Kalıcı silinsin mi?")) return;
-      it.remove();
-
-      // trashData-dan da çıxart
-      const id = it.getAttribute("data-id");
-      trashData = (trashData || []).filter(x => String(x.contactId ?? x.ContactId ?? x.id ?? x.Id) !== String(id));
-
-      updateCounts();
-      toast("Kalıcı silindi (UI).");
-      return;
-    }
-  });
-
-  // =========================
-  // New message modal (UI only) — səndə olduğu kimi qalsın
-  // =========================
-  const bdNew   = document.getElementById("bdNew");
-  const btnNew  = document.getElementById("btnNew");
-  const nClose  = document.getElementById("nClose");
-  const nCancel = document.getElementById("nCancel");
-  const nAdd    = document.getElementById("nAdd");
-  const nName   = document.getElementById("nName");
-  const nMail   = document.getElementById("nMail");
-  const nSubj   = document.getElementById("nSubj");
-  const nBody   = document.getElementById("nBody");
-
-  const openNew  = ()=> bdNew?.classList.add("show");
-  const closeNew = ()=> bdNew?.classList.remove("show");
-
-  btnNew?.addEventListener("click", openNew);
-  nClose?.addEventListener("click", closeNew);
-  nCancel?.addEventListener("click", closeNew);
-  bdNew?.addEventListener("click", (e)=>{ if(e.target === bdNew) closeNew(); });
-
-  nAdd?.addEventListener("click", ()=>{
-    const name = (nName?.value || "").trim();
-    const mail = (nMail?.value || "").trim();
-    const subject = (nSubj?.value || "").trim();
-    const body = (nBody?.value || "").trim();
-
-    if(!name || !mail || !subject || !body){
-      toast("Alanlar boş olamaz.", "Hopp 😅");
-      return;
-    }
-
-    const id = "ui-" + Math.random().toString(16).slice(2);
-    const date = new Date().toISOString().slice(0,16).replace("T"," ");
-
-    const div = document.createElement("div");
-    div.className = "item";
-    div.setAttribute("data-ui-box","inbox");
-    div.setAttribute("data-id", id);
-    div.setAttribute("data-name", name);
-    div.setAttribute("data-mail", mail);
-    div.setAttribute("data-subject", subject);
-    div.setAttribute("data-body", body);
-    div.setAttribute("data-date", date);
-    div.setAttribute("data-read", "false");
-
-    div.innerHTML = `
-      <div class="avatar">${escapeHtml((name||"?").slice(0,1).toUpperCase())}</div>
-      <div class="meta">
-        <div class="line1">
-          <div class="name">${escapeHtml(name)}</div>
-          <div class="mail">• ${escapeHtml(mail)}</div>
-        </div>
-        <div class="subj">${escapeHtml(subject)}</div>
-        <div class="snip">${escapeHtml(body.length>120 ? body.slice(0,120)+"..." : body)}</div>
-      </div>
-      <div class="right">
-        <div class="tag unread">Yeni</div>
-      </div>
-    `;
-
-    renderButtonsFor(div);
-    list?.prepend(div);
-
-    nName.value=""; nMail.value=""; nSubj.value=""; nBody.value="";
-    closeNew();
-    toast("Yeni mesaj eklendi.");
-    applyUI();
-  });
-
-  // =========================
-  // Init
-  // =========================
-  (async function init(){
-    // trash count dolsun deyə bir dəfə çəkək
-    await fetchTrashList();
-    updateCounts();
-    applyUI();
-  })();
-
 })();
 </script>
 }

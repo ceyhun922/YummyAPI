@@ -50,7 +50,10 @@ namespace YummyUI.Controllers
             if (!response.IsSuccessStatusCode)
                 return BadRequest(new { success = false, message = "Taşınamadı" });
 
-            return Ok(new { success = true, message = "Çöp kutusuna taşındı." });
+            TempData["ToastTitle"] = "Başarılı ✅";
+            TempData["ToastMessage"] = "Çöp kutusuna taşındı.";
+            return RedirectToAction("MessageList", new { box = "inbox" });
+
         }
 
         public async Task<IActionResult> MessageTrashList()
@@ -63,7 +66,17 @@ namespace YummyUI.Controllers
             var json = await res.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<List<ResultMessageDto>>(json);
             return Json(data);
+        }
 
+        public async Task<IActionResult> MessageDelete(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var res = await client.DeleteAsync("http://localhost:5289/api/Contacts?id=" + id);
+
+            if (!res.IsSuccessStatusCode)
+                return BadRequest(new { success = false, message = "Silinemedi" });
+
+            return Ok(new { success = true, message = "Kalıcı olarak silindi." });
         }
 
 
