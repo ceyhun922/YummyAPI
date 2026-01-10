@@ -1,7 +1,7 @@
 @using YummyUI.DTOs.FooterDTOs
 @model List<ResultFooterDto>
 @{
-    Layout = "_AdminLayout";
+  Layout = "_AdminLayout";
 }
 
 <style>
@@ -39,8 +39,13 @@
   }
 
   @@keyframes grid-move {
-    0% { background-position: 0 0; }
-    100% { background-position: 50px 50px; }
+    0% {
+      background-position: 0 0;
+    }
+
+    100% {
+      background-position: 50px 50px;
+    }
   }
 
   .orb {
@@ -52,37 +57,47 @@
     pointer-events: none;
   }
 
-  .orb.a { 
-    width: 500px; 
-    height: 500px; 
-    left: -250px; 
-    top: -250px; 
+  .orb.a {
+    width: 500px;
+    height: 500px;
+    left: -250px;
+    top: -250px;
     background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
   }
-  
-  .orb.b { 
-    width: 400px; 
-    height: 400px; 
-    right: -200px; 
-    bottom: -200px; 
+
+  .orb.b {
+    width: 400px;
+    height: 400px;
+    right: -200px;
+    bottom: -200px;
     background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
-    animation-delay: 5s; 
+    animation-delay: 5s;
   }
-  
-  .orb.c { 
-    width: 350px; 
-    height: 350px; 
-    top: 50%; 
-    left: 50%; 
+
+  .orb.c {
+    width: 350px;
+    height: 350px;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     background: radial-gradient(circle, rgba(79, 172, 254, 0.08) 0%, transparent 70%);
-    animation-delay: 10s; 
+    animation-delay: 10s;
   }
 
   @@keyframes floaty {
-    0%, 100% { transform: translate(0, 0); }
-    33% { transform: translate(30px, -30px); }
-    66% { transform: translate(-20px, 20px); }
+
+    0%,
+    100% {
+      transform: translate(0, 0);
+    }
+
+    33% {
+      transform: translate(30px, -30px);
+    }
+
+    66% {
+      transform: translate(-20px, 20px);
+    }
   }
 
   .content-wrapper {
@@ -119,13 +134,16 @@
   }
 
   @@keyframes icon-pulse {
-    0%, 100% { 
-      transform: scale(1); 
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5); 
+
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
     }
-    50% { 
-      transform: scale(1.05); 
-      box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); 
+
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.8);
     }
   }
 
@@ -150,14 +168,18 @@
     padding: 0.8rem 0;
   }
 
-  .contact-container::-webkit-scrollbar { width: 8px; }
-  .contact-container::-webkit-scrollbar-thumb { 
-    background: linear-gradient(135deg, #6366f1, #8b5cf6); 
-    border-radius: 10px; 
+  .contact-container::-webkit-scrollbar {
+    width: 8px;
   }
-  .contact-container::-webkit-scrollbar-track { 
-    background: rgba(255, 255, 255, 0.05); 
-    border-radius: 10px; 
+
+  .contact-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 10px;
+  }
+
+  .contact-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
   }
 
   .contact-card {
@@ -179,6 +201,7 @@
       opacity: 0;
       transform: translateY(30px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -202,9 +225,17 @@
   }
 
   @@keyframes gradient-rotate {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+
+    50% {
+      background-position: 100% 50%;
+    }
+
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   .contact-card:hover::before {
@@ -332,6 +363,57 @@
     z-index: 1;
   }
 
+  .btn-delete {
+    padding: 0.95rem 2rem;
+    border: none;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #fff;
+    background: linear-gradient(135deg, #ea0909 0%, #ed3636 100%);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-delete::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+  }
+
+  .btn-delete:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+
+  .btn-delete:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 35px rgba(245, 158, 11, 0.5);
+  }
+
+  .btn-delete:active {
+    transform: translateY(-1px);
+  }
+
+  .btn-delete span {
+    position: relative;
+    z-index: 1;
+  }
+
   .empty-state {
     text-align: center;
     padding: 4rem 2rem;
@@ -343,6 +425,74 @@
     margin-bottom: 1rem;
     opacity: 0.3;
   }
+
+  /* ✅ Empty state actions */
+.empty-actions{
+  display:flex;
+  gap:.8rem;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin-top:1.6rem;
+}
+
+/* ✅ Premium Add Button */
+.btn-add{
+  padding: 0.95rem 2rem;
+  border: none;
+  border-radius: 16px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #1b1300;
+  background: linear-gradient(135deg, #f7b500 0%, #ffcc33 100%);
+  box-shadow: 0 10px 28px rgba(245, 158, 11, 0.45);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+
+.btn-add::before{
+  content:"";
+  position:absolute;
+  inset:-2px;
+  background: radial-gradient(120px 60px at 20% 30%, rgba(255,255,255,.55), transparent 60%);
+  opacity:.55;
+  transform: translateX(-60%);
+  transition: transform .6s ease;
+}
+
+.btn-add:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 16px 40px rgba(245, 158, 11, 0.55);
+}
+.btn-add:hover::before{ transform: translateX(40%); }
+.btn-add:active{ transform: translateY(-1px); opacity:.96; }
+
+/* Optional secondary button */
+.btn-soft{
+  padding: 0.95rem 2rem;
+  border-radius: 16px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  color: rgba(255,255,255,.92);
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  gap:.6rem;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.btn-soft:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 14px 35px rgba(0,0,0,.35);
+}
+
 
   @@media (max-width: 1024px) {
     .contact-content {
@@ -411,16 +561,17 @@
               </div>
 
               <div class="map-section">
-                <iframe src="@item.MapLocation" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade">
+                <iframe src="@item.MapLocation" allowfullscreen="" loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
               </div>
 
               <div class="action-buttons">
                 <a href="@Url.Action("UpdateFooterArea", "Footer", new { id = item.FooterId })" class="btn-edit">
                   <span>✏️ Düzenle</span>
+                </a>
+                <a asp-action="DeleteFooterArea" asp-controller="Footer" asp-route-id="@item.FooterId" class="btn-delete">
+                  <span>Sil</span>
                 </a>
               </div>
             </div>
@@ -434,6 +585,19 @@
             <div class="empty-icon">📧</div>
             <h3>Henüz iletişim bilgisi eklenmemiş</h3>
             <p>İletişim bilgilerinizi ekleyerek başlayın</p>
+            <div class="empty-actions">
+              <a class="btn-add" asp-controller="Footer" asp-action="CreateFooterArea">
+                <span style="position:relative;z-index:1;">➕</span>
+                <span style="position:relative;z-index:1;">İletişim Bilgisi Ekle</span>
+              </a>
+
+              <a class="btn-soft" asp-controller="Dashboard" asp-action="Index">
+                <span>🏠</span>
+                <span>Panele Dön</span>
+              </a>
+            </div>
+
+
           </div>
         </div>
       }

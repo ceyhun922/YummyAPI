@@ -40,7 +40,7 @@ namespace YummyUI.Controllers
             var client = _httpClientFactory.CreateClient();
             var jsonData = JsonConvert.SerializeObject(createFooterDto);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("", content);
+            var response = await client.PostAsync("http://localhost:5289/api/Footers", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -51,8 +51,8 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> DeleteFooterArea(int id)
         {
             var client =_httpClientFactory.CreateClient();
-            await client.DeleteAsync("http://localhost:5289/api/Footers?id" + id);
-            return View();
+            await client.DeleteAsync("http://localhost:5289/api/Footers?id=" + id);
+            return RedirectToAction("FooterArea");
         }
         [HttpGet]
         public async Task<IActionResult> UpdateFooterArea(int id)
