@@ -1,5 +1,6 @@
 @using YummyUI.DTOs.RezervationDTOs
 @model List<ResultRezervationDto>
+
 @{
   Layout = "_AdminLayout";
   var all = Model ?? new List<ResultRezervationDto>();
@@ -9,35 +10,38 @@
   var c1 = CountStatus(1); // Beklet
   var c2 = CountStatus(2); // Onaylandi
   var c3 = CountStatus(3); // Iptal
+
+  string StatusText(int s) => s switch { 0 => "Bekliyor", 1 => "Beklet", 2 => "Onaylandı", 3 => "İptal", _ => "Bilinmiyor" };
+  string StatusClass(int s) => s switch { 2 => "ok", 3 => "cancel", 1 => "hold", _ => "wait" };
 }
 
-@section Styles
-{
+@section Styles {
   <style>
+    /* ===== ULTRA PREMIUM TABLE (FULL) ===== */
     .rzp,
     .rzp * {
-      box-sizing: border-box;
+      box-sizing: border-box
     }
 
     .rzp {
       min-height: 100%;
-      padding: 1.6rem 2rem;
+      padding: 1.6rem 2rem 2.2rem;
       position: relative;
       overflow: hidden;
       background:
-        radial-gradient(1200px 600px at 70% 80%, rgba(56, 189, 248, .18), transparent 60%),
-        radial-gradient(900px 500px at 15% 20%, rgba(139, 92, 246, .22), transparent 60%),
-        radial-gradient(800px 420px at 90% 10%, rgba(99, 102, 241, .18), transparent 55%),
+        radial-gradient(1200px 600px at 70% 80%, rgba(56, 189, 248, .16), transparent 60%),
+        radial-gradient(900px 500px at 15% 20%, rgba(139, 92, 246, .20), transparent 60%),
+        radial-gradient(800px 420px at 90% 10%, rgba(99, 102, 241, .14), transparent 55%),
         linear-gradient(135deg, #070b1f 0%, #0a1030 40%, #050818 100%);
     }
 
     .rzp .orb {
       position: absolute;
       border-radius: 999px;
-      filter: blur(100px);
-      opacity: .55;
+      filter: blur(110px);
+      opacity: .50;
       pointer-events: none;
-      animation: rzpFloat 14s ease-in-out infinite;
+      animation: floaty 14s ease-in-out infinite
     }
 
     .rzp .orb.a {
@@ -45,7 +49,7 @@
       height: 520px;
       left: -180px;
       top: -180px;
-      background: rgba(139, 92, 246, .42);
+      background: rgba(139, 92, 246, .34)
     }
 
     .rzp .orb.b {
@@ -53,8 +57,8 @@
       height: 460px;
       right: -190px;
       top: 110px;
-      background: rgba(56, 189, 248, .36);
-      animation-delay: 3s;
+      background: rgba(56, 189, 248, .30);
+      animation-delay: 3s
     }
 
     .rzp .orb.c {
@@ -62,31 +66,20 @@
       height: 560px;
       left: 38%;
       bottom: -260px;
-      background: rgba(99, 102, 241, .30);
-      animation-delay: 6s;
+      background: rgba(99, 102, 241, .24);
+      animation-delay: 6s
     }
 
-    @@keyframes rzpFloat {
+    @@keyframes floaty {
 
       0%,
       100% {
-        transform: translate(0, 0) scale(1);
+        transform: translate(0, 0) scale(1)
       }
 
       50% {
-        transform: translate(18px, -14px) scale(1.04);
+        transform: translate(18px, -14px) scale(1.04)
       }
-    }
-
-    .rzp .grid {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: .14;
-      background-image:
-        linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
-      background-size: 64px 64px;
     }
 
     .rzp .wrap {
@@ -96,20 +89,22 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 1.1rem;
+      gap: 14px
     }
 
+    /* header */
     .rzp .header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
-      gap: 1rem;
+      gap: 14px;
+      flex-wrap: wrap
     }
 
     .rzp .titleBox {
       display: flex;
       align-items: center;
-      gap: .9rem;
+      gap: 12px
     }
 
     .rzp .badge {
@@ -118,19 +113,19 @@
       border-radius: 18px;
       display: grid;
       place-items: center;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border: 1px solid rgba(255, 255, 255, .14);
-      box-shadow: 0 18px 55px rgba(102, 126, 234, .45), 0 0 45px rgba(118, 75, 162, .25);
-      color: #fff;
+      background: rgba(255, 255, 255, .07);
+      border: 1px solid rgba(255, 255, 255, .12);
+      box-shadow: 0 18px 55px rgba(0, 0, 0, .45);
     }
 
     .rzp .badge i {
       font-size: 26px;
+      color: #f7b500
     }
 
     .rzp .h1 {
       margin: 0;
-      font-size: 2rem;
+      font-size: 2.05rem;
       font-weight: 950;
       background: linear-gradient(135deg, #fff, #a8b9ff);
       -webkit-background-clip: text;
@@ -138,35 +133,95 @@
     }
 
     .rzp .sub {
-      margin: .2rem 0 0 0;
+      margin: .25rem 0 0;
       color: rgba(255, 255, 255, .70);
-      font-weight: 850;
-      font-size: .95rem;
+      font-weight: 850
     }
 
+    /* KPI row */
+    .rzp .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @@media (max-width: 1100px) {
+      .rzp .kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    .rzp .kpi {
+      border-radius: 22px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .06);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 26px 70px rgba(0, 0, 0, .38);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .rzp .kpi .t {
+      color: rgba(233, 236, 255, .72);
+      font-weight: 900;
+      font-size: .85rem
+    }
+
+    .rzp .kpi .v {
+      color: #fff;
+      font-weight: 950;
+      font-size: 1.35rem;
+      line-height: 1
+    }
+
+    .rzp .kpi .ic {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(0, 0, 0, .18);
+      color: #fff;
+    }
+
+    .rzp .kpi.total .ic {
+      outline: 2px solid rgba(247, 181, 0, .14)
+    }
+
+    .rzp .kpi.wait .ic {
+      outline: 2px solid rgba(245, 158, 11, .14)
+    }
+
+    .rzp .kpi.ok .ic {
+      outline: 2px solid rgba(34, 197, 94, .14)
+    }
+
+    .rzp .kpi.cancel .ic {
+      outline: 2px solid rgba(239, 68, 68, .14)
+    }
+
+    /* panel */
     .rzp .panel {
-      background: rgba(15, 23, 42, .55);
+      background: rgba(255, 255, 255, .06);
       border-radius: 28px;
       border: 1px solid rgba(255, 255, 255, .12);
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(18px);
       box-shadow: 0 40px 90px rgba(0, 0, 0, .45);
       overflow: hidden;
     }
 
     .rzp .panelHead {
-      padding: 1.1rem 1.25rem;
+      padding: 14px 16px;
       border-bottom: 1px solid rgba(255, 255, 255, .08);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1rem;
+      gap: 12px;
       flex-wrap: wrap;
-    }
-
-    .rzp .panelHead p {
-      margin: 0;
-      color: rgba(255, 255, 255, .75);
-      font-weight: 850;
     }
 
     .rzp .chip {
@@ -175,45 +230,92 @@
       border: 1px solid rgba(255, 255, 255, .12);
       background: rgba(255, 255, 255, .06);
       color: rgba(255, 255, 255, .88);
-      font-weight: 900;
+      font-weight: 950;
       font-size: .85rem;
       white-space: nowrap;
     }
 
-    /* ✅ Filter bar */
+    /* search */
+    .rzp .search {
+      flex: 1;
+      min-width: 260px;
+      max-width: 520px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: .62rem .9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .06);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, .25);
+    }
+
+    .rzp .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #fff;
+      font-weight: 850;
+    }
+
+    .rzp .search input::placeholder {
+      color: rgba(255, 255, 255, .55)
+    }
+
+    /* date range + select inputs */
+    .rzp .chip select,
+    .rzp .chip input[type="date"] {
+      background: transparent;
+      border: 0;
+      outline: 0;
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .rzp .chip input[type="date"] {
+      padding: .1rem .15rem;
+      border-radius: 10px;
+    }
+
+    .rzp .chip input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      opacity: .85;
+    }
+
+    /* filter chips */
     .rzp .filterbar {
       width: 100%;
       display: flex;
       gap: .6rem;
       flex-wrap: wrap;
-      margin-top: .35rem;
+      margin-top: .2rem
     }
 
     .rzp .ft {
-      border: none;
-      text-decoration: none;
+      border: 0;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: .55rem;
-      padding: .55rem .85rem;
+      padding: .58rem .9rem;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, .12);
       background: rgba(255, 255, 255, .06);
       color: rgba(255, 255, 255, .88);
       font-weight: 950;
       font-size: .85rem;
-      cursor: pointer;
-      transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+      transition: transform .15s ease, box-shadow .15s ease;
     }
 
     .rzp .ft:hover {
       transform: translateY(-1px);
-      box-shadow: 0 14px 34px rgba(0, 0, 0, .28);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, .28)
     }
 
     .rzp .ft.active {
-      background: linear-gradient(135deg, rgba(102, 126, 234, .35), rgba(118, 75, 162, .25));
-      border-color: rgba(255, 255, 255, .20);
+      background: rgba(247, 181, 0, .14);
+      border-color: rgba(247, 181, 0, .28);
     }
 
     .rzp .ft .pill {
@@ -226,21 +328,58 @@
       font-size: .78rem;
     }
 
+    /* presets */
+    .rzp .presets {
+      display: flex;
+      gap: .6rem;
+      flex-wrap: wrap;
+      width: 100%
+    }
+
+    .rzp .ps {
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .52rem .85rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(0, 0, 0, .16);
+      color: rgba(255, 255, 255, .88);
+      font-weight: 950;
+      font-size: .83rem;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .rzp .ps:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, .28)
+    }
+
+    .rzp .ps.active {
+      background: rgba(96, 165, 250, .14);
+      border-color: rgba(96, 165, 250, .24);
+    }
+
+    /* table */
     .rzp .tableWrap {
-      overflow: auto;
+      overflow: auto
     }
 
     .rzp table {
       width: 100%;
       border-collapse: separate;
-      border-spacing: 0;
-      min-width: 1050px;
+      border-spacing: 0 10px;
+      /* satırları kart gibi ayırır */
+      min-width: 1120px;
+      padding: 10px 14px 16px;
     }
 
     .rzp thead th {
       text-align: left;
-      padding: 1rem 1rem;
-      color: rgba(255, 255, 255, .75);
+      padding: 12px 14px;
+      color: rgba(255, 255, 255, .72);
       font-weight: 900;
       font-size: .85rem;
       letter-spacing: .2px;
@@ -249,46 +388,70 @@
       white-space: nowrap;
     }
 
+    .rzp tbody tr {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .10);
+      border-radius: 18px;
+      box-shadow: 0 18px 55px rgba(0, 0, 0, .25);
+    }
+
     .rzp tbody td {
-      padding: 1rem 1rem;
-      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      padding: 14px 14px;
       color: rgba(255, 255, 255, .92);
-      font-weight: 800;
+      font-weight: 850;
       vertical-align: top;
+      border-top: 1px solid rgba(255, 255, 255, .10);
+      border-bottom: 1px solid rgba(255, 255, 255, .10);
     }
 
-    .rzp tbody tr:hover td {
-      background: rgba(102, 126, 234, .06);
+    .rzp tbody tr td:first-child {
+      border-left: 1px solid rgba(255, 255, 255, .10);
+      border-top-left-radius: 18px;
+      border-bottom-left-radius: 18px
     }
 
+    .rzp tbody tr td:last-child {
+      border-right: 1px solid rgba(255, 255, 255, .10);
+      border-top-right-radius: 18px;
+      border-bottom-right-radius: 18px
+    }
+
+    .rzp tbody tr:hover {
+      outline: 2px solid rgba(247, 181, 0, .14);
+      transform: translateY(-1px);
+      transition: .15s ease;
+    }
+
+    /* text helpers */
     .rzp .muted {
       color: rgba(255, 255, 255, .70);
-      font-weight: 800;
+      font-weight: 800
     }
 
     .rzp .nowrap {
-      white-space: nowrap;
+      white-space: nowrap
     }
 
     .rzp .clip {
-      max-width: 340px;
+      max-width: 360px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
       color: rgba(255, 255, 255, .78);
       font-weight: 800;
-      line-height: 1.45;
+      line-height: 1.55;
     }
 
+    /* status pill */
     .rzp .status {
       display: inline-flex;
       align-items: center;
       gap: .5rem;
-      padding: .5rem .85rem;
+      padding: .55rem .9rem;
       border-radius: 999px;
       border: 1px solid rgba(255, 255, 255, .12);
-      background: rgba(255, 255, 255, .06);
+      background: rgba(0, 0, 0, .14);
       font-weight: 950;
       font-size: .85rem;
       white-space: nowrap;
@@ -299,104 +462,109 @@
       height: 10px;
       border-radius: 999px;
       background: #f59e0b;
-      box-shadow: 0 0 16px rgba(245, 158, 11, .45);
+      box-shadow: 0 0 16px rgba(245, 158, 11, .45)
     }
 
     .rzp .ok .dot {
       background: #22c55e;
-      box-shadow: 0 0 16px rgba(34, 197, 94, .45);
+      box-shadow: 0 0 16px rgba(34, 197, 94, .45)
     }
 
-    .rzp .wait .dot {
-      background: #f59e0b;
-      box-shadow: 0 0 16px rgba(245, 158, 11, .45);
+    .rzp .hold .dot {
+      background: #60a5fa;
+      box-shadow: 0 0 16px rgba(96, 165, 250, .45)
     }
 
     .rzp .cancel .dot {
       background: #ef4444;
-      box-shadow: 0 0 16px rgba(239, 68, 68, .45);
+      box-shadow: 0 0 16px rgba(239, 68, 68, .45)
     }
 
+    /* actions buttons */
     .rzp .actions {
       display: flex;
-      gap: .5rem;
+      gap: .55rem;
       flex-wrap: wrap;
+      align-items: center
     }
 
     .rzp .btnA {
-      border: none;
-      padding: .65rem .9rem;
-      border-radius: 14px;
+      border: 0;
+      padding: .70rem .95rem;
+      border-radius: 16px;
       font-weight: 950;
       font-size: .85rem;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: .45rem;
+      gap: .5rem;
       white-space: nowrap;
       transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
       cursor: pointer;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, .25);
     }
 
     .rzp .btnA:hover {
       transform: translateY(-2px);
-      box-shadow: 0 16px 40px rgba(0, 0, 0, .35);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, .35)
     }
 
     .rzp .btnA:active {
       transform: translateY(0);
-      opacity: .96;
+      opacity: .96
     }
 
     .rzp .del {
       background: linear-gradient(135deg, #ef4444, #dc2626);
-      color: #fff;
+      color: #fff
     }
 
     .rzp .edit {
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: #1a1a1a;
+      background: linear-gradient(135deg, #f7b500, #ffcc33);
+      color: #1b1300
     }
 
     .rzp .approve {
       background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #052e16;
+      color: #06250f
     }
 
-    .rzp .hold {
+    .rzp .holdBtn {
       background: linear-gradient(135deg, #60a5fa, #3b82f6);
-      color: #061a33;
+      color: #061a33
     }
 
     .rzp .cancelBtn {
       background: linear-gradient(135deg, #fb7185, #ef4444);
-      color: #fff;
+      color: #fff
     }
 
+    /* responsive */
     @@media (max-width: 980px) {
       .rzp {
-        padding: 1.1rem;
+        padding: 1.1rem
       }
 
       .rzp .h1 {
-        font-size: 1.6rem;
+        font-size: 1.65rem
       }
 
-      .rzp .panelHead {
-        flex-direction: column;
-        align-items: flex-start;
+      .rzp table {
+        min-width: 980px
       }
     }
   </style>
 }
-
+<form id="antiForgeryForm" style="display:block;">
+  @Html.AntiForgeryToken()
+</form>
 <div class="rzp">
   <div class="orb a"></div>
   <div class="orb b"></div>
   <div class="orb c"></div>
-  <div class="grid"></div>
 
   <div class="wrap">
+
     <div class="header">
       <div class="titleBox">
         <div class="badge"><i class="bi bi-calendar2-check"></i></div>
@@ -407,23 +575,87 @@
       </div>
     </div>
 
+    <!-- ✅ KPI ROW -->
+    <div class="kpis">
+      <div class="kpi total">
+        <div>
+          <div class="t">Toplam</div>
+          <div class="v">@all.Count</div>
+        </div>
+        <div class="ic"><i class="bi bi-layers"></i></div>
+      </div>
+      <div class="kpi wait">
+        <div>
+          <div class="t">Bekleyen</div>
+          <div class="v">@c0</div>
+        </div>
+        <div class="ic"><i class="bi bi-hourglass"></i></div>
+      </div>
+      <div class="kpi ok">
+        <div>
+          <div class="t">Onaylanan</div>
+          <div class="v">@c2</div>
+        </div>
+        <div class="ic"><i class="bi bi-check2-circle"></i></div>
+      </div>
+      <div class="kpi cancel">
+        <div>
+          <div class="t">İptal</div>
+          <div class="v">@c3</div>
+        </div>
+        <div class="ic"><i class="bi bi-x-circle"></i></div>
+      </div>
+    </div>
+
     <div class="panel">
       <div class="panelHead">
-        <p>Rezervasyon listesi</p>
         <span class="chip">Görünen: <span id="visibleCount">0</span> / @all.Count</span>
 
-        <!-- ✅ FILTER BAR (no refresh) -->
+        <div class="search">
+          <i class="bi bi-search" style="opacity:.85"></i>
+          <input id="rzpQ" type="text" placeholder="Ad, email, telefon, mesaj..." />
+        </div>
+
+
+        <div style="display:flex; gap:.6rem; align-items:center; flex-wrap:wrap;">
+          <!-- Durum dropdown -->
+          <span class="chip" style="display:flex; align-items:center; gap:.55rem;">
+            <i class="bi bi-funnel" style="opacity:.85"></i>
+            <select id="statusSelect">
+              <option value="all">Tümü</option>
+              <option value="0">Bekliyor</option>
+              <option value="1">Beklet</option>
+              <option value="2">Onaylandı</option>
+              <option value="3">İptal</option>
+            </select>
+          </span>
+
+          <!-- Tarih aralığı -->
+          <span class="chip" style="display:flex; align-items:center; gap:.55rem;">
+            <i class="bi bi-calendar-event" style="opacity:.85"></i>
+            <input id="dateFrom" type="date" />
+            <span style="opacity:.55;">—</span>
+            <input id="dateTo" type="date" />
+            <button type="button" id="clearDates" class="ft" style="padding:.45rem .7rem;">Temizle</button>
+          </span>
+        </div>
+
+        <!-- ✅ Hızlı Tarih Presetleri -->
+        <div class="presets" id="presets">
+          <button type="button" class="ps" data-preset="today"><i class="bi bi-dot"></i> Bugün</button>
+          <button type="button" class="ps" data-preset="tomorrow"><i class="bi bi-dot"></i> Yarın</button>
+          <button type="button" class="ps" data-preset="7d"><i class="bi bi-dot"></i> Son 7 gün</button>
+          <button type="button" class="ps" data-preset="month"><i class="bi bi-dot"></i> Bu ay</button>
+          <button type="button" class="ps" data-preset="all"><i class="bi bi-dot"></i> Tüm tarih</button>
+        </div>
+
+        <!-- ✅ Status Chip Bar -->
         <div class="filterbar" id="filterbar">
-          <button type="button" class="ft active" data-filter="all">Hamısı <span class="pill"
-              data-pill="all">@all.Count</span></button>
-          <button type="button" class="ft" data-filter="0">Bekleyenler <span class="pill"
-              data-pill="0">@c0</span></button>
-          <button type="button" class="ft" data-filter="1">Bekletilenler <span class="pill"
-              data-pill="1">@c1</span></button>
-          <button type="button" class="ft" data-filter="2">Onaylananlar <span class="pill"
-              data-pill="2">@c2</span></button>
-          <button type="button" class="ft" data-filter="3">İptal Edilenler <span class="pill"
-              data-pill="3">@c3</span></button>
+          <button type="button" class="ft active" data-filter="all">Hamısı <span class="pill">@all.Count</span></button>
+          <button type="button" class="ft" data-filter="0">Bekleyenler <span class="pill">@c0</span></button>
+          <button type="button" class="ft" data-filter="1">Bekletilenler <span class="pill">@c1</span></button>
+          <button type="button" class="ft" data-filter="2">Onaylananlar <span class="pill">@c2</span></button>
+          <button type="button" class="ft" data-filter="3">İptal Edilenler <span class="pill">@c3</span></button>
         </div>
       </div>
 
@@ -446,20 +678,26 @@
             <tbody id="rzpBody">
               @foreach (var rez in all)
               {
-                var cls = "wait";
-                if (rez.RezervationStatus == 2) cls = "ok";
-                else if (rez.RezervationStatus == 3) cls = "cancel";
+                var cls = StatusClass(rez.RezervationStatus);
+                var st = StatusText(rez.RezervationStatus);
 
-                string statusText = rez.RezervationStatus switch
+                // ✅ ISO date for JS filter (yyyy-MM-dd)
+                var iso = "";
+                if (rez.RezervationDate != null)
                 {
-                  0 => "Bekliyor",
-                  1 => "Beklet",
-                  2 => "Onaylandı",
-                  3 => "İptal",
-                  _ => "Bilinmiyor"
-                };
+                  if (DateTime.TryParse(rez.RezervationDate.ToString(), out var dt))
+                  {
+                    iso = dt.ToString("yyyy-MM-dd");
+                  }
+                  else
+                  {
+                    iso = rez.RezervationDate.ToString();
+                  }
+                }
 
-                <tr data-status="@rez.RezervationStatus">
+                <tr data-status="@rez.RezervationStatus" data-date="@iso"
+                  data-search="@($"{rez.FullName} {rez.Email} {rez.PhoneNumber} {rez.Message} {rez.RezervationDate} {rez.RezervationClockk}".ToLowerInvariant())">
+
                   <td class="nowrap">
                     <div style="font-weight:950;">@rez.FullName</div>
                     <div class="muted">@rez.Email</div>
@@ -483,28 +721,25 @@
                   <td class="nowrap">
                     <span class="status @cls">
                       <span class="dot"></span>
-                      @statusText
+                      @st
                     </span>
                   </td>
 
                   <td class="nowrap">
                     <div class="actions">
-                      <button type="button" class="btnA del js-del" asp-action="DeleteRezervation"
-                        asp-controller="Rezervation" data-id="@rez.RezervationId" data-name="@rez.FullName">
-                        <i class="bi bi-trash3"></i> Sil
-                      </button>
+
 
                       <a class="btnA edit" asp-action="UpdateRezervation" asp-controller="Rezervation"
                         asp-route-id="@rez.RezervationId">
                         <i class="bi bi-pencil-square"></i> Güncelle
                       </a>
 
-                      <a class="btnA approve" asp-action="ChangeStatus" asp-controller="Rezervation"
-                        asp-route-id="@rez.RezervationId" asp-route-status="Approved">
-                        <i class="bi bi-check2-circle"></i> Onayla
-                      </a>
+                      <button type="button" class="btnA approve js-approve" data-id="@rez.RezervationId">
+                        <i class="bi bi-check2-circle">Onayla</i>
+                      </button>
 
-                      <a class="btnA hold" asp-action="ChangeStatus" asp-controller="Rezervation"
+
+                      <a class="btnA holdBtn" asp-action="ChangeStatus" asp-controller="Rezervation"
                         asp-route-id="@rez.RezervationId" asp-route-status="Pending">
                         <i class="bi bi-hourglass-split"></i> Beklet
                       </a>
@@ -513,6 +748,9 @@
                         asp-route-id="@rez.RezervationId" asp-route-status="Canceled">
                         <i class="bi bi-x-circle"></i> İptal et
                       </a>
+                      <button type="button" class="btnA del js-del" data-id="@rez.RezervationId" data-name="@rez.FullName">
+                        <i class="bi bi-trash3"></i> Sil
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -528,53 +766,169 @@
         }
       </div>
     </div>
+
   </div>
 </div>
 
 @section Scripts {
   <script>
-    // ✅ Filter without refresh + dynamic visible count
     (function () {
       const filterbar = document.getElementById("filterbar");
-      const buttons = filterbar ? filterbar.querySelectorAll(".ft") : [];
+      const buttons = filterbar ? Array.from(filterbar.querySelectorAll(".ft")) : [];
       const tbody = document.getElementById("rzpBody");
       const rows = tbody ? Array.from(tbody.querySelectorAll("tr")) : [];
       const visibleEl = document.getElementById("visibleCount");
 
+      const q = document.getElementById("rzpQ");
+      const statusSelect = document.getElementById("statusSelect");
+      const dateFrom = document.getElementById("dateFrom");
+      const dateTo = document.getElementById("dateTo");
+      const clearDates = document.getElementById("clearDates");
+
+      const presetsWrap = document.getElementById("presets");
+      const presetBtns = presetsWrap ? Array.from(presetsWrap.querySelectorAll(".ps")) : [];
+
+      let activeFilter = "all"; // chip filter
+      let query = "";
+
       function updateVisibleCount() {
         if (!visibleEl) return;
-        const visible = rows.filter(r => r.style.display !== "none").length;
-        visibleEl.textContent = String(visible);
+        visibleEl.textContent = String(rows.filter(r => r.style.display !== "none").length);
       }
 
-      function applyFilter(filter) {
-        rows.forEach(row => {
-          const s = row.getAttribute("data-status");
-          row.style.display = (filter === "all" || s === filter) ? "" : "none";
+      function toDateOnly(d) {
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+      }
+
+      function parseISODate(s) {
+        if (!s) return null;
+        const t = Date.parse(s);
+        if (!Number.isNaN(t)) return toDateOnly(new Date(t));
+        return null;
+      }
+
+      function inRange(rowDate, fromD, toD) {
+        if (!rowDate) return true;
+        if (fromD && rowDate < fromD) return false;
+        if (toD && rowDate > toD) return false;
+        return true;
+      }
+
+      function apply() {
+        const fromD = parseISODate(dateFrom?.value);
+        const toD = parseISODate(dateTo?.value);
+        const selectStatus = statusSelect?.value || "all";
+
+        rows.forEach(r => {
+          const s = r.getAttribute("data-status") || "";
+          const hay = r.getAttribute("data-search") || "";
+          const rowDate = parseISODate(r.getAttribute("data-date"));
+
+          const okChip = (activeFilter === "all" || s === activeFilter);
+          const okSelect = (selectStatus === "all" || s === selectStatus);
+          const okQuery = (!query || hay.includes(query));
+          const okDate = inRange(rowDate, fromD, toD);
+
+          r.style.display = (okChip && okSelect && okQuery && okDate) ? "" : "none";
         });
+
         updateVisibleCount();
       }
 
+      // Sync active preset UI
+      function setActivePreset(key) {
+        presetBtns.forEach(b => b.classList.toggle("active", (b.getAttribute("data-preset") === key)));
+      }
+
+      function setDateRange(from, to) {
+        if (dateFrom) dateFrom.value = from || "";
+        if (dateTo) dateTo.value = to || "";
+        apply();
+      }
+
+      function fmtISO(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+
+      // Presets
+      presetBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const p = btn.getAttribute("data-preset");
+          const now = new Date();
+          const today = toDateOnly(now);
+
+          if (p === "today") {
+            setActivePreset("today");
+            setDateRange(fmtISO(today), fmtISO(today));
+          }
+          else if (p === "tomorrow") {
+            const t = new Date(today); t.setDate(t.getDate() + 1);
+            setActivePreset("tomorrow");
+            setDateRange(fmtISO(t), fmtISO(t));
+          }
+          else if (p === "7d") {
+            const start = new Date(today); start.setDate(start.getDate() - 6);
+            setActivePreset("7d");
+            setDateRange(fmtISO(start), fmtISO(today));
+          }
+          else if (p === "month") {
+            const start = new Date(today.getFullYear(), today.getMonth(), 1);
+            const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            setActivePreset("month");
+            setDateRange(fmtISO(start), fmtISO(end));
+          }
+          else { // all
+            setActivePreset("all");
+            setDateRange("", "");
+          }
+        });
+      });
+
+      // Chips status
       buttons.forEach(btn => {
         btn.addEventListener("click", () => {
           buttons.forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
 
-          const filter = btn.getAttribute("data-filter") || "all";
-          applyFilter(filter);
+          activeFilter = btn.getAttribute("data-filter") || "all";
+          if (statusSelect) statusSelect.value = activeFilter;
+
+          apply();
         });
       });
 
-      // default
-      applyFilter("all");
-    })();
-  </script>
+      // Search
+      q?.addEventListener("input", () => {
+        query = (q.value || "").trim().toLowerCase();
+        apply();
+      });
 
-  <script>
-    // ✅ Delete confirm (existing)
-    (function () {
-      const btns = document.querySelectorAll(".js-del");
-      btns.forEach(btn => {
+      // Dropdown status
+      statusSelect?.addEventListener("change", () => {
+        // dropdown seçilince chip active'yi de sync et
+        const val = statusSelect.value || "all";
+        activeFilter = val;
+        buttons.forEach(b => b.classList.toggle("active", (b.getAttribute("data-filter") === val)));
+        if (val === "all") {
+          buttons.forEach(b => b.classList.toggle("active", (b.getAttribute("data-filter") === "all")));
+        }
+        apply();
+      });
+
+      // Date inputs
+      dateFrom?.addEventListener("change", () => { setActivePreset(""); apply(); });
+      dateTo?.addEventListener("change", () => { setActivePreset(""); apply(); });
+
+      clearDates?.addEventListener("click", () => {
+        setActivePreset("all");
+        setDateRange("", "");
+      });
+
+      // Delete confirm
+      document.querySelectorAll(".js-del").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.getAttribute("data-id");
           const name = btn.getAttribute("data-name") || "Kayıt";
@@ -594,6 +948,58 @@
           }
         });
       });
+
+
+      //-Fetch Approve
+    document.addEventListener("click", async (e) => {
+  const btn = e.target.closest(".js-approve");
+  if (!btn) return;
+
+  const id = btn.getAttribute("data-id");
+  if (!id) return;
+
+  const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value;
+
+  try {
+    var res = await fetch("/Rezervation/ChangeStatusApproved", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "id=" + encodeURIComponent(id) +
+            "&__RequestVerificationToken=" + encodeURIComponent(token)
+    });
+
+    const text = await res.text();
+    if (!res.ok) {
+      console.error("HTTP:", res.status, text);
+      throw new Error("Server Error");
+    }
+
+     const row = btn.closest("tr");
+    if (row) {
+      row.setAttribute("data-status", "2");
+
+      const statusEl = row.querySelector(".status");
+      if (statusEl) {
+        statusEl.classList.remove("wait", "hold", "cancel", "ok");
+        statusEl.classList.add("ok");
+        statusEl.innerHTML = `<span class="dot"></span> Onaylandı`;
+      }
+
+      apply(); // filter/search/date yenilə
+    }
+
+    console.log("Approved OK", text);
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+      //-
+
+      // default: all
+      setActivePreset("all");
+      apply();
     })();
   </script>
 }

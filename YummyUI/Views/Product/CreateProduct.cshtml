@@ -3,51 +3,258 @@
     Layout = "_AdminLayout";
 }
 
-<div class="section">
-    <div class="section-body">
-        <div class="row">
-            <div class="col-12 md-12 lg-col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Yeni Ürün Girişi</h4>
-                    </div>
-                    <div class="card-body w-25">
-                        @using (Html.BeginForm("CreateProduct", "Product", FormMethod.Post, new { @enctype = "multipart/form-data" }))
-                        {
-                            <div class="form-group">
-                                <label>Ürün adı</label>
-                                @Html.TextBoxFor(x => x.ProductTitle, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                @Html.DropDownListFor(
-                                    x=>x.CategoryId,
-                                    (List<SelectListItem>)ViewBag.CategoryList,"Seçin",new {@class="form-control"}
-                                )
-                        </div>
-                        <div class="form-group">
-                            <label>Ürün adı</label>
-                            @Html.TextBoxFor(x => x.ProductPrice, new { @class = "form-control", type = "number" })
-                        </div>
-                        <div class="form-group>">
-                            <label>Ürün Resmi</label>
-                            <input type="file" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Ürün Hakkında</label>
-                            @Html.TextAreaFor(x => x.ProductPrice, new { @class = "form-control", type = "number" })
-                        </div>
-                        <div class="form-group mt-3">
-                            <label class="custom-switch mb-0">
-                                @Html.CheckBoxFor(x => x.ProductStatus, new { @class = "custom-switch-input" })
-                                <span class="custom-switch-indicator"></span>
-                            </label>
-                        </div>
+<link href="~/css/premium-glass.css" rel="stylesheet" />
 
-                        <button type="submit" class="btn btn-primary mt-4">Save</button>
-                                                }
-                    </div>
-                </div>
+<div class="pg">
+
+    <div class="panel" style="max-width: 1100px;">
+
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+            <div>
+                <h1 class="h1" style="margin-bottom:6px;">Yeni Ürün Girişi</h1>
+                <p class="lead" style="margin-bottom:0;">Başlıq, kateqoriya, qiymət, şəkil və açıqlama əlavə edin.</p>
+            </div>
+
+            <div class="pill" title="Durum ön izlemesi">
+                <span class="dot" id="TopDot" style="background:@(Model?.ProductStatus == true ? "var(--success)" : "var(--warning)");"></span>
+                <span id="TopStatus">@((Model?.ProductStatus == true) ? "Aktif" : "Pasif")</span>
             </div>
         </div>
+
+        <div style="height:18px;"></div>
+
+        @using (Html.BeginForm("CreateProduct", "Product", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="form2">
+
+                <!-- SOL: FORM -->
+                <div class="formRow">
+
+                    <div>
+                        <div class="label">Ürün adı</div>
+                        @Html.TextBoxFor(x => x.ProductTitle, new {
+                            @class = "input",
+                            placeholder = "Örn: Margherita Pizza"
+                        })
+                    </div>
+
+                    <div>
+                        <div class="label">Kategori</div>
+                        @Html.DropDownListFor(
+                            x => x.CategoryId,
+                            (List<SelectListItem>)ViewBag.CategoryList,
+                            "Seçin",
+                            new { @class = "input", id="CategoryId" }
+                        )
+                        <div class="helper">Ürün hansı kateqoriyada görünsün?</div>
+                    </div>
+
+                    <div>
+                        <div class="label">Fiyat</div>
+                        @Html.TextBoxFor(x => x.ProductPrice, new {
+                            @class = "input",
+                            type = "number",
+                            step = "0.01",
+                            min = "0",
+                            placeholder = "Örn: 12.50"
+                        })
+                    </div>
+
+                    <div>
+                        <div class="label">Ürün Resmi</div>
+
+                        <!-- IMPORTANT: name backend için gerekli -->
+                        <input type="file" name="ProductImage" class="input" id="ProductImage" accept="image/*" />
+
+                        <div class="helper">PNG/JPG önerilir. Seçince sağda önizleme görünəcək.</div>
+                    </div>
+
+                    <div>
+                        <div class="label">Ürün Hakkında</div>
+
+                        @* NOT: CreateProductDto içinde Description yoksa,
+                           aşağıda kullandığım alanı DTO'na ekle: public string ProductDescription {get;set;}
+                        *@
+                        @Html.TextAreaFor(x => x.ProductDescription, new {
+                            @class = "textarea",
+                            placeholder = "Kısa ve net açıklama..."
+                        })
+                    </div>
+
+                    <div>
+                        <div class="label">Durum</div>
+
+                        <label class="glass-toggle">
+                            @Html.CheckBoxFor(x => x.ProductStatus, new { @class = "glass-toggle__input", id = "ProductStatus" })
+                            <span class="glass-toggle__track">
+                                <span class="glass-toggle__thumb"></span>
+                            </span>
+                            <span class="glass-toggle__text" id="StatusText">
+                                @(Model?.ProductStatus == true ? "Aktif" : "Pasif")
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="footerBtns">
+                        <button type="submit" class="btn btn-primary">
+                            ✅ Kaydet
+                        </button>
+
+                        <a href="/Product/Index" class="btn btn-soft">
+                            ↩ Geri Dön
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- SAĞ: PREVIEW -->
+                <div>
+                    <div class="preview">
+
+                        <div class="previewTop">
+                            <div class="previewIcon" id="PreviewIcon">🍽️</div>
+                            <div style="min-width:0;">
+                                <div style="font-weight:900;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    <span id="PreviewTitle">@(!string.IsNullOrWhiteSpace(Model?.ProductTitle) ? Model.ProductTitle : "Örn: Margherita Pizza")</span>
+                                </div>
+                                <div style="color:rgba(233,236,255,.65);font-weight:700;font-size:13px;">
+                                    <span id="PreviewCategory">Kategori</span>
+                                </div>
+                            </div>
+
+                            <div class="pill" style="margin-left:auto;">
+                                <span class="dot" id="PreviewDot" style="background:@(Model?.ProductStatus == true ? "var(--success)" : "var(--warning)");"></span>
+                                <span id="PreviewStatus">@((Model?.ProductStatus == true) ? "Aktif" : "Pasif")</span>
+                            </div>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div style="
+                            border-radius: 18px;
+                            border: 1px solid rgba(255,255,255,.10);
+                            background: rgba(255,255,255,.05);
+                            overflow:hidden;
+                            margin: 10px 0 12px;
+                        ">
+                            <img id="PreviewImg" src="" alt="" style="width:100%; height:180px; object-fit:cover; display:none;" />
+                            <div id="PreviewImgEmpty" style="padding:18px; color:rgba(233,236,255,.6); font-weight:700;">
+                                Resim önizlemesi burada görünecek.
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+                            <div class="pill">
+                                <span style="font-weight:900;">₼</span>
+                                <span id="PreviewPrice">@((Model?.ProductPrice ?? 0).ToString("0.##"))</span>
+                            </div>
+                        </div>
+
+                        <div class="quote" style="margin-top:0;">
+                            <span id="PreviewDesc">@(!string.IsNullOrWhiteSpace(Model?.ProductDescription) ? Model.ProductDescription : "Ürün açıklaması burada görünür.")</span>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        }
+
     </div>
+
 </div>
+@section Styles
+{
+<style>
+/* toggle create/update ilə eyni */
+.glass-toggle{display:flex;align-items:center;gap:12px;user-select:none}
+.glass-toggle__input{display:none}
+.glass-toggle__track{
+  width:64px;height:36px;border-radius:999px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 10px 25px rgba(0,0,0,.25);
+  position:relative; cursor:pointer; transition:.25s ease;
+}
+.glass-toggle__thumb{
+  width:28px;height:28px;border-radius:999px;
+  position:absolute; left:4px; top:50%; transform:translateY(-50%);
+  background: rgba(233,236,255,.92);
+  box-shadow: 0 10px 22px rgba(0,0,0,.25);
+  transition:.25s ease;
+}
+.glass-toggle__text{font-weight:900;color:rgba(233,236,255,.85)}
+.glass-toggle__input:checked + .glass-toggle__track{
+  background: rgba(34,197,94,.20);
+  border-color: rgba(34,197,94,.30);
+}
+.glass-toggle__input:checked + .glass-toggle__track .glass-toggle__thumb{left:32px}
+</style>
+}
+@section Scripts{
+<script>
+(function(){
+  const titleInput = document.querySelector('input[name="ProductTitle"]');
+  const priceInput = document.querySelector('input[name="ProductPrice"]');
+  const descInput  = document.querySelector('textarea[name="ProductDescription"]');
+  const catSelect  = document.getElementById('CategoryId');
+  const status     = document.getElementById('ProductStatus');
+  const fileInput  = document.getElementById('ProductImage');
+
+  const pvTitle = document.getElementById('PreviewTitle');
+  const pvPrice = document.getElementById('PreviewPrice');
+  const pvDesc  = document.getElementById('PreviewDesc');
+  const pvCat   = document.getElementById('PreviewCategory');
+
+  const pvDot   = document.getElementById('PreviewDot');
+  const pvStat  = document.getElementById('PreviewStatus');
+  const topDot  = document.getElementById('TopDot');
+  const topStat = document.getElementById('TopStatus');
+  const statText= document.getElementById('StatusText');
+
+  const pvImg   = document.getElementById('PreviewImg');
+  const pvEmpty = document.getElementById('PreviewImgEmpty');
+
+  function sync(){
+    if(pvTitle && titleInput) pvTitle.textContent = titleInput.value.trim() || "Örn: Margherita Pizza";
+    if(pvPrice && priceInput) pvPrice.textContent = (priceInput.value || "0");
+    if(pvDesc && descInput) pvDesc.textContent = descInput.value.trim() || "Ürün açıklaması burada görünür.";
+
+    if(pvCat && catSelect){
+      const t = catSelect.options[catSelect.selectedIndex]?.text || "Kategori";
+      pvCat.textContent = t === "Seçin" ? "Kategori" : t;
+    }
+
+    const isActive = status && status.checked;
+    if(statText) statText.textContent = isActive ? "Aktif" : "Pasif";
+    if(pvStat) pvStat.textContent = isActive ? "Aktif" : "Pasif";
+    if(pvDot) pvDot.style.background = isActive ? "var(--success)" : "var(--warning)";
+    if(topStat) topStat.textContent = isActive ? "Aktif" : "Pasif";
+    if(topDot) topDot.style.background = isActive ? "var(--success)" : "var(--warning)";
+  }
+
+  function previewFile(){
+    const f = fileInput?.files?.[0];
+    if(!f){ 
+      pvImg.style.display = "none";
+      pvEmpty.style.display = "block";
+      pvImg.src = "";
+      return;
+    }
+    const url = URL.createObjectURL(f);
+    pvImg.src = url;
+    pvImg.style.display = "block";
+    pvEmpty.style.display = "none";
+  }
+
+  titleInput?.addEventListener('input', sync);
+  priceInput?.addEventListener('input', sync);
+  descInput?.addEventListener('input', sync);
+  catSelect?.addEventListener('change', sync);
+  status?.addEventListener('change', sync);
+  fileInput?.addEventListener('change', previewFile);
+
+  sync();
+  previewFile();
+})();
+</script>
+}

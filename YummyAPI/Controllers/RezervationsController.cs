@@ -78,7 +78,7 @@ namespace YummyAPI.Controllers
             return Ok(value);
         }
 
-        [HttpPut("ChangeStatus/{id}")]
+        [HttpPut("change/rezervation/status/{id}")]
         public IActionResult ChangeStatus(int id, [FromQuery] string status)
         {
             var rez = _context.Rezervations?.Find(id);

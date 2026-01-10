@@ -423,7 +423,7 @@
           </div>
 
           <div style="margin-top:.9rem;color:rgba(255,255,255,.65);font-weight:750;font-size:.88rem;line-height:1.5">
-            Buradaki butonlar şimdilik UI. Backend ekleyince arşiv/sil aksiyonlarını buraya bağlayacağıq.
+          
           </div>
         </div>
       </div>
@@ -453,7 +453,7 @@
 
 
           <div style="margin-top:.8rem;color:rgba(255,255,255,.65);font-weight:750;font-size:.85rem">
-            “Sent mesaj” backend bağlanınca mail olaraq göndərəcək.
+            
           </div>
         </div>
 
@@ -466,7 +466,7 @@
           </div>
 
           <div style="margin-top:1rem;color:rgba(255,255,255,.65);font-weight:750;line-height:1.6">
-            Bunlar da UI rahatlığı üçün. İstəsən sonra bunları DB-dən dinamik edərik.
+           
           </div>
         </div>
       </div>
@@ -489,7 +489,7 @@
       // ===== toast =====
       const toastEl = document.getElementById("toast");
       const tTitle = document.getElementById("tTitle");
-      const tDesc = document.getElementById("tDesc");
+      const tDesc  = document.getElementById("tDesc");
       const tClose = document.getElementById("tClose");
 
       function toast(desc, title = "Vaooo ✨") {
@@ -502,23 +502,27 @@
       }
       tClose?.addEventListener("click", () => toastEl.classList.remove("show"));
 
-      // ===== common refs =====
+      // ===== anti-forgery token =====
       const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value;
+
+      // ===== refs =====
       const replyBox = document.getElementById("replyBox");
       const btnAI = document.getElementById("btnAI");
       const btnSendEl = document.getElementById("btnSend");
       const id = btnSendEl?.getAttribute("data-id") || "@Model.ContactId";
 
-      // ===== AI (REAL) =====
-    // ===== AI (REAL) =====
-btnAI?.addEventListener("click", async () => {
-  const name = document.getElementById("dName")?.textContent?.trim() || "";
-  const mail = document.getElementById("dMail")?.textContent?.trim() || "";
-  const subj = document.getElementById("dSubj")?.textContent?.trim() || "";
-  const msg  = document.getElementById("dBody")?.textContent?.trim() || "";
+      // ✅ URL-i route-dan alırıq (hardcode yox!)
+      const aiUrl = '@Url.Action("ReplyEmail", "AI")';
+      const sendUrl = '@Url.Action("SendReply", "Message")';
 
-  // Promtu müştərinin mesajından qururuq
-  const promt =
+      // ===== AI =====
+      btnAI?.addEventListener("click", async () => {
+        const name = document.getElementById("dName")?.textContent?.trim() || "";
+        const mail = document.getElementById("dMail")?.textContent?.trim() || "";
+        const subj = document.getElementById("dSubj")?.textContent?.trim() || "";
+        const msg  = document.getElementById("dBody")?.textContent?.trim() || "";
+
+        const promt =
 `Müşteri adı: ${name}
 Email: ${mail}
 Konu: ${subj}
@@ -528,52 +532,65 @@ ${msg}
 
 Görev:
 Türkçe doğru üslupta müşteriye, kısa (4-6 cümle) cevab yaz.
-Yok Malumat Yetmiyorsa sonda 1-2 sual ver. 
+Eğer bilgi yetersizse sonda 1-2 soru sor.
 
-sonda hep şu olsun 
+Sonda mutlaka şu imza olsun:
 
 Saygılarımla,  
 Ceyhun Yusufoğlu
 Yummy AŞ Genel Müdürü
 `;
 
-  btnAI.disabled = true;
-  toast("AI cevab üretiliyor", "İşleniyor ⏳");
+        btnAI.disabled = true;
+        toast("AI cevab üretiliyor...", "İşleniyor ⏳");
 
-  try {
-    const res = await fetch("/ai/reply-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-        "RequestVerificationToken": token
-      },
-      body: "promt=" + encodeURIComponent(promt)
-    });
+        try {
+          const form = new URLSearchParams();
+          form.append("promt", promt);
 
-    const data = await res.json().catch(() => null);
+          const res = await fetch(aiUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+              "RequestVerificationToken": token
+            },
+            body: form.toString()
+          });
 
-    if (!res.ok || !data?.ok) {
-      toast("AI cavab alınmadı.", "Hata!");
-      console.error("AI error:", data);
-      return;
-    }
+          const text = await res.text(); // əvvəl text oxu (bəzən JSON gəlmir)
+          let data = null;
+          try { data = JSON.parse(text); } catch { data = null; }
 
-    replyBox.value = data.reply;
-    toast("AI Auto cevap hazır");
-  } catch (e) {
-    console.error(e);
-    toast("AI servis hatası.", "Hata!");
-  } finally {
-    btnAI.disabled = false;
-  }
-});
+          if (!res.ok) {
+            console.error("AI HTTP Error:", res.status, text);
+            toast("AI servisi hata verdi.", "Hata!");
+            return;
+          }
+
+          if (!data?.ok) {
+            console.error("AI logical error:", data);
+            toast(data?.message || "AI cavab alınmadı.", "Hata!");
+            return;
+          }
+
+          replyBox.value = data.reply || "";
+          toast("AI Auto cevap hazır ✅");
+        } catch (e) {
+          console.error(e);
+          toast("AI servis hatası.", "Hata!");
+        } finally {
+          btnAI.disabled = false;
+        }
+      });
 
       // ===== templates =====
       document.addEventListener("click", (e) => {
         const b = e.target.closest("[data-tpl]");
         if (!b) return;
+
         const tpl = b.getAttribute("data-tpl");
         const name = document.getElementById("dName")?.textContent?.trim() || "";
+
         if (tpl === "thanks") {
           replyBox.value = `Salam ${name},\n\nYazdığınız üçün təşəkkür edirik. Tezliklə geri dönüş edəcəyik.\n\nHörmətlə,`;
         }
@@ -583,10 +600,11 @@ Yummy AŞ Genel Müdürü
         if (tpl === "pricing") {
           replyBox.value = `Salam ${name},\n\nQiymətlər və paketlər haqqında məlumat:\n- ...\n\nHörmətlə,`;
         }
+
         toast("Template əlavə olundu.");
       });
 
-      // ===== SEND (mail) =====
+      // ===== SEND =====
       btnSendEl?.addEventListener("click", async () => {
         const body = (replyBox?.value || "").trim();
         if (!body) {
@@ -598,13 +616,17 @@ Yummy AŞ Genel Müdürü
         toast("Gönderiliyor…", "İşleniyor ⏳");
 
         try {
-          const res = await fetch("/Message/SendReply", {
+          const form = new URLSearchParams();
+          form.append("id", id);
+          form.append("body", body);
+
+          const res = await fetch(sendUrl, {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
               "RequestVerificationToken": token
             },
-            body: "id=" + encodeURIComponent(id) + "&body=" + encodeURIComponent(body)
+            body: form.toString()
           });
 
           if (!res.ok) throw new Error("Server Error");

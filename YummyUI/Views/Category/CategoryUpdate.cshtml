@@ -3,23 +3,189 @@
     Layout = "_AdminLayout";
 }
 
-<div class="card-body w-25">
-    @using (Html.BeginForm("CategoryUpdate", "Category", FormMethod.Post))
-    {
-        @Html.HiddenFor(x=>x.CategoryId)
-        <div class="form-group">
-            <label>Category Name</label>
-            @Html.TextBoxFor(x => x.CategoryName, new { @class = "form-control" })
+<link href="~/css/premium-glass.css" rel="stylesheet" />
+
+<div class="pg">
+
+    <div class="panel" style="max-width: 980px;">
+
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+            <div>
+                <h1 class="h1" style="margin-bottom:6px;">Kategori Güncelle</h1>
+                <p class="lead" style="margin-bottom:0;">
+                    Kategori adını və statusunu yenilə.
+                </p>
+            </div>
+
+            <div class="pill" title="Mevcut durum">
+                <span class="dot" id="TopDot" style="background:@(Model.CategoryStatus ? "var(--success)" : "var(--warning)");"></span>
+                <span id="TopStatus">@((Model.CategoryStatus) ? "Aktif" : "Pasif")</span>
+            </div>
         </div>
 
-        <div class="form-group mt-3">
+        <div style="height:18px;"></div>
 
-            <label class="custom-switch mb-0">
-                @Html.CheckBoxFor(x => x.CategoryStatus, new { @class = "custom-switch-input" })
-                <span class="custom-switch-indicator"></span>
-            </label>
-        </div>
+        @using (Html.BeginForm("CategoryUpdate", "Category", FormMethod.Post))
+        {
+            @Html.HiddenFor(x => x.CategoryId)
 
-        <button type="submit" class="btn btn-primary mt-4">Save</button>
-    }
+            <div class="form2">
+
+                <!-- SOL: FORM -->
+                <div class="formRow">
+
+                    <div>
+                        <div class="label">Category Name</div>
+                        @Html.TextBoxFor(x => x.CategoryName, new {
+                            @class = "input",
+                            placeholder = "Örn: Çorbalar, Pizzalar, Salatalar..."
+                        })
+                        <div class="helper">Siyahıda və müştəri tərəfdə görünən ad.</div>
+                    </div>
+
+                    <div>
+                        <div class="label">Durum</div>
+
+                        <label class="glass-toggle">
+                            @Html.CheckBoxFor(x => x.CategoryStatus, new { @class = "glass-toggle__input", id = "CategoryStatus" })
+                            <span class="glass-toggle__track">
+                                <span class="glass-toggle__thumb"></span>
+                            </span>
+                            <span class="glass-toggle__text" id="StatusText">
+                                @(Model.CategoryStatus ? "Aktif" : "Pasif")
+                            </span>
+                        </label>
+
+                        <div class="helper">Pasif olarsa kateqoriya gizlənə bilər.</div>
+                    </div>
+
+                    <div class="footerBtns">
+                        <button type="submit" class="btn btn-primary">
+                            ✅ Kaydet
+                        </button>
+
+                        <a href="/Category/Index" class="btn btn-soft">
+                            ↩ Geri Dön
+                        </a>
+                    </div>
+
+                </div>
+
+                <!-- SAĞ: PREVIEW -->
+                <div>
+                    <div class="preview">
+
+                        <div class="previewTop">
+                            <div class="previewIcon">📁</div>
+                            <div style="min-width:0;">
+                                <div style="font-weight:900;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    <span id="PreviewName">@Model.CategoryName</span>
+                                </div>
+                                <div style="color:rgba(233,236,255,.65);font-weight:700;font-size:13px;">Category</div>
+                            </div>
+
+                            <div class="pill" style="margin-left:auto;" id="PreviewPill">
+                                <span class="dot" id="PreviewDot" style="background:@(Model.CategoryStatus ? "var(--success)" : "var(--warning)");"></span>
+                                <span id="PreviewStatus">@(Model.CategoryStatus ? "Aktif" : "Pasif")</span>
+                            </div>
+                        </div>
+
+                        <div class="quote">
+                            Bu kategori hazırda <span id="PreviewStatusText">@(Model.CategoryStatus ? "aktiv" : "passiv")</span> durumdadır.
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        }
+
+    </div>
+
 </div>
+@section Styles
+{
+<style>
+/* ===== glass toggle (senin premium UI'ye uygun) ===== */
+.glass-toggle{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    user-select:none;
+}
+.glass-toggle__input{ display:none; }
+
+.glass-toggle__track{
+    width:64px;
+    height:36px;
+    border-radius:999px;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: 0 10px 25px rgba(0,0,0,.25);
+    position:relative;
+    cursor:pointer;
+    transition: .25s ease;
+}
+.glass-toggle__thumb{
+    width:28px;
+    height:28px;
+    border-radius:999px;
+    position:absolute;
+    left:4px; top:50%;
+    transform: translateY(-50%);
+    background: rgba(233,236,255,.92);
+    box-shadow: 0 10px 22px rgba(0,0,0,.25);
+    transition: .25s ease;
+}
+.glass-toggle__text{
+    font-weight:900;
+    color: rgba(233,236,255,.85);
+}
+.glass-toggle__input:checked + .glass-toggle__track{
+    background: rgba(34,197,94,.20);
+    border-color: rgba(34,197,94,.30);
+}
+.glass-toggle__input:checked + .glass-toggle__track .glass-toggle__thumb{
+    left: 32px;
+}
+</style>
+}
+@section Scripts{
+<script>
+(function(){
+    const nameInput = document.querySelector('input[name="CategoryName"]');
+    const status = document.getElementById('CategoryStatus');
+
+    const previewName = document.getElementById('PreviewName');
+    const statusText = document.getElementById('StatusText');
+
+    const previewStatus = document.getElementById('PreviewStatus');
+    const previewStatusText = document.getElementById('PreviewStatusText');
+    const previewDot = document.getElementById('PreviewDot');
+
+    const topDot = document.getElementById('TopDot');
+    const topStatus = document.getElementById('TopStatus');
+
+    function sync(){
+        if(previewName && nameInput){
+            previewName.textContent = nameInput.value.trim() || "Kategori";
+        }
+
+        const isActive = status && status.checked;
+
+        if(statusText) statusText.textContent = isActive ? "Aktif" : "Pasif";
+        if(previewStatus) previewStatus.textContent = isActive ? "Aktif" : "Pasif";
+        if(previewStatusText) previewStatusText.textContent = isActive ? "aktiv" : "passiv";
+        if(previewDot) previewDot.style.background = isActive ? "var(--success)" : "var(--warning)";
+
+        if(topDot) topDot.style.background = isActive ? "var(--success)" : "var(--warning)";
+        if(topStatus) topStatus.textContent = isActive ? "Aktif" : "Pasif";
+    }
+
+    if(nameInput) nameInput.addEventListener('input', sync);
+    if(status) status.addEventListener('change', sync);
+
+    sync();
+})();
+</script>
+}

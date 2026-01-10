@@ -2,15 +2,83 @@
     Layout = "_AdminLayout";
 }
 
-<form method="post">
-    <label>Malzemeleri girin</label>
-    <input type="text" name="promt" class="form-control" />
-    <br />
-    <button type="submit" class="btn btn-info">Oluştur</button>
-</form>
+<link href="~/css/premium-glass.css" rel="stylesheet" />
 
+<div class="pg">
+
+    <div class="panel">
+
+        <h1 class="h1">🤖 AI Yemek Tarifi</h1>
+        <p class="lead">Elindeki malzemeleri yaz, sana özel tarif oluşturalım.</p>
+
+        <form method="post" class="form2">
+
+            <!-- SOL TARAF -->
+            <div class="formRow">
+
+                <div>
+                    <div class="label">Malzemeler</div>
+                    <textarea 
+                        name="promt" 
+                        class="textarea"
+                        placeholder="Örn: toyuq, kartof, soğan, sarımsaq, qaymaq..."
+                        required></textarea>
+
+                    <div class="helper">
+                        Malzemeleri vergüllə və ya alt-alta yaza bilərsən.
+                    </div>
+                </div>
+
+                <div class="footerBtns">
+                    <button type="submit" class="btn btn-primary">
+                        ✨ Tarif Oluştur
+                    </button>
+
+                    <a href="/Admin" class="btn btn-soft">
+                        ↩ Geri Dön
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- SAĞ PREVIEW / RESULT -->
+            <div>
+
+                <div class="preview">
+
+                    <div class="previewTop">
+                        <div class="previewIcon">🍳</div>
+                        <div>
+                            <div style="font-weight:900;font-size:18px">AI Tarif Çıktısı</div>
+                            <div style="color:rgba(233,236,255,.65);font-weight:600;font-size:13px">
+                                Sonuç burada görünəcək
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="
+                        white-space: pre-wrap;
+                        line-height: 1.6;
+                        font-weight: 600;
+                        color: rgba(233,236,255,.9);
+                        min-height: 180px;
+                    ">
 @if (ViewBag.recipe != null)
 {
-    <h5>Öneri</h5>
-    <pre>@ViewBag.recipe</pre>
+@ViewBag.recipe
 }
+else
+{
+@: Henüz tarif oluşturulmadı...
+}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>

@@ -44,7 +44,8 @@ namespace YummyUI.Controllers
 
             var requestData = new
             {
-                model = "gpt-4o-mini",
+                model = "gpt-4.1-mini",
+
                 messages = new object[]
                 {
                     new { role = "system", content = "Sen bir restoran için yemek önerileri yapan yapay zeka aracısın. Kullanıcının malzemelerine uygun yemek tarifleri üret." },
@@ -68,7 +69,7 @@ namespace YummyUI.Controllers
             return View();
         }
 
-        [HttpPost("ai/reply-email")]
+        [HttpPost("reply-email")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ReplyEmail([FromForm] string promt)
         {
@@ -84,7 +85,8 @@ namespace YummyUI.Controllers
 
             var requestData = new
             {
-                model = "gpt-4o-mini",
+               model = "gpt-4.1-mini",
+
                 messages = new object[]
                 {
                     new { role = "system", content = "Mesajları okuyarak ilgili mesaja ilgili cevap veren gelişmiş Yapay Zekasın" },
