@@ -739,10 +739,9 @@
                       </button>
 
 
-                      <a class="btnA holdBtn" asp-action="ChangeStatus" asp-controller="Rezervation"
-                        asp-route-id="@rez.RezervationId" asp-route-status="Pending">
-                        <i class="bi bi-hourglass-split"></i> Beklet
-                      </a>
+                      <button type="button" class="btnA holdBtn js-pending" data-id="@rez.RezervationId">
+                        <i class="bi bi-hourglass-split">Beklet</i>
+                      </button>
 
                       <a class="btnA cancelBtn" asp-action="ChangeStatus" asp-controller="Rezervation"
                         asp-route-id="@rez.RezervationId" asp-route-status="Canceled">
@@ -788,7 +787,7 @@
       const presetsWrap = document.getElementById("presets");
       const presetBtns = presetsWrap ? Array.from(presetsWrap.querySelectorAll(".ps")) : [];
 
-      let activeFilter = "all"; // chip filter
+      let activeFilter = "all";
       let query = "";
 
       function updateVisibleCount() {
@@ -880,7 +879,7 @@
             setActivePreset("month");
             setDateRange(fmtISO(start), fmtISO(end));
           }
-          else { // all
+          else {
             setActivePreset("all");
             setDateRange("", "");
           }
@@ -951,53 +950,102 @@
 
 
       //-Fetch Approve
-    document.addEventListener("click", async (e) => {
-  const btn = e.target.closest(".js-approve");
-  if (!btn) return;
+      document.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".js-approve");
+        if (!btn) return;
 
-  const id = btn.getAttribute("data-id");
-  if (!id) return;
+        const id = btn.getAttribute("data-id");
+        if (!id) return;
 
-  const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value;
+        const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value;
 
-  try {
-    var res = await fetch("/Rezervation/ChangeStatusApproved", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: "id=" + encodeURIComponent(id) +
-            "&__RequestVerificationToken=" + encodeURIComponent(token)
-    });
+        try {
+          var res = await fetch(`/Rezervation/ChangeStatusApproved/${id}`, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: "id=" + encodeURIComponent(id) +
+              "&__RequestVerificationToken=" + encodeURIComponent(token)
+          });
 
-    const text = await res.text();
-    if (!res.ok) {
-      console.error("HTTP:", res.status, text);
-      throw new Error("Server Error");
-    }
+          const text = await res.text();
+          if (!res.ok) {
+            console.error("HTTP:", res.status, text);
+            throw new Error("Server Error");
+          }
 
-     const row = btn.closest("tr");
-    if (row) {
-      row.setAttribute("data-status", "2");
+          const row = btn.closest("tr");
+          if (row) {
+            row.setAttribute("data-status", "2");
 
-      const statusEl = row.querySelector(".status");
-      if (statusEl) {
-        statusEl.classList.remove("wait", "hold", "cancel", "ok");
-        statusEl.classList.add("ok");
-        statusEl.innerHTML = `<span class="dot"></span> Onaylandı`;
-      }
+            const statusEl = row.querySelector(".status");
+            if (statusEl) {
+              statusEl.classList.remove("wait", "hold", "cancel", "ok");
+              statusEl.classList.add("ok");
+              statusEl.innerHTML = `<span class="dot"></span> Onaylandı`;
+            }
 
-      apply(); // filter/search/date yenilə
-    }
+            apply();
+          }
 
-    console.log("Approved OK", text);
-  } catch (err) {
-    console.error(err);
-  }
-});
-
+          console.log("Approved OK", text);
+        } catch (err) {
+          console.error(err);
+        }
+      });
       //-
 
-      // default: all
+      //fetch-onhold
+      document.addEventListener("click", async (e) => {
+        var btn = e.target.closest(".js-pending")
+        //console.log(btn);
+        if (!btn) return;
+
+        var id = btn.getAttribute("data-id")
+        if (!btn) return;
+
+        const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value;
+
+        try {
+          var res = await fetch(`/Rezervation/ChangeStatusOnPending/${id}`, {
+            method: "POST",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: "id=" + encodeURIComponent(id) +
+              "&__RequestVerificationToken=" + encodeURIComponent(token)
+          })
+          const text = await res.text();
+          if (!res.ok) {
+            console.error("HTTP:", res.status, text)
+            throw new Error("Server Error");
+          }
+
+          const row = btn.closest("tr");
+          if (row) {
+            row.setAttribute("data-status", "1");
+
+            const statusEl = row.querySelector(".status");
+            if (statusEl) {
+              statusEl.classList.remove("wait", "hold", "cancel", "ok");
+              statusEl.classList.add("hold");
+              statusEl.innerHTML = `<span class="dot"></span> Beklet`;
+            }
+
+            apply();
+          }
+
+          console.log("Status Hold", text);
+
+        } catch (err) {
+          console.err(err)
+        }
+
+      })
+
+      //hold end
+
       setActivePreset("all");
       apply();
     })();

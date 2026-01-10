@@ -100,5 +100,28 @@ namespace YummyUI.Controllers
 
             return Ok();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangeStatusOnPending(int id)
+        {
+            var client =_httpClientFactory.CreateClient();
+            
+            var url = $"http://localhost:5289/api/Rezervations/change/rezervation/status/{id}?status=Pending";
+
+            var req =new HttpRequestMessage(HttpMethod.Put,url)
+            {
+                Content =new StringContent("")
+            };
+
+            var res =await client.SendAsync(req);
+
+            if (!res.IsSuccessStatusCode)
+                return BadRequest("Status dəyişdirilmədi");
+            
+            return Ok();
+        }
+
+   
     }
 }
