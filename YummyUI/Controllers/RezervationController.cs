@@ -43,7 +43,7 @@ namespace YummyUI.Controllers
                 return View(createRezervationDto);
 
             }
-            return RedirectToAction("RezervationList");
+            return RedirectToAction("Index","Home");
         }
 
         public async Task<IActionResult> DeleteRezervation(int id)

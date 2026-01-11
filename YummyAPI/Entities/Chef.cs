@@ -16,6 +16,6 @@ namespace YummyAPI.Entities
         public string? ChefLinkedinUrl { get; set; }
         public bool ChefStatus { get; set; }
 
-
+        List<GroupOrganization>? GroupOrganizations { get; set; }
     }
 }

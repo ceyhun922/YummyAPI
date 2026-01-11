@@ -11,5 +11,7 @@ namespace YummyAPI.Entities
         public double OrganizationPrice { get; set; }
         public string? OrganizationImage {get; set;}
         public bool OrganizationStatus { get; set; }
+
+        List<GroupOrganization>? GroupOrganizations {get;set;}
     }
 }
