@@ -1,5 +1,9 @@
 @using YummyUI.DTOs.FooterDTOs
-@model ResultFooterBottomDto
+@model List<ResultFooterDto>
+
+@{
+    var footer = (Model ?? new List<ResultFooterDto>()).FirstOrDefault() ?? new ResultFooterDto();
+}
 <div class="container">
   <div class="row gy-3">
 
@@ -7,7 +11,7 @@
         <i class="bi bi-geo-alt icon"></i>
         <div class="address">
           <h4>Address</h4>
-          <p>@Model.Address</p>
+          <p>@footer.Address</p>
          <p></p>
         </div>
 
@@ -18,8 +22,8 @@
         <div>
           <h4>Contact</h4>
           <p>
-            <strong>Phone:</strong> <span>@Model.CallUs</span><br>
-            <strong>Email:</strong> <span>@Model.EmailUs</span><br>
+            <strong>Phone:</strong> <span>@footer.CallUs</span><br>
+            <strong>Email:</strong> <span>@footer.EmailUs</span><br>
           </p>
         </div>
       </div>
@@ -29,7 +33,7 @@
         <div>
           <h4>Opening Hours</h4>
           <p>
-            <strong>Mon-Sat:</strong> <span>@Model.OpeningHours</span><br>
+            <strong>Mon-Sat:</strong> <span>@footer.OpeningHours</span><br>
             <strong>Sunday</strong>: <span>Closed</span>
           </p>
         </div>
@@ -38,10 +42,10 @@
       <div class="col-lg-3 col-md-6">
         <h4>Follow Us</h4>
         <div class="social-links d-flex">
-          <a href="@Model.XUrl" class="twitter"><i class="bi bi-twitter-x"></i></a>
-          <a href="@Model.FaceookUrl" class="facebook"><i class="bi bi-facebook"></i></a>
-          <a href="@Model.InstagramUrl" class="instagram"><i class="bi bi-instagram"></i></a>
-          <a href="@Model.LinkedinUrl" class="linkedin"><i class="bi bi-linkedin"></i></a>
+          <a href="@footer" class="twitter"><i class="bi bi-twitter-x"></i></a>
+          <a href="@footer" class="facebook"><i class="bi bi-facebook"></i></a>
+          <a href="@footer" class="instagram"><i class="bi bi-instagram"></i></a>
+          <a href="@footer" class="linkedin"><i class="bi bi-linkedin"></i></a>
         </div>
       </div>
     

@@ -242,6 +242,72 @@ namespace YummyAPI.Migrations
                     b.ToTable("Galleries");
                 });
 
+            modelBuilder.Entity("YummyAPI.Entities.GroupOrganization", b =>
+                {
+                    b.Property<int>("GroupOrganizationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GroupOrganizationId"));
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GroupPriority")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrganizationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrganizationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ParticipantCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PersonCount")
+                        .HasColumnType("int");
+
+                    b.Property<double?>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<TimeOnly>("Time")
+                        .HasColumnType("time");
+
+                    b.HasKey("GroupOrganizationId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("GroupOrganizations");
+                });
+
+            modelBuilder.Entity("YummyAPI.Entities.GroupOrganizationChef", b =>
+                {
+                    b.Property<int>("GroupOrganizationChefId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GroupOrganizationChefId"));
+
+                    b.Property<int>("ChefId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupOrganizationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GroupOrganizationChefId");
+
+                    b.HasIndex("ChefId");
+
+                    b.HasIndex("GroupOrganizationId");
+
+                    b.ToTable("GroupOrganizationChefs");
+                });
+
             modelBuilder.Entity("YummyAPI.Entities.Notification", b =>
                 {
                     b.Property<int>("NotificationId")
@@ -417,6 +483,36 @@ namespace YummyAPI.Migrations
                     b.HasKey("TestimonialId");
 
                     b.ToTable("Testimonials");
+                });
+
+            modelBuilder.Entity("YummyAPI.Entities.GroupOrganization", b =>
+                {
+                    b.HasOne("YummyAPI.Entities.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
+                });
+
+            modelBuilder.Entity("YummyAPI.Entities.GroupOrganizationChef", b =>
+                {
+                    b.HasOne("YummyAPI.Entities.Chef", "Chef")
+                        .WithMany()
+                        .HasForeignKey("ChefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YummyAPI.Entities.GroupOrganization", "GroupOrganization")
+                        .WithMany()
+                        .HasForeignKey("GroupOrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chef");
+
+                    b.Navigation("GroupOrganization");
                 });
 
             modelBuilder.Entity("YummyAPI.Entities.Product", b =>

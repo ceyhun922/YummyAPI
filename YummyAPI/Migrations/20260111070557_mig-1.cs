@@ -76,6 +76,7 @@ namespace YummyAPI.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    messageBox = table.Column<int>(type: "int", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -110,7 +111,12 @@ namespace YummyAPI.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CallUs = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailUs = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OpeningHours = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    OpeningHours = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FaceookUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    XUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InstagramUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LinkedinUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -158,6 +164,7 @@ namespace YummyAPI.Migrations
                     OrganizationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrganizationDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrganizationPrice = table.Column<double>(type: "float", nullable: false),
+                    OrganizationImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrganizationStatus = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -177,7 +184,8 @@ namespace YummyAPI.Migrations
                     RezervationDate = table.Column<DateOnly>(type: "date", nullable: false),
                     RezervationClockk = table.Column<TimeOnly>(type: "time", nullable: false),
                     PersonCount = table.Column<int>(type: "int", nullable: false),
-                    RezervationStatus = table.Column<bool>(type: "bit", nullable: false)
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RezervationStatus = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -240,6 +248,73 @@ namespace YummyAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "GroupOrganizations",
+                columns: table => new
+                {
+                    GroupOrganizationId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrganizationId = table.Column<int>(type: "int", nullable: false),
+                    OrganizationName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GroupPriority = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ParticipationRate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    Time = table.Column<TimeOnly>(type: "time", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupOrganizations", x => x.GroupOrganizationId);
+                    table.ForeignKey(
+                        name: "FK_GroupOrganizations_Organizations_OrganizationId",
+                        column: x => x.OrganizationId,
+                        principalTable: "Organizations",
+                        principalColumn: "OrganizationId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupOrganizationChefs",
+                columns: table => new
+                {
+                    GroupOrganizationChefId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupOrganizationId = table.Column<int>(type: "int", nullable: false),
+                    ChefId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupOrganizationChefs", x => x.GroupOrganizationChefId);
+                    table.ForeignKey(
+                        name: "FK_GroupOrganizationChefs_Chefs_ChefId",
+                        column: x => x.ChefId,
+                        principalTable: "Chefs",
+                        principalColumn: "ChefId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupOrganizationChefs_GroupOrganizations_GroupOrganizationId",
+                        column: x => x.GroupOrganizationId,
+                        principalTable: "GroupOrganizations",
+                        principalColumn: "GroupOrganizationId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupOrganizationChefs_ChefId",
+                table: "GroupOrganizationChefs",
+                column: "ChefId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupOrganizationChefs_GroupOrganizationId",
+                table: "GroupOrganizationChefs",
+                column: "GroupOrganizationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupOrganizations_OrganizationId",
+                table: "GroupOrganizations",
+                column: "OrganizationId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryId",
                 table: "Products",
@@ -251,9 +326,6 @@ namespace YummyAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Abouts");
-
-            migrationBuilder.DropTable(
-                name: "Chefs");
 
             migrationBuilder.DropTable(
                 name: "Contacts");
@@ -268,10 +340,10 @@ namespace YummyAPI.Migrations
                 name: "Galleries");
 
             migrationBuilder.DropTable(
-                name: "Notifications");
+                name: "GroupOrganizationChefs");
 
             migrationBuilder.DropTable(
-                name: "Organizations");
+                name: "Notifications");
 
             migrationBuilder.DropTable(
                 name: "Products");
@@ -286,7 +358,16 @@ namespace YummyAPI.Migrations
                 name: "Testimonials");
 
             migrationBuilder.DropTable(
+                name: "Chefs");
+
+            migrationBuilder.DropTable(
+                name: "GroupOrganizations");
+
+            migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Organizations");
         }
     }
 }

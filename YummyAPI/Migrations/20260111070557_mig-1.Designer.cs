@@ -12,8 +12,8 @@ using YummyAPI.Context;
 namespace YummyAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20260106024556_mig-5")]
-    partial class mig5
+    [Migration("20260111070557_mig-1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -144,6 +144,9 @@ namespace YummyAPI.Migrations
                     b.Property<string>("Subject")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("messageBox")
+                        .HasColumnType("int");
+
                     b.HasKey("ContactId");
 
                     b.ToTable("Contacts");
@@ -242,6 +245,69 @@ namespace YummyAPI.Migrations
                     b.ToTable("Galleries");
                 });
 
+            modelBuilder.Entity("YummyAPI.Entities.GroupOrganization", b =>
+                {
+                    b.Property<int>("GroupOrganizationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GroupOrganizationId"));
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GroupPriority")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrganizationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrganizationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ParticipationRate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<TimeOnly>("Time")
+                        .HasColumnType("time");
+
+                    b.HasKey("GroupOrganizationId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("GroupOrganizations");
+                });
+
+            modelBuilder.Entity("YummyAPI.Entities.GroupOrganizationChef", b =>
+                {
+                    b.Property<int>("GroupOrganizationChefId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GroupOrganizationChefId"));
+
+                    b.Property<int>("ChefId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GroupOrganizationId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GroupOrganizationChefId");
+
+                    b.HasIndex("ChefId");
+
+                    b.HasIndex("GroupOrganizationId");
+
+                    b.ToTable("GroupOrganizationChefs");
+                });
+
             modelBuilder.Entity("YummyAPI.Entities.Notification", b =>
                 {
                     b.Property<int>("NotificationId")
@@ -279,6 +345,9 @@ namespace YummyAPI.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrganizationId"));
 
                     b.Property<string>("OrganizationDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrganizationImage")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationName")
@@ -343,6 +412,9 @@ namespace YummyAPI.Migrations
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PersonCount")
                         .HasColumnType("int");
 
@@ -355,8 +427,8 @@ namespace YummyAPI.Migrations
                     b.Property<DateOnly>("RezervationDate")
                         .HasColumnType("date");
 
-                    b.Property<bool>("RezervationStatus")
-                        .HasColumnType("bit");
+                    b.Property<int>("RezervationStatus")
+                        .HasColumnType("int");
 
                     b.HasKey("RezervationId");
 
@@ -411,6 +483,36 @@ namespace YummyAPI.Migrations
                     b.HasKey("TestimonialId");
 
                     b.ToTable("Testimonials");
+                });
+
+            modelBuilder.Entity("YummyAPI.Entities.GroupOrganization", b =>
+                {
+                    b.HasOne("YummyAPI.Entities.Organization", "Organization")
+                        .WithMany()
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
+                });
+
+            modelBuilder.Entity("YummyAPI.Entities.GroupOrganizationChef", b =>
+                {
+                    b.HasOne("YummyAPI.Entities.Chef", "Chef")
+                        .WithMany()
+                        .HasForeignKey("ChefId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YummyAPI.Entities.GroupOrganization", "GroupOrganization")
+                        .WithMany()
+                        .HasForeignKey("GroupOrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chef");
+
+                    b.Navigation("GroupOrganization");
                 });
 
             modelBuilder.Entity("YummyAPI.Entities.Product", b =>
