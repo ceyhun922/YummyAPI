@@ -15,6 +15,37 @@ namespace YummyUI.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateChef(CreateChefDto dto, IFormFile file)
+        {
+            var client = _httpClientFactory.CreateClient();
+
+            var form = new MultipartFormDataContent();
+            form.Add(new StringContent(dto.ChefName ?? ""), "ChefName");
+            form.Add(new StringContent(dto.ChefTitle ?? ""), "ChefTitle");
+            form.Add(new StringContent(dto.ChefDescription ?? ""), "ChefDescription");
+            form.Add(new StringContent(dto.ChefFacebookUrl ?? ""), "ChefFacebookUrl");
+            form.Add(new StringContent(dto.ChefInstagramUrl ?? ""), "ChefInstagramUrl");
+            form.Add(new StringContent(dto.ChefLinkedinUrl ?? ""), "ChefLinkedinUrl");
+            form.Add(new StringContent(dto.ChefXUrl ?? ""), "ChefXUrl");
+            form.Add(new StringContent(dto.ChefStatus.ToString()), "ChefStatus");
+
+            if (file != null && file.Length > 0)
+            {
+                var stream = file.OpenReadStream();
+                form.Add(new StreamContent(stream), "ChefImageUrl", file.FileName); 
+            }
+
+            var response = await client.PostAsync("http://localhost:5289/api/Chefs", form);
+
+            if (!response.IsSuccessStatusCode)
+                return View(dto);
+
+            return RedirectToAction("ChefList");
+        }
+
+
+
         public async Task<IActionResult> ChefList()
         {
             var client = _httpClientFactory.CreateClient();
@@ -33,25 +64,12 @@ namespace YummyUI.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateChef(CreateChefDto createChefDto)
-        {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = JsonConvert.SerializeObject(createChefDto);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("http://localhost:5289/api/Chefs", content);
-            if (!response.IsSuccessStatusCode)
-            {
-                return View(createChefDto);
-            }
-            return RedirectToAction("ChefList");
-        }
 
         public async Task<IActionResult> DeleteChef(int id)
         {
             var client = _httpClientFactory.CreateClient();
             await client.DeleteAsync("http://localhost:5289/api/Chefs?id=" + id);
-            
+
             return RedirectToAction("ChefList");
 
         }

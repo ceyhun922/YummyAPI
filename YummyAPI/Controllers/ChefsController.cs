@@ -1,4 +1,5 @@
 
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using YummyAPI.Context;
@@ -13,21 +14,26 @@ namespace YummyAPI.Controllers
     {
         private readonly ApiContext _context;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _web;
 
-        public ChefsController(ApiContext context, IMapper mapper)
+        public ChefsController(ApiContext context, IMapper mapper, IWebHostEnvironment web)
         {
             _context = context;
             _mapper = mapper;
+            _web = web;
         }
 
         [HttpPost]
-        public IActionResult CreateChef(CreateChefDto createChefDto)
+        public async Task<IActionResult> CreateChef([FromForm] CreateChefDto dto)
         {
-            var value = _mapper.Map<Chef>(createChefDto);
-            _context.Chefs?.Add(value);
-            _context.SaveChanges();
+            var entity = _mapper.Map<Chef>(dto);
+
+            _context.Chefs.Add(entity);
+            await _context.SaveChangesAsync();
             return Ok();
         }
+
+
 
         [HttpGet]
         public IActionResult ChefList()

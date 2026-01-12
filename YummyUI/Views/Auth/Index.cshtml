@@ -1,5 +1,7 @@
+@using YummyUI.DTOs.AuthDTOs
+@model ResultAuthDto
 @{
-    Layout =null;
+  Layout = null;
 }
 
 <!DOCTYPE html>
@@ -7,6 +9,7 @@
 
 
 <!-- auth-login.html  21 Nov 2019 03:49:32 GMT -->
+
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
@@ -34,10 +37,11 @@
                 <h4>Login</h4>
               </div>
               <div class="card-body">
-                <form method="POST" action="#" class="needs-validation" novalidate="">
+                  @using (Html.BeginForm("Index", "Auth", FormMethod.Post))
+                {
                   <div class="form-group">
                     <label for="email">Email</label>
-                    <input id="email" type="email" class="form-control" name="email" tabindex="1" required autofocus>
+                    <input id="email" type="text" class="form-control" name="email" tabindex="1" asp-for="Username" autofocus>
                     <div class="invalid-feedback">
                       Please fill in your email
                     </div>
@@ -51,7 +55,7 @@
                         </a>
                       </div>
                     </div>
-                    <input id="password" type="password" class="form-control" name="password" tabindex="2" required>
+                    <input id="password" type="password" class="form-control" asp-for="Password" name="password" tabindex="2">
                     <div class="invalid-feedback">
                       please fill in your password
                     </div>
@@ -67,8 +71,8 @@
                       Login
                     </button>
                   </div>
-                </form>
-                <div class="text-center mt-4 mb-3">
+                }
+ <div class="text-center mt-4 mb-3">
                   <div class="text-job text-muted">Login With Social</div>
                 </div>
                 <div class="row sm-gutters">
@@ -105,4 +109,5 @@
 
 
 <!-- auth-login.html  21 Nov 2019 03:49:32 GMT -->
+
 </html>

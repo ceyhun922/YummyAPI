@@ -199,7 +199,7 @@ textarea.f-input{
       </div>
 
       <div class="preview" id="chefPreview">
-        @if (!string.IsNullOrWhiteSpace(Model?.ChefImageUrl))
+        @if (Model.ChefImageUrl != null)
         {
           <img id="chefPreviewImg"
                src="@Model.ChefImageUrl"

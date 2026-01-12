@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using YummyAPI.Context;
@@ -14,11 +15,11 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.Http,  
-        Scheme = "bearer",               
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Tokeni Girin"
+        Description = "Tokeni Girin: Bearer {token}"
     });
 
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -72,18 +73,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+
 var app = builder.Build();
+
+app.UseStaticFiles();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+}
+else
+{
+    app.UseHttpsRedirection();
 }
 
-app.UseHttpsRedirection();
-
 app.UseCors("YummyAPI");
-app.UseAuthentication();  
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

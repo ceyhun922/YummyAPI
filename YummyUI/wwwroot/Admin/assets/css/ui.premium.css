@@ -1,0 +1,456 @@
+/* =========================
+   Yummy Admin - Glass Create UI
+   (Create pages: form + live preview)
+   ========================= */
+
+:root {
+  --bg-0: #060a16;
+  --bg-1: #081028;
+  --bg-2: #0c1636;
+
+  --card: rgba(255, 255, 255, 0.06);
+  --card-2: rgba(255, 255, 255, 0.04);
+  --stroke: rgba(255, 255, 255, 0.10);
+  --stroke-2: rgba(255, 255, 255, 0.14);
+
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.62);
+  --muted-2: rgba(255, 255, 255, 0.48);
+
+  --shadow: 0 20px 60px rgba(0,0,0,0.45);
+  --shadow-soft: 0 10px 30px rgba(0,0,0,0.35);
+
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+
+  --primary-1: #f7b94d; /* warm gold */
+  --primary-2: #ff7a18; /* orange */
+  --danger: #ff3b3b;
+
+  --good: #22c55e;
+  --warn: #f59e0b;
+
+  --focus: rgba(255, 180, 70, 0.22);
+}
+
+/* Optional font */
+.admin-create-page,
+.admin-create-page * {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+.admin-create-page {
+  min-height: calc(100vh - 120px);
+  padding: 28px 28px 44px;
+  color: var(--text);
+}
+
+/* Background vibes */
+.admin-create-page::before,
+.admin-create-page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.admin-create-page::before {
+  background:
+    radial-gradient(900px 550px at 18% 18%, rgba(138, 99, 255, 0.22), transparent 60%),
+    radial-gradient(700px 420px at 85% 25%, rgba(255, 140, 0, 0.12), transparent 55%),
+    radial-gradient(900px 600px at 50% 95%, rgba(52, 211, 153, 0.08), transparent 60%),
+    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-0) 70%);
+}
+
+.admin-create-page::after {
+  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 18px 18px;
+  opacity: 0.22;
+  mix-blend-mode: overlay;
+}
+
+/* Header / Hero */
+.page-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 24px;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--stroke);
+  background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  margin-bottom: 18px;
+}
+
+.hero-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: linear-gradient(135deg, rgba(170, 140, 255, 0.28), rgba(255, 170, 90, 0.12));
+  box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+}
+
+.hero-icon i {
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+.hero-title {
+  font-size: 34px;
+  line-height: 1.05;
+  margin: 0;
+  letter-spacing: -0.6px;
+}
+
+.hero-subtitle {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.hero-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* 2 columns layout */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 18px;
+}
+
+@media (max-width: 1100px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Cards */
+.glass-card {
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--stroke);
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+
+.glass-card-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.glass-card-header h3 {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.2px;
+  color: rgba(255,255,255,0.88);
+}
+
+.glass-card-body {
+  padding: 18px 20px 22px;
+}
+
+/* Form */
+.glass-form .form-row {
+  margin-bottom: 14px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  color: rgba(255,255,255,0.82);
+  margin-bottom: 8px;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted-2);
+  font-size: 12px;
+}
+
+/* Inputs */
+.glass-input,
+.glass-textarea {
+  width: 100%;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(10, 16, 40, 0.45);
+  color: var(--text);
+  padding: 14px 14px;
+  outline: none;
+  transition: 180ms ease;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.glass-textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.glass-input::placeholder,
+.glass-textarea::placeholder {
+  color: rgba(255,255,255,0.35);
+}
+
+.glass-input:focus,
+.glass-textarea:focus {
+  border-color: rgba(255, 190, 90, 0.35);
+  box-shadow: 0 0 0 6px var(--focus), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* Inline row (Status) */
+.form-row-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+}
+
+/* Switch */
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 56px;
+  height: 32px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch input {
+  display: none;
+}
+
+.switch .slider {
+  position: relative;
+  width: 56px;
+  height: 32px;
+  border-radius: 99px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.12);
+  transition: 180ms ease;
+}
+
+.switch .slider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.35);
+  transition: 180ms ease;
+}
+
+.switch input:checked + .slider {
+  background: linear-gradient(135deg, rgba(255, 170, 60, 0.55), rgba(255, 122, 24, 0.35));
+  border-color: rgba(255, 190, 90, 0.35);
+}
+
+.switch input:checked + .slider::after {
+  left: 28px;
+  background: rgba(255,255,255,0.96);
+}
+
+/* Buttons */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.btn-primary,
+.btn-secondary {
+  border: none;
+  border-radius: 18px;
+  padding: 12px 16px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  transition: 180ms ease;
+}
+
+.btn-primary {
+  color: rgba(10, 12, 20, 0.95);
+  background: linear-gradient(135deg, var(--primary-1), var(--primary-2));
+  box-shadow: 0 16px 30px rgba(255, 122, 24, 0.22);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 40px rgba(255, 122, 24, 0.26);
+}
+
+.btn-secondary {
+  color: rgba(255,255,255,0.88);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.btn-secondary:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.06);
+}
+
+/* Status pill */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.86);
+  font-weight: 650;
+}
+
+.status-pill .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--warn);
+  box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.12);
+}
+
+.status-pill.is-active .dot {
+  background: var(--good);
+  box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12);
+}
+
+.status-pill.is-passive .dot {
+  background: var(--warn);
+  box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.12);
+}
+
+.status-pill.small {
+  padding: 8px 12px;
+  font-size: 12px;
+}
+
+/* Preview card */
+.preview-card {
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.03));
+  padding: 16px;
+}
+
+.preview-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.preview-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+}
+
+.preview-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.preview-title {
+  font-weight: 800;
+  font-size: 16px;
+  color: rgba(255,255,255,0.92);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-subtitle {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-image {
+  margin-top: 14px;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.25);
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-image img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.preview-image-placeholder {
+  color: rgba(255,255,255,0.55);
+  font-weight: 650;
+  font-size: 13px;
+  padding: 18px;
+  text-align: center;
+}
+
+.preview-message {
+  margin-top: 14px;
+  padding: 14px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.72);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* If you want icons without FA, remove these or keep as is */
+.hero-icon i,
+.btn-primary i,
+.btn-secondary i {
+  opacity: 0.92;
+}

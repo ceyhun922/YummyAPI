@@ -1,226 +1,391 @@
 @using YummyUI.DTOs.ChefDTOs
 @model CreateChefDto
 @{
-    Layout = "_AdminLayout";
+  Layout = "_AdminLayout";
 }
 
 <style>
-/* ===== AI PREMIUM FORM ===== */
-.ai-form,
-.ai-form *{ box-sizing:border-box; }
+  .ai-form, .ai-form * { box-sizing: border-box; }
 
-.ai-form{
-  min-height:100%;
-  padding:2rem;
-  background:
-    radial-gradient(1200px 600px at 70% 80%, rgba(139,92,246,.25), transparent 60%),
-    radial-gradient(900px 500px at 15% 20%, rgba(99,102,241,.30), transparent 60%),
-    linear-gradient(135deg,#0a0e27 0%,#16213e 40%,#0f1729 100%);
-}
+  .ai-form {
+    min-height: 100%;
+    padding: 2rem;
+    background:
+      radial-gradient(1200px 600px at 70% 80%, rgba(139, 92, 246, .25), transparent 60%),
+      radial-gradient(900px 500px at 15% 20%, rgba(99, 102, 241, .30), transparent 60%),
+      linear-gradient(135deg, #0a0e27 0%, #16213e 40%, #0f1729 100%);
+  }
 
-.form-wrap{
-  max-width:720px;
-  margin:0 auto;
-  background:rgba(15,23,42,.60);
-  border-radius:28px;
-  border:1px solid rgba(255,255,255,.12);
-  backdrop-filter:blur(18px);
-  box-shadow:0 40px 90px rgba(0,0,0,.55);
-  padding:2rem 2.2rem;
-}
+  /* ✅ 2 sütun layout */
+  .layout-grid{
+    max-width: 1140px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 1.6rem;
+    align-items: start;
+  }
 
-.form-head{
-  display:flex;
-  align-items:center;
-  gap:1rem;
-  margin-bottom:1.6rem;
-}
+  .form-wrap, .preview-card{
+    background: rgba(15, 23, 42, .60);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, .55);
+  }
 
-.form-badge{
-  width:54px;height:54px;
-  border-radius:18px;
-  display:grid;place-items:center;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  box-shadow:0 14px 40px rgba(102,126,234,.6);
-  font-size:1.6rem;
-}
+  .form-wrap { padding: 2rem 2.2rem; }
 
-.form-title{
-  margin:0;
-  font-size:1.9rem;
-  font-weight:950;
-  background:linear-gradient(135deg,#fff,#a8b9ff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
+  .form-head { display:flex; align-items:center; gap:1rem; margin-bottom:1.6rem; }
 
-.form-sub{
-  margin:.2rem 0 0 0;
-  color:rgba(255,255,255,.65);
-  font-weight:700;
-  font-size:.95rem;
-}
+  .form-badge{
+    width:54px;height:54px;border-radius:18px;display:grid;place-items:center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 14px 40px rgba(102, 126, 234, .6);
+    font-size: 1.6rem;
+  }
 
-/* inputs */
-.f-group{ margin-bottom:1.2rem; }
+  .form-title{
+    margin:0;font-size:1.9rem;font-weight:950;
+    background: linear-gradient(135deg, #fff, #a8b9ff);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
 
-.f-label{
-  display:block;
-  margin-bottom:.45rem;
-  color:rgba(255,255,255,.85);
-  font-weight:800;
-  font-size:.9rem;
-}
+  .form-sub{ margin:.2rem 0 0 0; color: rgba(255,255,255,.65); font-weight:700; font-size:.95rem; }
 
-.f-input{
-  width:100%;
-  padding:.9rem 1rem;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.06);
-  color:#fff;
-  font-size:.95rem;
-  outline:none;
-  transition:all .35s cubic-bezier(.16,1,.3,1);
-}
+  .f-group{ margin-bottom: 1.2rem; }
+  .f-label{ display:block; margin-bottom:.45rem; color: rgba(255,255,255,.85); font-weight:800; font-size:.9rem; }
 
-.f-input:focus{
-  border-color:#667eea;
-  background:rgba(255,255,255,.08);
-  box-shadow:0 0 0 4px rgba(102,126,234,.25);
-}
+  .f-input{
+    width:100%;
+    padding:.9rem 1rem;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.06);
+    color:#fff;
+    font-size:.95rem;
+    outline:none;
+    transition: all .35s cubic-bezier(.16,1,.3,1);
+  }
+  .f-input:focus{
+    border-color:#667eea;
+    background: rgba(255,255,255,.08);
+    box-shadow: 0 0 0 4px rgba(102,126,234,.25);
+  }
+  textarea.f-input{ resize:none; min-height:90px; }
 
-/* textarea */
-textarea.f-input{
-  resize:none;
-  min-height:90px;
-}
+  .status-wrap{ display:flex; align-items:center; gap:.6rem; margin-top:.4rem; }
+  .status-wrap label{ font-weight:800; color: rgba(255,255,255,.85); }
 
-/* status */
-.status-wrap{
-  display:flex;
-  align-items:center;
-  gap:.6rem;
-  margin-top:.4rem;
-}
-.status-wrap label{
-  font-weight:800;
-  color:rgba(255,255,255,.85);
-}
+  .form-actions{
+    margin-top: 1.8rem;
+    display:flex;
+    gap:1rem;
+    flex-wrap: wrap;
+  }
 
-/* buttons */
-.form-actions{
-  margin-top:1.8rem;
-  display:flex;
-  gap:1rem;
-  flex-wrap:wrap;
-}
+  .btn-ai{
+    border:none;
+    border-radius:16px;
+    padding:1rem 1.4rem;
+    font-weight:950;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:.6rem;
+    color:#fff;
+    text-decoration:none;
+    transition: transform .35s cubic-bezier(.16,1,.3,1),
+                box-shadow .35s ease,
+                opacity .2s ease;
+  }
+  .btn-ai:hover{ transform: translateY(-2px); box-shadow: 0 18px 45px rgba(0,0,0,.35); }
 
-.btn-ai{
-  border:none;
-  border-radius:16px;
-  padding:1rem 1.4rem;
-  font-weight:950;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  gap:.6rem;
-  color:#fff;
-  text-decoration:none;
-  transition:transform .35s cubic-bezier(.16,1,.3,1),
-             box-shadow .35s ease,
-             opacity .2s ease;
-}
+  .btn-primary{
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 14px 40px rgba(102,126,234,.55);
+  }
+  .btn-cancel{
+    background: linear-gradient(135deg, #374151, #111827);
+    box-shadow: 0 14px 40px rgba(0,0,0,.45);
+  }
+  .btn-ghost{
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 14px 40px rgba(0,0,0,.25);
+  }
 
-.btn-ai:hover{
-  transform:translateY(-2px);
-  box-shadow:0 18px 45px rgba(0,0,0,.35);
-}
+  /* ✅ Sağ preview kart */
+  .preview-card{ padding: 1.3rem 1.3rem 1.4rem; position: sticky; top: 1.2rem; }
+  .preview-top{ display:flex; align-items:center; justify-content:space-between; gap:.8rem; margin-bottom:1rem; }
+  .pill{
+    display:inline-flex; align-items:center; gap:.45rem;
+    padding: .42rem .75rem;
+    border-radius: 999px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.85);
+    font-weight: 850;
+    font-size: .85rem;
+    white-space: nowrap;
+  }
+  .dot{
+    width:10px;height:10px;border-radius:50%;
+    background:#f59e0b; box-shadow: 0 0 0 4px rgba(245,158,11,.18);
+  }
 
-.btn-primary{
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  box-shadow:0 14px 40px rgba(102,126,234,.55);
-}
+  .preview-name{
+    font-size: 1.1rem;
+    font-weight: 950;
+    color: rgba(255,255,255,.95);
+    line-height: 1.15;
+  }
+  .preview-title{
+    margin-top:.35rem;
+    color: rgba(255,255,255,.65);
+    font-weight: 750;
+    font-size: .9rem;
+  }
 
-.btn-cancel{
-  background:linear-gradient(135deg,#374151,#111827);
-  box-shadow:0 14px 40px rgba(0,0,0,.45);
-}
+  .preview-img{
+    margin-top:1rem;
+    width:100%;
+    height: 170px;
+    border-radius: 18px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.04);
+    display:grid;
+    place-items:center;
+    overflow:hidden;
+  }
+  .preview-img img{ width:100%; height:100%; object-fit: cover; display:none; }
+  .preview-img .ph{
+    color: rgba(255,255,255,.55);
+    font-weight: 800;
+    text-align:center;
+    padding: 0 1rem;
+  }
 
-/* responsive */
-@@media(max-width:700px){
-  .form-wrap{ padding:1.5rem; }
-  .form-title{ font-size:1.6rem; }
-}
+  .preview-desc{
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 18px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.05);
+    color: rgba(255,255,255,.75);
+    font-weight: 700;
+    line-height: 1.35;
+    min-height: 84px;
+  }
+
+  .preview-links{
+    margin-top: .9rem;
+    display:flex;
+    flex-wrap: wrap;
+    gap:.5rem;
+  }
+  .chip{
+    padding:.45rem .7rem;
+    border-radius:999px;
+    background: rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.12);
+    color: rgba(255,255,255,.75);
+    font-weight: 800;
+    font-size: .82rem;
+  }
+
+  @@media(max-width: 980px){
+    .layout-grid{ grid-template-columns: 1fr; }
+    .preview-card{ position: static; }
+  }
 </style>
 
 <div class="ai-form">
-  <div class="form-wrap">
+  <div class="layout-grid">
 
-    <div class="form-head">
-      <div class="form-badge">👨‍🍳</div>
-      <div>
-        <h1 class="form-title">Şef Ekle</h1>
-        <p class="form-sub">Premium AI destekli şef profili oluştur</p>
+    <div class="form-wrap">
+
+      <div class="form-head">
+        <div class="form-badge">👨‍🍳</div>
+        <div>
+          <h1 class="form-title">Şef Ekle</h1>
+          <p class="form-sub">Premium AI destekli şef profili oluştur</p>
+        </div>
       </div>
+
+      @using (Html.BeginForm("CreateChef", "Chef", FormMethod.Post, new { @enctype = "multipart/form-data", id="chefForm" }))
+      {
+        <div class="f-group">
+          <label class="f-label">Şef İsmi</label>
+          @Html.TextBoxFor(c => c.ChefName, new { @class = "f-input", placeholder = "Ahmet Yılmaz", id="ChefName" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Uzmanlık / Ünvan</label>
+          @Html.TextBoxFor(c => c.ChefTitle, new { @class = "f-input", placeholder = "Baş Şef", id="ChefTitle" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Açıklama</label>
+          @Html.TextAreaFor(c => c.ChefDescription, new { @class = "f-input", placeholder = "20 yıllık deneyime sahip...", id="ChefDescription" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Profil Fotoğraf</label>
+          <input type="file" name="file" class="f-input" accept=".jpg,.jpeg,.png,.webp" id="ChefFile" />
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Facebook</label>
+          @Html.TextBoxFor(c => c.ChefFacebookUrl, new { @class = "f-input", id="ChefFacebookUrl" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Instagram</label>
+          @Html.TextBoxFor(c => c.ChefInstagramUrl, new { @class = "f-input", id="ChefInstagramUrl" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">LinkedIn</label>
+          @Html.TextBoxFor(c => c.ChefLinkedinUrl, new { @class = "f-input", id="ChefLinkedinUrl" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">X (Twitter)</label>
+          @Html.TextBoxFor(c => c.ChefXUrl, new { @class = "f-input", id="ChefXUrl" })
+        </div>
+
+        <div class="status-wrap">
+          @Html.CheckBoxFor(c => c.ChefStatus, new { id="ChefStatus" })
+          <label>Aktif olarak yayınla</label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-ai btn-primary">➕ Şefi Kaydet</button>
+          <button type="button" class="btn-ai btn-ghost" id="btnClearPreview">🧹 Önizlemeyi Temizle</button>
+          <a asp-action="Index" asp-controller="Chef" class="btn-ai btn-cancel">↩️ Vazgeç</a>
+        </div>
+      }
     </div>
 
-    @using (Html.BeginForm("CreateChef","Chef",FormMethod.Post))
-    {
-      <div class="f-group">
-        <label class="f-label">Şef İsmi</label>
-        @Html.TextBoxFor(c=>c.ChefName,new{@class="f-input", placeholder="Ahmet Yılmaz"})
+    <aside class="preview-card" id="previewCard">
+      <div class="preview-top">
+        <div>
+          <div class="preview-name" id="pvName">Örn: Ahmet Yılmaz</div>
+          <div class="preview-title" id="pvTitle">Uzmanlık / Ünvan</div>
+        </div>
+
+        <div class="pill" id="pvStatusPill">
+          <span class="dot" id="pvDot"></span>
+          <span id="pvStatusText">Pasif</span>
+        </div>
       </div>
 
-      <div class="f-group">
-        <label class="f-label">Uzmanlık / Ünvan</label>
-        @Html.TextBoxFor(c=>c.ChefTitle,new{@class="f-input", placeholder="Baş Şef"})
+      <div class="preview-img" id="pvImgBox">
+        <img id="pvImg" alt="preview" />
+        <div class="ph" id="pvPh">Resim önizlemesi burada görünecek.</div>
       </div>
 
-      <div class="f-group">
-        <label class="f-label">Açıklama</label>
-        @Html.TextAreaFor(c=>c.ChefDescription,new{@class="f-input", placeholder="20 yıllık deneyime sahip..."})
-      </div>
+      <div class="preview-desc" id="pvDesc">“ Şef açıklaması burada görünür. ”</div>
 
-      <div class="f-group">
-        <label class="f-label">Profil Fotoğraf URL</label>
-        @Html.TextBoxFor(c=>c.ChefImageUrl,new{@class="f-input", placeholder="https://..."})
+      <div class="preview-links">
+        <span class="chip" id="pvFb">Facebook: -</span>
+        <span class="chip" id="pvIg">Instagram: -</span>
+        <span class="chip" id="pvLi">LinkedIn: -</span>
+        <span class="chip" id="pvX">X: -</span>
       </div>
+    </aside>
 
-      <div class="f-group">
-        <label class="f-label">Facebook</label>
-        @Html.TextBoxFor(c=>c.ChefFacebookUrl,new{@class="f-input"})
-      </div>
-
-      <div class="f-group">
-        <label class="f-label">Instagram</label>
-        @Html.TextBoxFor(c=>c.ChefInstagramUrl,new{@class="f-input"})
-      </div>
-
-      <div class="f-group">
-        <label class="f-label">LinkedIn</label>
-        @Html.TextBoxFor(c=>c.ChefLinkedinUrl,new{@class="f-input"})
-      </div>
-
-      <div class="f-group">
-        <label class="f-label">X (Twitter)</label>
-        @Html.TextBoxFor(c=>c.ChefXUrl,new{@class="f-input"})
-      </div>
-
-      <div class="status-wrap">
-        @Html.CheckBoxFor(c=>c.ChefStatus)
-        <label>Aktif olarak yayınla</label>
-      </div>
-
-      <div class="form-actions">
-        <button type="submit" class="btn-ai btn-primary">
-          ➕ Şefi Kaydet
-        </button>
-
-        <a asp-action="Index" asp-controller="Chef" class="btn-ai btn-cancel">
-          ↩️ Vazgeç
-        </a>
-      </div>
-    }
   </div>
 </div>
+
+<script>
+  (function () {
+    const el = (id) => document.getElementById(id);
+
+    const name = el("ChefName");
+    const title = el("ChefTitle");
+    const desc = el("ChefDescription");
+    const file = el("ChefFile");
+
+    const fb = el("ChefFacebookUrl");
+    const ig = el("ChefInstagramUrl");
+    const li = el("ChefLinkedinUrl");
+    const x  = el("ChefXUrl");
+    const st = el("ChefStatus");
+
+    const pvName = el("pvName");
+    const pvTitle = el("pvTitle");
+    const pvDesc = el("pvDesc");
+    const pvImg = el("pvImg");
+    const pvPh = el("pvPh");
+
+    const pvFb = el("pvFb");
+    const pvIg = el("pvIg");
+    const pvLi = el("pvLi");
+    const pvX  = el("pvX");
+
+    const pvStatusText = el("pvStatusText");
+    const pvDot = el("pvDot");
+
+    function safeText(v, fallback) {
+      const t = (v || "").trim();
+      return t.length ? t : fallback;
+    }
+
+    function updatePreview() {
+      pvName.textContent = safeText(name.value, "Örn: Ahmet Yılmaz");
+      pvTitle.textContent = safeText(title.value, "Uzmanlık / Ünvan");
+      pvDesc.textContent = "“ " + safeText(desc.value, "Şef açıklaması burada görünür.") + " ”";
+
+      pvFb.textContent = "Facebook: " + (safeText(fb.value, "-"));
+      pvIg.textContent = "Instagram: " + (safeText(ig.value, "-"));
+      pvLi.textContent = "LinkedIn: " + (safeText(li.value, "-"));
+      pvX.textContent  = "X: " + (safeText(x.value, "-"));
+
+      const active = st && st.checked;
+      pvStatusText.textContent = active ? "Aktif" : "Pasif";
+      pvDot.style.background = active ? "#22c55e" : "#f59e0b";
+      pvDot.style.boxShadow = active ? "0 0 0 4px rgba(34,197,94,.18)" : "0 0 0 4px rgba(245,158,11,.18)";
+    }
+
+    function updateImage() {
+      if (!file.files || !file.files[0]) {
+        pvImg.style.display = "none";
+        pvImg.src = "";
+        pvPh.style.display = "block";
+        return;
+      }
+      const f = file.files[0];
+      const url = URL.createObjectURL(f);
+      pvImg.src = url;
+      pvImg.style.display = "block";
+      pvPh.style.display = "none";
+    }
+
+    [name, title, desc, fb, ig, li, x].forEach(i => i && i.addEventListener("input", updatePreview));
+    st && st.addEventListener("change", updatePreview);
+    file && file.addEventListener("change", () => { updateImage(); updatePreview(); });
+
+    el("btnClearPreview").addEventListener("click", function () {
+      pvName.textContent = "Örn: Ahmet Yılmaz";
+      pvTitle.textContent = "Uzmanlık / Ünvan";
+      pvDesc.textContent = "“ Şef açıklaması burada görünür. ”";
+
+      pvFb.textContent = "Facebook: -";
+      pvIg.textContent = "Instagram: -";
+      pvLi.textContent = "LinkedIn: -";
+      pvX.textContent  = "X: -";
+
+      pvStatusText.textContent = "Pasif";
+      pvDot.style.background = "#f59e0b";
+      pvDot.style.boxShadow = "0 0 0 4px rgba(245,158,11,.18)";
+
+      if (file) file.value = "";
+      updateImage();
+    });
+
+    updatePreview();
+    updateImage();
+  })();
+</script>

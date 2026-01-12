@@ -1,53 +1,306 @@
 @using YummyUI.DTOs.AboutDTO
 @model CreateAboutDto
-
 @{
-    Layout ="_AdminLayout";
+    Layout = "_AdminLayout";
 }
 
-<div class="section">
-    <div class="section-boyd">
-        <div class="row">
-            <div class="col-12 md-12 lg-col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Yeni Hakkımızda Alan Girişi</h4>
-                    </div>
-                    <div class="card-body w-25">
-                        @using(Html.BeginForm("CreateAbout","About",FormMethod.Post))
-                        {
-                            <div class="form-group">
-                                @Html.TextBoxFor(x=>x.AboutTitle, new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(x=>x.AboutSubTitle, new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(x=>x.AboutTitleChecked1, new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(x=>x.AboutTitleChecked2, new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(x=>x.AboutTitleChecked3, new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(x=>x.AboutDesciription, new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(x=>x.AboutImageUrl, new {@class="form-control"})
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(x=>x.AboutVideoUrl, new {@class="form-control"})
-                            </div>
+<style>
+  .ai-form, .ai-form * { box-sizing:border-box; }
 
-                            <div class="form-group">
-                                <button type="submit" class="btn btn-success">Save</button>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </div>
+  .ai-form{
+    min-height:100%;
+    padding:2rem;
+    background:
+      radial-gradient(1200px 600px at 70% 80%, rgba(139, 92, 246, .25), transparent 60%),
+      radial-gradient(900px 500px at 15% 20%, rgba(99, 102, 241, .30), transparent 60%),
+      linear-gradient(135deg, #0a0e27 0%, #16213e 40%, #0f1729 100%);
+  }
+
+  .layout-grid{
+    max-width: 1140px;
+    margin: 0 auto;
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap: 1.6rem;
+    align-items:start;
+  }
+
+  .cardx{
+    background: rgba(15, 23, 42, .60);
+    border-radius: 28px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, .55);
+  }
+
+  .form-wrap{ padding: 2rem 2.2rem; }
+
+  .form-head{ display:flex; align-items:center; gap:1rem; margin-bottom:1.6rem; }
+  .badge{
+    width:54px;height:54px;border-radius:18px;display:grid;place-items:center;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 14px 40px rgba(102,126,234,.6);
+    font-size:1.6rem;
+  }
+  .title{
+    margin:0;font-size:1.9rem;font-weight:950;
+    background: linear-gradient(135deg, #fff, #a8b9ff);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .sub{ margin:.2rem 0 0 0; color: rgba(255,255,255,.65); font-weight:700; font-size:.95rem; }
+
+  .f-group{ margin-bottom:1.1rem; }
+  .f-label{ display:block; margin-bottom:.45rem; color: rgba(255,255,255,.85); font-weight:800; font-size:.9rem; }
+
+  .f-input{
+    width:100%;
+    padding:.9rem 1rem;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.06);
+    color:#fff;
+    font-size:.95rem;
+    outline:none;
+    transition: all .35s cubic-bezier(.16,1,.3,1);
+  }
+  .f-input:focus{
+    border-color:#667eea;
+    background: rgba(255,255,255,.08);
+    box-shadow: 0 0 0 4px rgba(102,126,234,.25);
+  }
+  textarea.f-input{ resize:none; min-height: 110px; }
+
+  .actions{
+    margin-top:1.4rem;
+    display:flex;
+    gap:1rem;
+    flex-wrap:wrap;
+  }
+  .btn-ai{
+    border:none;
+    border-radius:16px;
+    padding:1rem 1.4rem;
+    font-weight:950;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:.6rem;
+    color:#fff;
+    text-decoration:none;
+    transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease;
+  }
+  .btn-ai:hover{ transform: translateY(-2px); box-shadow: 0 18px 45px rgba(0,0,0,.35); }
+  .btn-primary{
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 14px 40px rgba(102,126,234,.55);
+  }
+  .btn-ghost{
+    background: rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow: 0 14px 40px rgba(0,0,0,.25);
+  }
+
+  /* preview */
+  .preview{ padding: 1.3rem 1.3rem 1.4rem; position: sticky; top: 1.2rem; }
+  .pv-title{ font-size:1.1rem; font-weight:950; color: rgba(255,255,255,.95); }
+  .pv-sub{ margin-top:.35rem; color: rgba(255,255,255,.65); font-weight:750; font-size:.9rem; }
+  .pv-img{
+    margin-top:1rem;
+    width:100%; height: 180px;
+    border-radius: 18px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.04);
+    overflow:hidden;
+    display:grid; place-items:center;
+  }
+  .pv-img img{ width:100%; height:100%; object-fit:cover; display:none; }
+  .pv-ph{ color: rgba(255,255,255,.55); font-weight:800; text-align:center; padding:0 1rem; }
+
+  .pv-box{
+    margin-top:1rem;
+    padding:1rem;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.05);
+    color: rgba(255,255,255,.75);
+    font-weight:700;
+    line-height:1.35;
+  }
+  .pv-chip{
+    margin-top:.7rem;
+    display:inline-flex; align-items:center; gap:.45rem;
+    padding:.42rem .75rem;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.85);
+    font-weight:850;
+    font-size:.85rem;
+  }
+
+  @@media(max-width: 980px){
+    .layout-grid{ grid-template-columns: 1fr; }
+    .preview{ position: static; }
+  }
+</style>
+
+<div class="ai-form">
+  <div class="layout-grid">
+
+    <!-- SOL: FORM -->
+    <div class="cardx form-wrap">
+      <div class="form-head">
+        <div class="badge">ℹ️</div>
+        <div>
+          <h1 class="title">Yeni Hakkımızda Alan Girişi</h1>
+          <p class="sub">Başlıq, maddələr, şəkil və video linki əlavə edin</p>
         </div>
+      </div>
+
+      @using (Html.BeginForm("CreateAbout","About",FormMethod.Post, new { enctype="multipart/form-data", id="aboutForm" }))
+      {
+        <div class="f-group">
+          <label class="f-label">Başlıq</label>
+          @Html.TextBoxFor(x => x.AboutTitle, new { @class="f-input", id="AboutTitle" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Alt Başlıq</label>
+          @Html.TextBoxFor(x => x.AboutSubTitle, new { @class="f-input", id="AboutSubTitle" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Maddə 1</label>
+          @Html.TextBoxFor(x => x.AboutTitleChecked1, new { @class="f-input", id="AboutTitleChecked1" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Maddə 2</label>
+          @Html.TextBoxFor(x => x.AboutTitleChecked2, new { @class="f-input", id="AboutTitleChecked2" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Maddə 3</label>
+          @Html.TextBoxFor(x => x.AboutTitleChecked3, new { @class="f-input", id="AboutTitleChecked3" })
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Açıqlama</label>
+          @Html.TextAreaFor(x => x.AboutDesciription, new { @class="f-input", id="AboutDesciription", placeholder="Kısa ve net açıklama..." })
+        </div>
+
+        <!-- ✅ FILE INPUT -->
+        <div class="f-group">
+          <label class="f-label">Şəkil</label>
+          <input type="file" name="imageFile" class="f-input" id="AboutImageFile" accept=".jpg,.jpeg,.png,.webp" />
+        </div>
+
+        <div class="f-group">
+          <label class="f-label">Video URL</label>
+          @Html.TextBoxFor(x => x.AboutVideoUrl, new { @class="f-input", id="AboutVideoUrl", placeholder="https://youtube.com/..." })
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-ai btn-primary">💾 Save</button>
+          <button type="button" class="btn-ai btn-ghost" id="btnClearPreview">🧹 Önizlemeyi Temizle</button>
+        </div>
+      }
     </div>
+
+    <!-- SAĞ: PREVIEW -->
+    <aside class="cardx preview">
+      <div class="pv-title" id="pvTitle">Başlık burada görünecek</div>
+      <div class="pv-sub" id="pvSub">Alt başlık burada görünecek</div>
+
+      <div class="pv-img">
+        <img id="pvImg" alt="preview" />
+        <div class="pv-ph" id="pvPh">Resim önizlemesi burada görünecek.</div>
+      </div>
+
+      <div class="pv-box" id="pvDesc">Açıklama burada görünecek.</div>
+
+      <div class="pv-box" style="margin-top:.8rem">
+        <div>✅ <span id="pvC1">Madde 1</span></div>
+        <div style="margin-top:.45rem">✅ <span id="pvC2">Madde 2</span></div>
+        <div style="margin-top:.45rem">✅ <span id="pvC3">Madde 3</span></div>
+      </div>
+
+      <div class="pv-chip" id="pvVideoChip">🎬 Video: -</div>
+    </aside>
+
+  </div>
 </div>
+@section Scripts{
+<script>
+  (function(){
+    const el = (id) => document.getElementById(id);
+
+    const t  = el("AboutTitle");
+    const st = el("AboutSubTitle");
+    const c1 = el("AboutTitleChecked1");
+    const c2 = el("AboutTitleChecked2");
+    const c3 = el("AboutTitleChecked3");
+    const d  = el("AboutDesciription");
+    const v  = el("AboutVideoUrl");
+    const f  = el("AboutImageFile");
+
+    const pvTitle = el("pvTitle");
+    const pvSub   = el("pvSub");
+    const pvC1    = el("pvC1");
+    const pvC2    = el("pvC2");
+    const pvC3    = el("pvC3");
+    const pvDesc  = el("pvDesc");
+    const pvChip  = el("pvVideoChip");
+
+    const pvImg = el("pvImg");
+    const pvPh  = el("pvPh");
+
+    const safe = (val, fallback) => {
+      const x = (val || "").trim();
+      return x.length ? x : fallback;
+    };
+
+    function update(){
+      pvTitle.textContent = safe(t.value, "Başlık burada görünecek");
+      pvSub.textContent   = safe(st.value, "Alt başlık burada görünecek");
+      pvC1.textContent    = safe(c1.value, "Madde 1");
+      pvC2.textContent    = safe(c2.value, "Madde 2");
+      pvC3.textContent    = safe(c3.value, "Madde 3");
+      pvDesc.textContent  = safe(d.value, "Açıklama burada görünecek.");
+      pvChip.textContent  = "🎬 Video: " + safe(v.value, "-");
+    }
+
+    function updateImg(){
+      if(!f.files || !f.files[0]){
+        pvImg.style.display = "none";
+        pvImg.src = "";
+        pvPh.style.display = "block";
+        return;
+      }
+      const url = URL.createObjectURL(f.files[0]);
+      pvImg.src = url;
+      pvImg.style.display = "block";
+      pvPh.style.display = "none";
+    }
+
+    [t, st, c1, c2, c3, d, v].forEach(i => i && i.addEventListener("input", update));
+    f && f.addEventListener("change", () => { updateImg(); update(); });
+
+    el("btnClearPreview").addEventListener("click", function(){
+      pvTitle.textContent = "Başlık burada görünecek";
+      pvSub.textContent   = "Alt başlık burada görünecek";
+      pvC1.textContent    = "Madde 1";
+      pvC2.textContent    = "Madde 2";
+      pvC3.textContent    = "Madde 3";
+      pvDesc.textContent  = "Açıklama burada görünecek.";
+      pvChip.textContent  = "🎬 Video: -";
+
+      if (f) f.value = "";
+      updateImg();
+    });
+
+    update();
+    updateImg();
+  })();
+</script>
+}

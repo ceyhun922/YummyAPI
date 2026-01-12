@@ -2,44 +2,207 @@
 @model CreateTestimonialDto
 @{
     Layout = "_AdminLayout";
+    ViewData["Title"] = "Yeni Müşteri Görüşü";
 }
 
-<div class="section">
-    <div class="section-body">
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Müşteri Görüşü Ekleme</h4>
+
+<div class="admin-create-page">
+
+    <!-- Header -->
+    <div class="page-hero">
+        <div class="hero-left">
+            <div class="hero-icon">
+                <i class="fas fa-comment-dots"></i>
+            </div>
+            <div>
+                <h1 class="hero-title">Yeni Müşteri Görüşü</h1>
+                <p class="hero-subtitle">Başlıq, mesaj, şəkil linki və status əlavə edin.</p>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <span class="status-pill @(Model?.TestimonialStatus == true ? "is-active" : "is-passive")">
+                <span class="dot"></span>
+                @(Model?.TestimonialStatus == true ? "Aktiv" : "Pasif")
+            </span>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <!-- LEFT: FORM -->
+        <div class="glass-card">
+            <div class="glass-card-header">
+                <h3>Görüş əlavə etmə paneli</h3>
+            </div>
+
+            <div class="glass-card-body">
+                @using (Html.BeginForm("CreateTestimonial", "Testimonial", FormMethod.Post, new { @class = "glass-form", autocomplete = "off" }))
+                {
+                    <div class="form-row">
+                        <label class="form-label">Müştəri adı</label>
+                        @Html.TextBoxFor(x => x.TestimonialName, new { @class = "glass-input", placeholder = "Örn: Elvin Məmmədov", id = "inpName" })
+                        <small class="form-hint">Siyahıda və saytda bu ad görünəcək.</small>
                     </div>
-                    <div class="card-body">
-                        @using (Html.BeginForm("CreateTestimonial", "Testimonial", FormMethod.Post))
-                        {
-                            <div class="form-group">
-                                <label>Başlık</label>
-                                @Html.TextBoxFor(x => x.TestimonialName, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                <label>Başlık</label>
-                                @Html.TextBoxFor(x => x.TestimonialTitle, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                <label>Başlık</label>
-                                @Html.TextAreaFor(x => x.TestimonialMessage, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                <label>Başlık</label>
-                                @Html.TextBoxFor(x => x.TestimonialImageUrl, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                <label>Başlık</label>
-                                @Html.CheckBoxFor(x => x.TestimonialStatus)
-                            </div>
-                            <button class="btn btn-success" type="submit">Ekle</button>
-                        }
+
+                    <div class="form-row">
+                        <label class="form-label">Vəzifə / Başlıq</label>
+                        @Html.TextBoxFor(x => x.TestimonialTitle, new { @class = "glass-input", placeholder = "Örn: Müştəri / CEO / Menecer...", id = "inpTitle" })
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">Mesaj</label>
+                        @Html.TextAreaFor(x => x.TestimonialMessage, new { @class = "glass-textarea", rows = "5", placeholder = "Müştərinin rəyi burada yazılacaq...", id = "inpMsg" })
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">Şəkil URL</label>
+                        @Html.TextBoxFor(x => x.TestimonialImageUrl, new { @class = "glass-input", placeholder = "https://...", id = "inpImg" })
+                        <small class="form-hint">Şəkil linki əlavə etdikdə sağdakı önizləmədə görünəcək.</small>
+                    </div>
+
+                    <div class="form-row form-row-inline">
+                        <div class="inline-left">
+                            <label class="form-label">Status</label>
+                            <small class="form-hint">Pasif olan rəylər saytda görünməyə bilər.</small>
+                        </div>
+
+                        <label class="switch">
+                            @Html.CheckBoxFor(x => x.TestimonialStatus, new { id = "inpStatus" })
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn-primary" type="submit">
+                            <i class="fas fa-save"></i>
+                            Save
+                        </button>
+
+                        <button class="btn-secondary" type="button" id="btnClear">
+                            <i class="fas fa-broom"></i>
+                            Önizlemeyi Temizle
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- RIGHT: LIVE PREVIEW -->
+        <div class="glass-card">
+            <div class="glass-card-header preview-header">
+                <h3>Live Preview</h3>
+            </div>
+
+            <div class="glass-card-body">
+                <div class="preview-card">
+                    <div class="preview-top">
+                        <div class="preview-avatar" id="prevAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+
+                        <div class="preview-meta">
+                            <div class="preview-title" id="prevName">Başlıq burada görünəcək</div>
+                            <div class="preview-subtitle" id="prevTitle">Alt başlıq burada görünəcək</div>
+                        </div>
+
+                        <span class="status-pill small" id="prevStatus">
+                            <span class="dot"></span> Pasif
+                        </span>
+                    </div>
+
+                    <div class="preview-image" id="prevImageWrap">
+                        <div class="preview-image-placeholder">
+                            Resim önizlemesi burada görünecek.
+                        </div>
+                        <img id="prevImage" src="" alt="preview" style="display:none;" />
+                    </div>
+
+                    <div class="preview-message" id="prevMsg">
+                        Açıklama burada görünecek.
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const elName = document.getElementById("inpName");
+            const elTitle = document.getElementById("inpTitle");
+            const elMsg = document.getElementById("inpMsg");
+            const elImg = document.getElementById("inpImg");
+            const elStatus = document.getElementById("inpStatus");
+
+            const prevName = document.getElementById("prevName");
+            const prevTitle = document.getElementById("prevTitle");
+            const prevMsg = document.getElementById("prevMsg");
+
+            const prevImage = document.getElementById("prevImage");
+            const prevImageWrap = document.getElementById("prevImageWrap");
+            const prevStatus = document.getElementById("prevStatus");
+
+            const btnClear = document.getElementById("btnClear");
+
+            function safeText(v, fallback) {
+                const t = (v ?? "").trim();
+                return t.length ? t : fallback;
+            }
+
+            function setStatus() {
+                const isOn = !!elStatus.checked;
+                prevStatus.innerHTML = `<span class="dot"></span> ${isOn ? "Aktiv" : "Pasif"}`;
+                prevStatus.classList.toggle("is-active", isOn);
+                prevStatus.classList.toggle("is-passive", !isOn);
+            }
+
+            function setImage() {
+                const url = (elImg.value || "").trim();
+                if (!url) {
+                    prevImage.style.display = "none";
+                    prevImage.src = "";
+                    prevImageWrap.querySelector(".preview-image-placeholder").style.display = "flex";
+                    return;
+                }
+                prevImage.src = url;
+                prevImage.onload = () => {
+                    prevImage.style.display = "block";
+                    prevImageWrap.querySelector(".preview-image-placeholder").style.display = "none";
+                };
+                prevImage.onerror = () => {
+                    prevImage.style.display = "none";
+                    prevImageWrap.querySelector(".preview-image-placeholder").style.display = "flex";
+                };
+            }
+
+            function sync() {
+                prevName.textContent = safeText(elName.value, "Başlıq burada görünəcək");
+                prevTitle.textContent = safeText(elTitle.value, "Alt başlıq burada görünəcək");
+                prevMsg.textContent = safeText(elMsg.value, "Açıklama burada görünecek.");
+                setImage();
+                setStatus();
+            }
+
+            ["input", "change", "keyup"].forEach(evt => {
+                elName.addEventListener(evt, sync);
+                elTitle.addEventListener(evt, sync);
+                elMsg.addEventListener(evt, sync);
+                elImg.addEventListener(evt, sync);
+                elStatus.addEventListener(evt, sync);
+            });
+
+            btnClear.addEventListener("click", function () {
+                elName.value = "";
+                elTitle.value = "";
+                elMsg.value = "";
+                elImg.value = "";
+                elStatus.checked = false;
+                sync();
+            });
+
+            // initial
+            sync();
+        })();
+    </script>
+}
