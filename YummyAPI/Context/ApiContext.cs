@@ -25,5 +25,6 @@ namespace YummyAPI.Context
         public DbSet<Notification>? Notifications {get;set;}
         public DbSet<GroupOrganization>? GroupOrganizations {get;set;}
         public DbSet<GroupOrganizationChef>? GroupOrganizationChefs {get;set;}
+        public DbSet<User>? Users {get;set;}
     }
 }
