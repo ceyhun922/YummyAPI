@@ -302,6 +302,12 @@
         <i data-feather="bookmark"></i><span>Rezervasyonlar</span>
       </a>
     </li>
+    <li class="dropdown">
+      <a asp-action="UploadFile" asp-controller="File"
+         class="nav-link @IsActive("File","UploadFile")">
+        <i data-feather="bookmark"></i><span>Dosya İşlemleri</span>
+      </a>
+    </li>
 
     <div class="menu-section">Hesap</div>
     <li class="dropdown">

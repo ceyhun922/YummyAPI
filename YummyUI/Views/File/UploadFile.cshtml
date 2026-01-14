@@ -1,0 +1,25 @@
+@{
+    Layout ="_AdminLayout";
+}
+
+
+
+
+<form asp-controller="File" asp-action="UploadFile" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <button type="submit">Upload</button>
+</form>
+
+
+@if (TempData["error"] != null)
+{
+    <p style="color:red">@TempData["err"]</p>
+}
+
+@if (ViewBag.ImageUrl != null)
+{
+    <hr />
+    <p>Yüklendi:</p>
+    <img src="@ViewBag.ImageUrl" style="max-width:300px" />
+    <p>@ViewBag.ImageUrl</p>
+}
