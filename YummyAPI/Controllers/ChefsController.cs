@@ -24,14 +24,14 @@ namespace YummyAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateChef([FromForm] CreateChefDto dto)
+        public async Task<IActionResult> CreateChef(CreateChefDto dto)
         {
             var entity = _mapper.Map<Chef>(dto);
-
             _context.Chefs.Add(entity);
             await _context.SaveChangesAsync();
             return Ok();
         }
+
 
 
 

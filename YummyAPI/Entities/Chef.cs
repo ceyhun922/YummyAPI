@@ -9,7 +9,7 @@ namespace YummyAPI.Entities
         public string? ChefName { get; set; }
         public string? ChefTitle { get; set; }
         public string? ChefDescription { get; set; }
-        public string? ChefImageUrl { get; set; }
+        public string? ImageFile { get; set; }
         public string? ChefFacebookUrl { get; set; }
         public string? ChefXUrl { get; set; }
         public string? ChefInstagramUrl { get; set; }

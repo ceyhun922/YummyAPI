@@ -31,12 +31,13 @@ namespace YummyAPI.Mapping
             CreateMap<Product, UpdateProductDto>().ReverseMap();
             CreateMap<Product, GetByIdProductDto>().ReverseMap();
             CreateMap<Product, ResultGetAllProductWithCategoryDto>().ForMember(x => x.CategoryName, y => y.MapFrom(z => z.Category.CategoryName)).ReverseMap();
-
             //chef
             CreateMap<Chef, CreateChefDto>().ReverseMap();
             CreateMap<Chef, ResultChefDto>().ReverseMap();
             CreateMap<Chef, UpdateChefDto>().ReverseMap();
             CreateMap<Chef, GetByIdChefDto>().ReverseMap();
+            CreateMap<CreateChefDto, Chef>().ForMember(d => d.ImageFile, o => o.MapFrom(s => s.ImageFile));
+
 
             //service
             CreateMap<Service, ResultServiceDto>().ReverseMap();
@@ -84,7 +85,7 @@ namespace YummyAPI.Mapping
             CreateMap<Contact, CreateContactDto>().ReverseMap();
             CreateMap<Contact, UpdateContactDto>().ReverseMap();
             CreateMap<Contact, GetByIdContactDto>().ReverseMap();
-            
+
 
             //feature
             CreateMap<Feature, ResultFeatureDto>().ReverseMap();
@@ -96,7 +97,7 @@ namespace YummyAPI.Mapping
             CreateMap<Rezervation, ResultRezervationDto>().ReverseMap();
             CreateMap<Rezervation, CreateRezervationDto>().ReverseMap();
             CreateMap<Rezervation, UpdateRezervationDto>().ReverseMap();
-            CreateMap<Rezervation,GetByIdRezervationDto>().ReverseMap();
+            CreateMap<Rezervation, GetByIdRezervationDto>().ReverseMap();
 
 
 

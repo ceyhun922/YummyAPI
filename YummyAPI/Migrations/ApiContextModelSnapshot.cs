@@ -92,9 +92,6 @@ namespace YummyAPI.Migrations
                     b.Property<string>("ChefFacebookUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ChefImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ChefInstagramUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -111,6 +108,9 @@ namespace YummyAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ChefXUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageFile")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ChefId");
@@ -376,10 +376,10 @@ namespace YummyAPI.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductDescription")
+                    b.Property<string>("ImageFile")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProductImageUrl")
+                    b.Property<string>("ProductDescription")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("ProductPrice")
