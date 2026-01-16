@@ -438,7 +438,7 @@
       <div class="grid" id="pGrid">
         @foreach (var product in Model)
         {
-          var img = product.ProductImageUrl;
+          var img = product.ImageFile;
           var cat = product.CategoryName ?? "";
           var title = product.ProductTitle ?? "Ürün";
           var desc = product.ProductDescription ?? "";
@@ -450,9 +450,13 @@
                data-cat="@cat"
                data-cat-l="@cat.ToLowerInvariant()">
             <div class="p-media">
+               @{
+                  var apiBase ="http://localhost:5289";
+                }
               @if (!string.IsNullOrWhiteSpace(img))
               {
-                <img src="@img"
+               
+                <img src="@(apiBase + product.ImageFile)"
                      alt="@title"
                      loading="lazy"
                      onerror="this.onerror=null;this.parentElement.innerHTML='<div class=&quot;noimg&quot;><div style=&quot;font-size:1.4rem;&quot;>📷</div>No Img<small>Görsel yok</small></div>';" />

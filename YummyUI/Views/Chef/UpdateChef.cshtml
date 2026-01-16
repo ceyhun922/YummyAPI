@@ -199,10 +199,10 @@ textarea.f-input{
       </div>
 
       <div class="preview" id="chefPreview">
-        @if (Model.ChefImageUrl != null)
+        @if (Model.ImageFile != null)
         {
           <img id="chefPreviewImg"
-               src="@Model.ChefImageUrl"
+               src="@Model.ImageFile"
                alt="@Model.ChefName"
                onerror="this.onerror=null;this.style.display='none';this.parentElement.innerHTML='<div class=&quot;noimg&quot;>No Img</div>';" />
         }
@@ -234,7 +234,7 @@ textarea.f-input{
 
       <div class="f-group">
         <label class="f-label">Profil Fotoğraf URL</label>
-        @Html.TextBoxFor(c=>c.ChefImageUrl,new{@class="f-input", id="ChefImageUrl", placeholder="https://..."})
+        @Html.TextBoxFor(c=>c.ImageFile,new{@class="f-input", id="ChefImageUrl", placeholder="https://..."})
       </div>
 
       <div class="f-group">

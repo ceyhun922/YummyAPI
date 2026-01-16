@@ -376,9 +376,12 @@
         <div class="content">
           <div class="about-card">
             <div class="media">
+              @{
+                var apiBase ="http://localhost:5289";
+              }
               @if (!string.IsNullOrWhiteSpace(about!.AboutImageUrl))
               {
-                <img src="@about.AboutImageUrl"
+                <img src="@(apiBase + about.AboutImageUrl)"
                      alt="@about.AboutTitle"
                      loading="lazy"
                      onerror="this.onerror=null;this.parentElement.innerHTML='<div class=&quot;noimg&quot;><div style=&quot;font-size:1.4rem;&quot;>📷</div>No Img<small>Görsel yok</small></div>';" />

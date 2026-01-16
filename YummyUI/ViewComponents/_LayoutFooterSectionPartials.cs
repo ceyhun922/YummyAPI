@@ -19,14 +19,14 @@ namespace YummyUI.ViewComponents
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync("http://localhost:5289/api/Footers/FooterBottomArea");
 
-            if (response.IsSuccessStatusCode)
-            {
-                var jsonData = await response.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<ResultFooterBottomDto>(jsonData);
-                return View(values);
+            if (!response.IsSuccessStatusCode)
+                return View(new ResultFooterBottomDto());
 
-            }
-            return View();
+            var jsonData = await response.Content.ReadAsStringAsync();
+            var value = JsonConvert.DeserializeObject<ResultFooterBottomDto>(jsonData);
+
+            return View(value ?? new ResultFooterBottomDto());
         }
+
     }
 }

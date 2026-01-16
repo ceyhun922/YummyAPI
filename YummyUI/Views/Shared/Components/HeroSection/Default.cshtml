@@ -21,7 +21,10 @@
         </div>
       </div>
       <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out">
-        <img src="@first.FeatureImageUrl" class="img-fluid animated" alt="">
+          @{
+                  var apiBase ="http://localhost:5289";
+                }
+        <img src="@(apiBase + first.FeatureImageUrl)" class="img-fluid animated" alt="">
       </div>
     </div>
   </div>

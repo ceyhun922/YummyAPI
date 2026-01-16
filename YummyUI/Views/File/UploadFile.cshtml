@@ -1,25 +1,292 @@
 @{
-    Layout ="_AdminLayout";
+    Layout = "_AdminLayout";
 }
 
+@section Styles{
+<style>
+/* ===== BACKGROUND (nebula + stars) ===== */
+.up-page, .up-page * { box-sizing:border-box; }
+.up-page{
+  min-height:100%;
+  padding:1.6rem 2rem 2.5rem;
+  position:relative;
+  overflow:hidden;
+  border-radius:22px;
+  background:
+    radial-gradient(900px 520px at 55% 55%, rgba(142, 97, 255,.20), transparent 60%),
+    radial-gradient(760px 420px at 75% 35%, rgba(56,189,248,.18), transparent 60%),
+    radial-gradient(700px 380px at 35% 70%, rgba(250,204,21,.10), transparent 55%),
+    linear-gradient(135deg, #070b1f 0%, #0a1030 45%, #050818 100%);
+}
+.up-page:before{
+  content:"";
+  position:absolute; inset:-40px;
+  background:
+    radial-gradient(2px 2px at 10% 20%, rgba(255,255,255,.65) 40%, transparent 41%),
+    radial-gradient(2px 2px at 25% 70%, rgba(255,255,255,.45) 40%, transparent 41%),
+    radial-gradient(1.5px 1.5px at 55% 30%, rgba(255,255,255,.55) 40%, transparent 41%),
+    radial-gradient(1.5px 1.5px at 85% 60%, rgba(255,255,255,.45) 40%, transparent 41%),
+    radial-gradient(2px 2px at 75% 85%, rgba(255,255,255,.50) 40%, transparent 41%);
+  opacity:.35;
+  filter: blur(.2px);
+  pointer-events:none;
+}
+.orb{position:absolute;border-radius:999px;filter:blur(95px);opacity:.55;pointer-events:none;animation:floaty 14s ease-in-out infinite;}
+.orb.a{width:520px;height:520px;left:-170px;top:-170px;background:rgba(139,92,246,.45);}
+.orb.b{width:460px;height:460px;right:-200px;top:80px;background:rgba(56,189,248,.36);animation-delay:3s;}
+.orb.c{width:620px;height:620px;left:30%;bottom:-320px;background:rgba(99,102,241,.30);animation-delay:6s;}
+@@keyframes floaty{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(16px,-12px) scale(1.04);}}
 
+/* ===== TOP BAR ===== */
+.topbar{
+  display:flex; gap:14px; align-items:center;
+  margin-bottom:18px;
+}
+.head-pill{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:12px 16px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.88);
+  font-weight:1000;
+  box-shadow: 0 14px 40px rgba(0,0,0,.25);
+}
+.head-pill .dot{
+  width:10px;height:10px;border-radius:999px;
+  background:#fbbf24;
+  box-shadow:0 0 0 6px rgba(245,158,11,.12);
+}
+.btn-back{
+  margin-left:auto;
+  display:inline-flex; align-items:center; gap:10px;
+  padding:12px 16px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(10,14,39,.35);
+  color:rgba(255,255,255,.90);
+  font-weight:1000;
+  text-decoration:none;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 60px rgba(0,0,0,.35);
+  transition:.18s ease;
+}
+.btn-back:hover{transform:translateY(-1px); filter:brightness(1.05);}
 
-
-<form asp-controller="File" asp-action="UploadFile" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" />
-    <button type="submit">Upload</button>
-</form>
-
-
-@if (TempData["error"] != null)
-{
-    <p style="color:red">@TempData["err"]</p>
+/* ===== CARD ===== */
+.card{
+  position:relative;
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(10, 14, 39, .40);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 40px 90px rgba(0,0,0,.45);
+  padding:18px;
+  overflow:hidden;
+  max-width:920px;
+}
+.card:before{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(900px 220px at 20% 0%, rgba(162, 113, 255,.25), transparent 55%),
+    radial-gradient(700px 240px at 85% 20%, rgba(56,189,248,.18), transparent 60%),
+    radial-gradient(600px 240px at 70% 90%, rgba(250,204,21,.08), transparent 55%);
+  opacity:.9;
+  pointer-events:none;
+}
+.card-inner{position:relative; z-index:2;}
+.h-title{
+  margin:0 0 6px 0;
+  font-size:22px;
+  font-weight:1100;
+  color:rgba(255,255,255,.95);
+}
+.h-sub{
+  margin:0 0 14px 0;
+  color:rgba(255,255,255,.70);
+  font-weight:800;
 }
 
-@if (ViewBag.ImageUrl != null)
-{
-    <hr />
-    <p>Yüklendi:</p>
-    <img src="@ViewBag.ImageUrl" style="max-width:300px" />
-    <p>@ViewBag.ImageUrl</p>
+/* ===== UPLOAD ZONE ===== */
+.zone{
+  display:flex;
+  gap:14px;
+  align-items:center;
+  padding:16px;
+  border-radius:22px;
+  border:1px dashed rgba(255,255,255,.18);
+  background:rgba(255,255,255,.05);
+}
+.file-wrap{flex:1; display:flex; align-items:center; gap:12px;}
+.file-ico{
+  width:46px;height:46px;border-radius:16px;
+  display:grid;place-items:center;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.06);
+  box-shadow:0 18px 55px rgba(0,0,0,.22);
+}
+.file-ico span{font-size:20px; opacity:.92;}
+.file-input{
+  width:100%;
+  color:rgba(255,255,255,.86);
+  font-weight:800;
+}
+.file-input::-webkit-file-upload-button{
+  margin-right:12px;
+  border:none;
+  padding:10px 14px;
+  border-radius:14px;
+  font-weight:1000;
+  cursor:pointer;
+  background:rgba(255,255,255,.10);
+  color:rgba(255,255,255,.90);
+  border:1px solid rgba(255,255,255,.14);
+}
+
+/* ===== BUTTONS ===== */
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:12px 16px;
+  border-radius:18px;
+  font-weight:1100;
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 18px 55px rgba(0,0,0,.28);
+  transition:.18s;
+  cursor:pointer;
+  text-decoration:none;
+}
+.btn:hover{transform:translateY(-1px); filter:brightness(1.04);}
+.btn.primary{
+  background:linear-gradient(135deg,#fbbf24,#f59e0b);
+  color:#1a1a1a;
+}
+.btn.ghost{
+  background:rgba(255,255,255,.06);
+  color:rgba(255,255,255,.90);
+}
+
+/* ===== PREVIEW ===== */
+.preview{
+  margin-top:16px;
+  display:grid;
+  grid-template-columns: 320px 1fr;
+  gap:16px;
+  align-items:start;
+}
+@@media (max-width: 900px){ .preview{grid-template-columns:1fr;} }
+.preview-img{
+  width:100%;
+  max-width:320px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.04);
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+}
+.kv{
+  padding:16px;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05);
+}
+.kv .k{color:rgba(255,255,255,.65); font-weight:900; margin-bottom:6px;}
+.kv .v{color:rgba(255,255,255,.92); font-weight:900; word-break:break-all;}
+
+/* ===== TOAST ===== */
+.toast{
+  position:fixed; right:18px; bottom:18px;
+  padding:14px 16px;
+  border-radius:18px;
+  background:rgba(15,23,42,.78);
+  border:1px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(16px);
+  color:rgba(255,255,255,.92);
+  box-shadow:0 30px 80px rgba(0,0,0,.55);
+  display:none;
+  gap:12px;
+  align-items:flex-start;
+  max-width:380px;
+  z-index:9999;
+}
+.toast.show{display:flex; animation:pop .18s ease-out;}
+@@keyframes pop{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+.toast .t-title{font-weight:1000; margin:0; font-size:16px;}
+.toast .t-desc{margin:.25rem 0 0; color:rgba(255,255,255,.72); font-weight:800; font-size:14px;}
+.toast .x{margin-left:auto; cursor:pointer; opacity:.85; font-weight:900;}
+</style>
+}
+
+<div class="up-page">
+  <div class="orb a"></div><div class="orb b"></div><div class="orb c"></div>
+
+  <div class="topbar">
+    <div class="head-pill"><span class="dot"></span> Dosya Yükleme</div>
+    <a class="btn-back" href="javascript:history.back()">⬅️ Geri</a>
+  </div>
+
+  <div class="card">
+    <div class="card-inner">
+      <h2 class="h-title">Upload File</h2>
+      <p class="h-sub">Dosyanı seç, upload et. Yüklənəndən sonra önizləmə burada çıxacaq.</p>
+
+      <form asp-controller="File" asp-action="UploadFile" method="post" enctype="multipart/form-data">
+        <div class="zone">
+          <div class="file-wrap">
+            <div class="file-ico"><span>📤</span></div>
+            <input class="file-input" type="file" name="file" />
+          </div>
+          <button type="submit" class="btn primary">⬆️ Upload</button>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:12px; justify-content:flex-end;">
+          <button type="reset" class="btn ghost">↺ Təmizlə</button>
+        </div>
+      </form>
+
+      @if (ViewBag.ImageUrl != null)
+      {
+        <div class="preview">
+          <img class="preview-img" src="@ViewBag.ImageUrl" alt="Uploaded Image" />
+          <div class="kv">
+            <div class="k">Yüklendi</div>
+            <div class="v">@ViewBag.ImageUrl</div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <div>
+      <p class="t-title" id="tTitle">Bildirim</p>
+      <p class="t-desc" id="tDesc">İşlem tamamlandı.</p>
+    </div>
+    <div class="x" id="tClose">✖</div>
+  </div>
+</div>
+
+@section Scripts{
+<script>
+(() => {
+  const toastEl = document.getElementById("toast");
+  const tTitle  = document.getElementById("tTitle");
+  const tDesc   = document.getElementById("tDesc");
+  const tClose  = document.getElementById("tClose");
+
+  function showToast(title, desc){
+    if (!toastEl) return;
+    tTitle.textContent = title || "Bildirim";
+    tDesc.textContent  = desc || "";
+    toastEl.classList.add("show");
+    clearTimeout(window.__t);
+    window.__t = setTimeout(() => toastEl.classList.remove("show"), 3200);
+  }
+  tClose?.addEventListener("click", () => toastEl.classList.remove("show"));
+
+  // NOTE: səndə "error" yoxlayıb "err" yazmışdın. Burda ikisini də oxuyuram.
+  const err1 = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["error"]?.ToString()));
+  const err2 = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(TempData["err"]?.ToString()));
+  const serverErr = err1 || err2;
+
+  if (serverErr) showToast("Hata", serverErr);
+})();
+</script>
 }

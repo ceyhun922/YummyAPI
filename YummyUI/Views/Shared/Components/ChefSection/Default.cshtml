@@ -15,7 +15,10 @@
       <div class="col-lg-4 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="100">
         <div class="team-member">
           <div class="member-img">
-            <img src="@item.ChefImageUrl" class="img-fluid" alt="@item.ChefName">
+          @{
+                  var apiBase ="http://localhost:5289";
+                }
+            <img src="@(apiBase +item.ImageFile)" class="img-fluid" alt="@item.ChefName">
             <div class="social">
               <a href="@item.ChefXUrl"><i class="bi bi-twitter-x"></i></a>
               <a href="@item.ChefFacebookUrl"><i class="bi bi-facebook"></i></a>

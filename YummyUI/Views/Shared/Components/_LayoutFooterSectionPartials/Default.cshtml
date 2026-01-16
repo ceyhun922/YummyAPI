@@ -1,9 +1,8 @@
 @using YummyUI.DTOs.FooterDTOs
-@model List<ResultFooterDto>
+@model ResultFooterBottomDto
 
 @{
-    var footer = (Model ?? new List<ResultFooterDto>()).FirstOrDefault() ?? new ResultFooterDto();
-}
+    var footer = Model;
 <div class="container">
   <div class="row gy-3">
 

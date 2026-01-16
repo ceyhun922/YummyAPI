@@ -1,4 +1,6 @@
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -47,10 +49,34 @@ namespace YummyUI.Controllers
             ViewBag.CategoryList = categoryValues;
             return View();
         }
+
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto)
+        public async Task<IActionResult> CreateProduct(CreateProductDto createProductDto, IFormFile file)
         {
             var client = _httpClientFactory.CreateClient();
+
+            if (file != null && file.Length > 0)
+            {
+                using var uploadContent = new MultipartFormDataContent();
+                using var stream = file.OpenReadStream();
+
+                var fileContent = new StreamContent(stream);
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+                uploadContent.Add(fileContent, "File", file.FileName);
+
+                var response = await client.PostAsync("http://localhost:5289/api/FileImage", uploadContent);
+                if (!response.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError("", "Hata");
+                    return View(createProductDto);
+                }
+                var uploadJson = await response.Content.ReadAsStringAsync();
+                var doc = JsonDocument.Parse(uploadJson);
+                var fileName = doc.RootElement.GetProperty("fileName").GetString();
+
+                createProductDto.ImageFile = $"/images/{fileName}";
+            }
             var jsonData = JsonConvert.SerializeObject(createProductDto);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var responseMessage = await client.PostAsync("http://localhost:5289/api/Products", content);
@@ -61,6 +87,7 @@ namespace YummyUI.Controllers
 
             return View();
         }
+
         public async Task<IActionResult> ProductDelete(int id)
         {
             var client = _httpClientFactory.CreateClient();

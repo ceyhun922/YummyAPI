@@ -36,7 +36,7 @@
             </div>
 
             <div class="glass-card-body">
-                @using (Html.BeginForm("CreateTestimonial", "Testimonial", FormMethod.Post, new { @class = "glass-form", autocomplete = "off" }))
+                @using (Html.BeginForm("CreateTestimonial", "Testimonial", FormMethod.Post, new { @class = "glass-form", autocomplete = "off", enctype="multipart/form-data" }))
                 {
                     <div class="form-row">
                         <label class="form-label">Müştəri adı</label>
@@ -56,8 +56,9 @@
 
                     <div class="form-row">
                         <label class="form-label">Şəkil URL</label>
-                        @Html.TextBoxFor(x => x.TestimonialImageUrl, new { @class = "glass-input", placeholder = "https://...", id = "inpImg" })
-                        <small class="form-hint">Şəkil linki əlavə etdikdə sağdakı önizləmədə görünəcək.</small>
+                        <input type="file" name="file" class = "glass-input" accept=".jpg,.jpeg,.png,.webp">
+                            
+                      <small class="form-hint">Şəkil linki əlavə etdikdə sağdakı önizləmədə görünəcək.</small>
                     </div>
 
                     <div class="form-row form-row-inline">

@@ -426,7 +426,10 @@
 
             <div class="t-top">
               <div class="t-avatar">
-                <img src="@item.TestimonialImageUrl"
+                @{
+                  var apiBase ="http://localhost:5289";
+                }
+                <img src="@(apiBase + item.TestimonialImageUrl)"
                      alt="@item.TestimonialName"
                      loading="lazy"
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';" />

@@ -41,6 +41,7 @@ namespace YummyAPI.Mapping
             CreateMap<CreateChefDto, Chef>().ForMember(d => d.ImageFile, o => o.MapFrom(s => s.ImageFile));
             CreateMap<CreateFeatureDto, Feature>().ForMember(f=>f.FeatureImageUrl, o =>o.MapFrom(s=>s.FeatureImageUrl));
             CreateMap<CreateAboutDto, About>().ForMember(a =>a.AboutImageUrl, x =>x. MapFrom(y=>y.AboutImageUrl));
+            CreateMap<CreateTestimonialDto, Testimonial>().ForMember(t => t.TestimonialImageUrl , x=>x.MapFrom(y=>y.TestimonialImageUrl));
             //service
             CreateMap<Service, ResultServiceDto>().ReverseMap();
             CreateMap<Service, CreateServiceDto>().ReverseMap();

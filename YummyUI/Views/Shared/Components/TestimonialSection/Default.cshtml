@@ -47,7 +47,10 @@
                 </div>
               </div>
               <div class="col-lg-2 text-center">
-                <img src="@item.TestimonialImageUrl" class="img-fluid testimonial-img" alt="">
+                @{
+                  var apiBase ="http://localhost:5289";
+                }
+                <img src="@(apiBase + item.TestimonialImageUrl)" class="img-fluid testimonial-img" alt="">
               </div>
             </div>
           </div>

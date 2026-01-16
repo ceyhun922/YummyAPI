@@ -1,4 +1,6 @@
+using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -20,23 +22,34 @@ namespace YummyUI.Controllers
         {
             var client = _httpClientFactory.CreateClient();
 
-            var form = new MultipartFormDataContent();
-            form.Add(new StringContent(dto.ChefName ?? ""), "ChefName");
-            form.Add(new StringContent(dto.ChefTitle ?? ""), "ChefTitle");
-            form.Add(new StringContent(dto.ChefDescription ?? ""), "ChefDescription");
-            form.Add(new StringContent(dto.ChefFacebookUrl ?? ""), "ChefFacebookUrl");
-            form.Add(new StringContent(dto.ChefInstagramUrl ?? ""), "ChefInstagramUrl");
-            form.Add(new StringContent(dto.ChefLinkedinUrl ?? ""), "ChefLinkedinUrl");
-            form.Add(new StringContent(dto.ChefXUrl ?? ""), "ChefXUrl");
-            form.Add(new StringContent(dto.ChefStatus.ToString()), "ChefStatus");
-
             if (file != null && file.Length > 0)
             {
-                var stream = file.OpenReadStream();
-                form.Add(new StreamContent(stream), "ChefImageUrl", file.FileName); 
+                using var uploadContent = new MultipartFormDataContent();
+                using var stream = file.OpenReadStream();
+
+                var fileContent = new StreamContent(stream);
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+                uploadContent.Add(fileContent, "File", file.FileName);
+
+                var uploadResp = await client.PostAsync("http://localhost:5289/api/FileImage", uploadContent);
+                if (!uploadResp.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError("", "Şəkil yükləmə alınmadı.");
+                    return View(dto);
+                }
+
+                var uploadJson = await uploadResp.Content.ReadAsStringAsync();
+                var doc = JsonDocument.Parse(uploadJson);
+                var fileName = doc.RootElement.GetProperty("fileName").GetString();
+
+                dto.ImageFile = $"/images/{fileName}";
             }
 
-            var response = await client.PostAsync("http://localhost:5289/api/Chefs", form);
+            var json = System.Text.Json.JsonSerializer.Serialize(dto);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await client.PostAsync("http://localhost:5289/api/Chefs", content);
 
             if (!response.IsSuccessStatusCode)
                 return View(dto);
