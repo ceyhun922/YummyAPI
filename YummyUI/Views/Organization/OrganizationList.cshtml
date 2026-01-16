@@ -3,6 +3,7 @@
 
 @{
   Layout = "_AdminLayout";
+  var apiBase ="http://localhost:5289";
 }
 
 <style>
@@ -337,7 +338,7 @@
       <div class="gridCards" id="OrgGrid">
         @foreach (var item in Model)
         {
-          var img = (item.OrganizationImage ?? "").Trim();
+          var img = (apiBase + item.OrganizationImage ?? "").Trim();
           var name = item.OrganizationName ?? "";
           var desc = item.OrganizationDescription ?? "";
           var price = item.OrganizationPrice;

@@ -529,6 +529,7 @@
 
 }
 
+```cshtml
 <div class="orgc">
     <div class="orb a"></div>
     <div class="orb b"></div>
@@ -553,7 +554,7 @@
             </div>
 
             <div class="body">
-                @using (Html.BeginForm("CreateOrganization", "Organization", FormMethod.Post))
+                @using (Html.BeginForm("CreateOrganization", "Organization", FormMethod.Post, new { @enctype = "multipart/form-data" }))
                 {
                     <div class="grid2">
                         <!-- LEFT -->
@@ -561,115 +562,120 @@
                             <div class="group">
                                 <label class="label" for="OrgName">Organizasyon Adı</label>
                                 @Html.TextBoxFor(x => x.OrganizationName, new {
-                                @class = "input",
-                                                        id = "OrgName",
-                                                        placeholder = "Örn: Kurumsal Yemek Organizasyonu",
-                                                        autocomplete = "off"
-                                                        })
-                        </div>
-
-                        <div class="group">
-                            <label class="label" for="OrgDesc">Açıklama</label>
-                            @Html.TextAreaFor(x => x.OrganizationDescription, new {
-                                                        @class = "textarea",
-                                                        id = "OrgDesc",
-                                                        placeholder = "Kısa açıklama yaz..."
-                                                        })
-                        </div>
-
-                        <div class="group">
-                            <label class="label" for="OrgPrice">Fiyat</label>
-                            @Html.TextBoxFor(x => x.OrganizationPrice, new {
-                                                        @class = "input",
-                                                        id = "OrgPrice",
-                                                        type = "number",
-                                                        step = "0.01",
-                                                        placeholder = "Örn: 49.90"
-                                                        })
-                        </div>
-
-                        <div class="group">
-                            <label class="label" for="OrgImage">Görsel Yolu</label>
-
-                            <div class="row">
-                                @Html.TextBoxFor(x => x.OrganizationImage, new {
-                                                                @class = "input",
-                                                                id = "OrgImage",
-                                                                placeholder = "Örn: /Yummy/assets/img/organization/org-1.jpg",
-                                                                autocomplete = "off"
-                                                                })
-
-                                <div class="previewBox" title="Canlı görsel">
-                                    <img id="ImgPreview" alt="preview" />
-                                    <div class="ph" id="ImgPh">IMG</div>
-                                </div>
-
-                                <button type="button" class="pick" id="PickRandom">4 Resimden Seç</button>
+                                    @class = "input",
+                                    id = "OrgName",
+                                    placeholder = "Örn: Kurumsal Yemek Organizasyonu",
+                                    autocomplete = "off"
+                                })
                             </div>
 
-                            <!-- ✅ 4 hazır görsel (yolları burada güncelle) -->
-                            <div class="thumbs" id="Thumbs">
-                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-1.jpg">
-                                    <img src="/Yummy/assets/img/organization/org-1.jpg" alt="org-1" />
+                            <div class="group">
+                                <label class="label" for="OrgDesc">Açıklama</label>
+                                @Html.TextAreaFor(x => x.OrganizationDescription, new {
+                                    @class = "textarea",
+                                    id = "OrgDesc",
+                                    placeholder = "Kısa açıklama yaz..."
+                                })
+                            </div>
+
+                            <div class="group">
+                                <label class="label" for="OrgPrice">Fiyat</label>
+                                @Html.TextBoxFor(x => x.OrganizationPrice, new {
+                                    @class = "input",
+                                    id = "OrgPrice",
+                                    type = "number",
+                                    step = "0.01",
+                                    placeholder = "Örn: 49.90"
+                                })
+                            </div>
+
+                            <div class="group">
+                                <label class="label" for="OrgImage">Görsel</label>
+
+                                <div class="row">
+                                    @* Preset/path (köhnə işleyiş saxlanır) *@
+                                    @Html.TextBoxFor(x => x.OrganizationImage, new {
+                                        @class = "input",
+                                        id = "OrgImage",
+                                        placeholder = "Örn: /Yummy/assets/img/organization/org-1.jpg",
+                                        autocomplete = "off"
+                                    })
+
+                                    <input type="file"
+                                           name="file"
+                                           id="OrgImageFile"
+                                           class="input"
+                                           accept="image/*" />
+
+                                    <div class="previewBox" title="Canlı görsel">
+                                        <img id="ImgPreview" alt="preview" />
+                                        <div class="ph" id="ImgPh">IMG</div>
+                                    </div>
+
+                                    <button type="button" class="pick" id="PickRandom">4 Resimden Seç</button>
                                 </div>
-                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-2.jpg">
-                                    <img src="/Yummy/assets/img/organization/org-2.jpg" alt="org-2" />
+
+                                <div class="thumbs" id="Thumbs">
+                                    <div class="thumb" data-src="/Yummy/assets/img/organization/org-1.jpg">
+                                        <img src="/Yummy/assets/img/organization/org-1.jpg" alt="org-1" />
+                                    </div>
+                                    <div class="thumb" data-src="/Yummy/assets/img/organization/org-2.jpg">
+                                        <img src="/Yummy/assets/img/organization/org-2.jpg" alt="org-2" />
+                                    </div>
+                                    <div class="thumb" data-src="/Yummy/assets/img/organization/org-3.jpg">
+                                        <img src="/Yummy/assets/img/organization/org-3.jpg" alt="org-3" />
+                                    </div>
+                                    <div class="thumb" data-src="/Yummy/assets/img/organization/org-4.jpg">
+                                        <img src="/Yummy/assets/img/organization/org-4.jpg" alt="org-4" />
+                                    </div>
                                 </div>
-                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-3.jpg">
-                                    <img src="/Yummy/assets/img/organization/org-3.jpg" alt="org-3" />
-                                </div>
-                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-4.jpg">
-                                    <img src="/Yummy/assets/img/organization/org-4.jpg" alt="org-4" />
+
+                                <div style="margin-top:.55rem; color: rgba(255,255,255,.70); font-weight:800; font-size:.92rem;">
+                                    Resmi tıkla seç. Input’a yol otomatik yazılır və sağda preview yenilənir.
                                 </div>
                             </div>
 
-                            <div
-                                style="margin-top:.55rem; color: rgba(255,255,255,.70); font-weight:800; font-size:.92rem;">
-                                Resmi tıkla seç. Input’a yol otomatik yazılır və sağda preview yenilənir.
+                            <div class="group">
+                                <label class="label">Durum</label>
+
+                                <div style="display:none;">
+                                    @Html.CheckBoxFor(x => x.OrganizationStatus, new { id = "OrgStatusCb" })
+                                </div>
+
+                                <div class="statusRow">
+                                    <div class="switch" id="OrgSwitch" role="button" tabindex="0"></div>
+                                    <div class="statusText" id="OrgStatusText">Pasif</div>
+                                </div>
+                            </div>
+
+                            <div class="actions">
+                                <button type="submit" class="save">✅ Kaydet</button>
+                                <a class="back" asp-action="OrganizationList" asp-controller="Organization">
+                                    ↩️ Geri Dön
+                                </a>
                             </div>
                         </div>
 
-                        <div class="group">
-                            <label class="label">Durum</label>
-
-                            <div style="display:none;">
-                                @Html.CheckBoxFor(x => x.OrganizationStatus, new { id = "OrgStatusCb" })
+                        <!-- RIGHT: LIVE -->
+                        <div class="live">
+                            <div class="liveImg">
+                                <img id="LiveImg"
+                                     src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'%3E%3Crect width='1200' height='600' fill='%230b1225'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23667eea' font-family='Arial' font-size='44'%3EPreview%3C/text%3E%3C/svg%3E"
+                                     alt="live" />
+                                <div class="liveShade"></div>
                             </div>
+                            <div class="liveBody">
+                                <p class="liveName" id="LiveName">Örn: Organizasyon Adı</p>
+                                <p class="liveDesc" id="LiveDesc">Açıklama burada canlı görünür.</p>
 
-                            <div class="statusRow">
-                                <div class="switch" id="OrgSwitch" role="button" tabindex="0"></div>
-                                <div class="statusText" id="OrgStatusText">Pasif</div>
+                                <div class="liveBadges">
+                                    <span class="pill" id="LivePrice">₼ 0.00</span>
+                                    <span class="pill orange" id="LiveStatus">Pasif</span>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="actions">
-                            <button type="submit" class="save">✅ Kaydet</button>
-                            <a class="back" asp-action="OrganizationList" asp-controller="Organization">
-                                ↩️ Geri Dön
-                            </a>
                         </div>
                     </div>
-
-                    <!-- RIGHT: LIVE -->
-                    <div class="live">
-                        <div class="liveImg">
-                            <img id="LiveImg"
-                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'%3E%3Crect width='1200' height='600' fill='%230b1225'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23667eea' font-family='Arial' font-size='44'%3EPreview%3C/text%3E%3C/svg%3E"
-                                alt="live" />
-                            <div class="liveShade"></div>
-                        </div>
-                        <div class="liveBody">
-                            <p class="liveName" id="LiveName">Örn: Organizasyon Adı</p>
-                            <p class="liveDesc" id="LiveDesc">Açıklama burada canlı görünür.</p>
-
-                            <div class="liveBadges">
-                                <span class="pill" id="LivePrice">₼ 0.00</span>
-                                <span class="pill orange" id="LiveStatus">Pasif</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                                }
+                }
             </div>
         </div>
     </div>
@@ -684,6 +690,7 @@
             const descI = $("OrgDesc");
             const priceI = $("OrgPrice");
             const imgI = $("OrgImage");
+            const fileI = $("OrgImageFile"); 
             const cb = $("OrgStatusCb");
 
             const imgPrev = $("ImgPreview");
@@ -773,6 +780,18 @@
                 setPreview(e.target.value);
             });
 
+            // ✅ file seçiləndə preview (yapını bozmadan)
+            fileI.addEventListener("change", (e) => {
+                const f = e.target.files && e.target.files[0];
+                if (!f) return;
+                const url = URL.createObjectURL(f);
+
+                imgPrev.style.display = "block";
+                imgPh.style.display = "none";
+                imgPrev.src = url;
+                liveImg.src = url;
+            });
+
             // thumbs click
             thumbs.addEventListener("click", (e) => {
                 const t = e.target.closest(".thumb");
@@ -800,3 +819,4 @@
         })();
     </script>
 }
+

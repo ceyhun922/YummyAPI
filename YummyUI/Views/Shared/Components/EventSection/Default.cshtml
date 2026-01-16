@@ -1,5 +1,9 @@
 @using YummyUI.DTOs.OrganizationDTOs
 @model List<ResultOrganizationDto>
+@{
+  var apiBase ="http://localhost:5289";
+
+}
 <div class="container-fluid" data-aos="fade-up" data-aos-delay="100">
 
   <div class="swiper init-swiper">
@@ -32,7 +36,7 @@
       @foreach (var item in Model)
       {
         <div class="swiper-slide event-item d-flex flex-column justify-content-end"
-     style="background-image: url('@Url.Content(item.OrganizationImage)')">
+     style="background-image: url('@Url.Content(apiBase + item.OrganizationImage)')">
           <h3>@item.OrganizationName</h3>
           <div class="price align-self-start">@item.OrganizationPrice.ToString(new System.Globalization.CultureInfo("AZ-az"))</div>
           <p class="description">
