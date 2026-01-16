@@ -48,7 +48,7 @@ namespace YummyUI.Controllers
                 var fileContent = new StreamContent(stream);
                 fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
 
-                uploadContent.Add(fileContent, "File", file.FileName);
+                uploadContent.Add(fileContent, "file", file.FileName);
 
                 var uploadResp = await client.PostAsync("http://localhost:5289/api/FileImage", uploadContent);
                 if (!uploadResp.IsSuccessStatusCode)

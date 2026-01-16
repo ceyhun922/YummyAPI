@@ -4,6 +4,8 @@
 @{
     Layout = "_AdminLayout";
     var count = 0;
+                      string? apiBase ="http://localhost:5289";
+
 }
 
 <style>
@@ -426,9 +428,7 @@
 
             <div class="t-top">
               <div class="t-avatar">
-                @{
-                  var apiBase ="http://localhost:5289";
-                }
+
                 <img src="@(apiBase + item.TestimonialImageUrl)"
                      alt="@item.TestimonialName"
                      loading="lazy"
