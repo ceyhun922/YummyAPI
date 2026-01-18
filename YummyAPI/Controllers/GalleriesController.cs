@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using YummyAPI.Context;
@@ -57,6 +58,19 @@ namespace YummyAPI.Controllers
             _context.Galleries?.Remove(value);
             _context.SaveChanges();
             return Ok();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetByIdGallery(int id)
+        {
+            var value =await _context.Galleries!.FindAsync(id);
+
+            if (value == null)
+            {
+                return BadRequest("Bulunamadı");
+            }
+            var mapper =_mapper.Map<GetByIdGalleryDto>(value);
+            return Ok(mapper);
         }
     }
 }

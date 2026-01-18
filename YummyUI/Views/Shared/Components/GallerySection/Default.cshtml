@@ -1,5 +1,8 @@
 @using YummyUI.DTOs.GalleryDTO
 @model List<ResultGalleryDto>
+  @{
+    var apiBase ="http://localhost:5289";
+  }
 <!-- Section Title -->
 <div class="container section-title" data-aos="fade-up">
   <h2>Gallery</h2>
@@ -42,7 +45,7 @@
     <div class="swiper-wrapper align-items-center">
         @foreach(var item in Model){
       <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery"
-          href="@item.GalleryImageUrl"><img src="@Url.Content(item.GalleryImageUrl)" class="img-fluid"
+          href="@item.GalleryImageUrl"><img src="@Url.Content(apiBase + item.GalleryImageUrl)" class="img-fluid"
             alt="@item.GalleryTitle"></a>
       </div>
       }
