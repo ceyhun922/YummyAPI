@@ -7,7 +7,7 @@
     string Img(string? path)
     {
         if (string.IsNullOrWhiteSpace(path))
-            return "https://via.placeholder.com/32"; 
+            return "https://via.placeholder.com/32";
 
         if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             return path;
@@ -26,112 +26,518 @@
         .ToList();
 }
 
+<style>
+.go-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  padding:14px 16px;
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+.go-search{
+  flex:1;
+  min-width:260px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:999px;
+  background: rgba(255,255,255,.9);
+  border:1px solid rgba(0,0,0,.08);
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+.go-search .ico{opacity:.7}
+.go-search input{
+  width:100%;
+  border:none;
+  outline:none;
+  background:transparent;
+  font-weight:700;
+}
+.go-pills{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.go-pill{
+  padding:10px 14px;
+  border-radius:999px;
+  border:1px solid rgba(0,0,0,.10);
+  background:#fff;
+  font-weight:800;
+  cursor:pointer;
+  user-select:none;
+  transition:.15s;
+}
+.go-pill:hover{ transform:translateY(-1px); }
+.go-pill.active{
+  background:linear-gradient(135deg, rgba(139,92,246,.95), rgba(99,102,241,.90));
+  color:#fff;
+  border-color:transparent;
+  box-shadow:0 10px 25px rgba(99,102,241,.18);
+}
+
+.table td{ vertical-align:middle; }
+.order-list{ display:flex; gap:6px; margin:0; padding:0; }
+.order-list .team-member{ list-style:none; }
+</style>
+
+<style>
+.x-modal-backdrop{
+  position:fixed; inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:999999;
+
+  background:
+    radial-gradient(900px 520px at 55% 55%, rgba(142,97,255,.16), transparent 60%),
+    radial-gradient(760px 420px at 75% 35%, rgba(56,189,248,.14), transparent 60%),
+    radial-gradient(700px 380px at 35% 70%, rgba(250,204,21,.08), transparent 55%),
+    rgba(0,0,0,.55);
+  backdrop-filter: blur(10px);
+}
+.x-modal-backdrop.is-open{ display:flex; }
+
+.x-modal{
+  width:min(920px, 92vw);
+  border-radius:22px;
+  overflow:hidden;
+
+  background: rgba(10, 14, 39, .52);
+  border:1px solid rgba(255,255,255,.14);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 40px 90px rgba(0,0,0,.55);
+  position:relative;
+
+  transform: translateY(10px) scale(.985);
+  opacity:0;
+  transition: .18s ease;
+}
+.x-modal-backdrop.is-open .x-modal{
+  transform: translateY(0) scale(1);
+  opacity:1;
+}
+
+.x-modal:before{
+  content:"";
+  position:absolute; inset:0;
+  background:
+    radial-gradient(900px 220px at 20% 0%, rgba(162, 113, 255,.22), transparent 55%),
+    radial-gradient(700px 240px at 85% 20%, rgba(56,189,248,.16), transparent 60%),
+    radial-gradient(600px 240px at 70% 90%, rgba(250,204,21,.08), transparent 55%);
+  opacity:.9;
+  pointer-events:none;
+}
+
+.x-modal-header{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 18px;
+  border-bottom:1px solid rgba(255,255,255,.10);
+}
+
+.x-modal-title{
+  margin:0;
+  font-size:16px;
+  font-weight:1000;
+  letter-spacing:.2px;
+  color:rgba(255,255,255,.95);
+}
+
+.x-close{
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.86);
+  width:40px;height:40px;
+  border-radius:14px;
+  display:grid;place-items:center;
+  font-size:22px;
+  line-height:1;
+  cursor:pointer;
+  transition:.18s;
+  box-shadow:0 18px 55px rgba(0,0,0,.25);
+}
+.x-close:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+
+.x-modal-body{
+  position:relative;
+  z-index:2;
+  padding:16px 18px 18px;
+}
+
+.x-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:18px;
+}
+@@media (max-width: 768px){
+  .x-grid{ grid-template-columns:1fr; }
+}
+
+.x-box{
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  padding:14px;
+}
+
+.x-row{ margin-bottom:10px; color:rgba(255,255,255,.88); font-weight:850; }
+.x-row strong{ color: rgba(255,255,255,.60); font-weight:900; }
+.x-muted{ color: rgba(255,255,255,.65); font-weight:800; }
+
+.x-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.14);
+  color:rgba(255,255,255,.88);
+  font-weight:950;
+}
+.x-dot{
+  width:10px;height:10px;border-radius:999px;
+  background:#22c55e;
+  box-shadow:0 0 0 6px rgba(34,197,94,.14);
+}
+.x-dot.az{ background:#fbbf24; box-shadow:0 0 0 6px rgba(245,158,11,.12); }
+.x-dot.orta{ background:#ef4444; box-shadow:0 0 0 6px rgba(239,68,68,.12); }
+.x-dot.yuksek{ background:#22c55e; box-shadow:0 0 0 6px rgba(34,197,94,.14); }
+
+.x-chefs{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.x-chef{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  transition:.18s;
+}
+.x-chef:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+
+.x-chef img{
+  width:38px;height:38px;
+  border-radius:14px;
+  object-fit:cover;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+}
+.x-chef-name{
+  font-weight:1000;
+  color:rgba(255,255,255,.95);
+}
+</style>
+
 <div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header">
-                <h4>Grup Organizasyonları</h4>
-            </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h4>Grup Organizasyonları</h4>
+      </div>
 
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th class="text-center"></th>
-                                <th>Organizasyon İsmi</th>
-                                <th>Şefler</th>
-                                <th>Katılım Oranı</th>
-                                <th>Tarih</th>
-                                <th>Saat</th>
-                                <th>Priority</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                        @if (!groups.Any())
-                        {
-                            <tr>
-                                <td colspan="8" class="text-center py-4">Data yoxdur.</td>
-                            </tr>
-                        }
-                        else
-                        {
-                            foreach (var item in groups)
-                            {
-                                var first = item.First();
-
-                                <tr>
-                                    <td class="p-0 text-center"></td>
-
-                                    <td>@first.OrganizationName</td>
-
-                                    <td class="text-truncate">
-                                        <ul class="list-unstyled order-list m-b-0">
-                                            @foreach (var c in item)
-                                            {
-                                                <li class="team-member team-member-sm">
-                                                    <img class="rounded-circle"
-                                                         src="@Img(c.ImageFile)"
-
-                                                         alt="@c.ChefName"
-                                                         title="@c.ChefName"
-                                                         style="width:32px;height:32px;object-fit:cover;" />
-                                                </li>
-                                            }
-                                        </ul>
-                                    </td>
-
-                                    <td class="align-middle">
-                                        @{
-                                            var pr = first.ParticipationRate;
-                                            if (pr < 0) pr = 0;
-                                            if (pr > 100) pr = 100;
-                                        }
-                                        <div class="progress-text">@pr%</div>
-                                        <div class="progress" data-height="6">
-                                            <div class="progress-bar bg-success" style="width:@pr%"></div>
-                                        </div>
-                                    </td>
-
-                                    <td>@ShowDate(first.Date)</td>
-                                    <td>@ShowTime(first.Time)</td>
-
-                                    <td>
-                                        @switch (first.GroupPriority)
-                                        {
-                                            case 1:
-                                                <div class="badge badge-warning">Az</div>
-                                                break;
-                                            case 2:
-                                                <div class="badge badge-danger">Orta</div>
-                                                break;
-                                            case 3:
-                                                <div class="badge badge-success">Yüksek</div>
-                                                break;
-                                            default:
-                                                <div class="badge badge-secondary">Unknown (@first.GroupPriority)</div>
-                                                break;
-                                        }
-                                    </td>
-
-                                    <td>
-                                        <a asp-controller="GroupOrganization"
-                                           asp-action="Detail"
-                                           asp-route-id="@first.GroupOrganizationId"
-                                           class="btn btn-outline-primary">
-                                            Detail
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
+      <div class="go-topbar">
+        <div class="go-search">
+          <span class="ico">🔎</span>
+          <input id="goSearch" type="text" placeholder="Organizasyon adına göre ara..." autocomplete="off" />
         </div>
+
+        <div class="go-pills" id="goPills">
+          <div class="go-pill active" data-filter="all">Hepsi</div>
+          <div class="go-pill" data-filter="az">Az</div>
+          <div class="go-pill" data-filter="orta">Orta</div>
+          <div class="go-pill" data-filter="yuksek">Yüksek</div>
+        </div>
+      </div>
+
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped mb-0" id="goTable">
+            <thead>
+              <tr>
+                <th class="text-center"></th>
+                <th>Organizasyon İsmi</th>
+                <th>Şefler</th>
+                <th>Katılım Oranı</th>
+                <th>Tarih</th>
+                <th>Saat</th>
+                <th>Öncelik</th>
+                <th>İşlem</th>
+              </tr>
+            </thead>
+
+            <tbody>
+            @if (!groups.Any())
+            {
+              <tr>
+                <td colspan="8" class="text-center py-4">Veri yok.</td>
+              </tr>
+            }
+            else
+            {
+              foreach (var item in groups)
+              {
+                var first = item.First();
+
+                var pk = first.GroupPriority switch { 1 => "az", 2 => "orta", 3 => "yuksek", _ => "unk" };
+
+                <tr class="go-row"
+                    data-name="@first.OrganizationName"
+                    data-priority="@pk">
+                  <td class="p-0 text-center"></td>
+
+                  <td class="go-org">@first.OrganizationName</td>
+
+                  <td class="text-truncate">
+                    <ul class="list-unstyled order-list m-b-0">
+                      @foreach (var c in item)
+                      {
+                        <li class="team-member team-member-sm">
+                          <img class="rounded-circle"
+                               src="@Img(c.ImageFile)"
+                               alt="@c.ChefName"
+                               title="@c.ChefName"
+                               style="width:32px;height:32px;object-fit:cover;" />
+                        </li>
+                      }
+                    </ul>
+                  </td>
+
+                  <td class="align-middle">
+                    @{
+                      var pr = first.ParticipationRate;
+                      if (pr < 0) pr = 0;
+                      if (pr > 100) pr = 100;
+                    }
+                    <div class="progress-text">@pr%</div>
+                    <div class="progress" data-height="6">
+                      <div class="progress-bar bg-success" style="width:@pr%"></div>
+                    </div>
+                  </td>
+
+                  <td>@ShowDate(first.Date)</td>
+                  <td>@ShowTime(first.Time)</td>
+
+                  <td>
+                    @switch (first.GroupPriority)
+                    {
+                      case 1:
+                        <div class="badge badge-warning">Az</div>
+                        break;
+                      case 2:
+                        <div class="badge badge-danger">Orta</div>
+                        break;
+                      case 3:
+                        <div class="badge badge-success">Yüksek</div>
+                        break;
+                      default:
+                        <div class="badge badge-secondary">Bilinmiyor (@first.GroupPriority)</div>
+                        break;
+                    }
+                  </td>
+
+                  <td>
+                    <button type="button"
+                            class="btn btn-outline-primary js-group-detail"
+                            data-groupid="@first.GroupOrganizationId"
+                            data-org="@first.OrganizationName"
+                            data-pr="@first.ParticipationRate"
+                            data-date="@ShowDate(first.Date)"
+                            data-time="@ShowTime(first.Time)"
+                            data-priority="@first.GroupPriority">
+                      Detail
+                    </button>
+
+                    <script type="application/json" id="group-@first.GroupOrganizationId">
+@Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+    item.Select(c => new { c.ChefName, c.ImageFile })
+))
+                    </script>
+                  </td>
+                </tr>
+              }
+            }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>
+
+<div class="x-modal-backdrop" id="xBackdrop" aria-hidden="true">
+  <div class="x-modal" role="dialog" aria-modal="true" aria-labelledby="mdTitle">
+    <div class="x-modal-header">
+      <h5 class="x-modal-title" id="mdTitle">Group Detail</h5>
+      <button class="x-close" id="xClose" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="x-modal-body">
+      <div class="x-grid">
+        <div class="x-box">
+          <div class="x-row"><strong>Organizasyon</strong><br><span id="mdOrg"></span></div>
+          <div class="x-row"><strong>Katılım</strong><br><span id="mdPr"></span>%</div>
+          <div class="x-row"><strong>Tarih</strong><br><span id="mdDate"></span></div>
+          <div class="x-row"><strong>Saat</strong><br><span id="mdTime"></span></div>
+
+          <div class="x-row" style="margin-bottom:0;">
+            <strong>Öncelik</strong><br>
+            <span class="x-chip"><span class="x-dot" id="mdPriorityDot"></span><span id="mdPriority"></span></span>
+          </div>
+        </div>
+
+        <div class="x-box">
+          <div class="x-row"><strong>Şefler</strong></div>
+          <div class="x-chefs" id="mdChefs"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const apiBase = "@apiBase";
+
+  function imgUrl(path) {
+    if (!path) return "https://via.placeholder.com/64";
+    if (path.startsWith("http")) return path;
+    return apiBase.replace(/\/$/, "") + "/" + path.replace(/^\//, "");
+  }
+
+  function priorityText(v) {
+    v = parseInt(v || "0");
+    if (v === 1) return "Az";
+    if (v === 2) return "Orta";
+    if (v === 3) return "Yüksek";
+    return "Bilinmiyor (" + v + ")";
+  }
+  function priorityClass(v){
+    v = parseInt(v || "0");
+    if (v === 1) return "az";
+    if (v === 2) return "orta";
+    if (v === 3) return "yuksek";
+    return "";
+  }
+
+  const search = document.getElementById("goSearch");
+  const pillsWrap = document.getElementById("goPills");
+  const rows = Array.from(document.querySelectorAll("#goTable tbody .go-row"));
+  let active = "all";
+
+  function applyFilter(){
+    const q = (search?.value || "").toLowerCase().trim();
+
+    rows.forEach(r => {
+      const name = (r.getAttribute("data-name") || "").toLowerCase();
+      const pr = (r.getAttribute("data-priority") || "unk");
+      const okText = !q || name.includes(q);
+      const okPr = active === "all" || pr === active;
+      r.style.display = (okText && okPr) ? "" : "none";
+    });
+  }
+
+  search?.addEventListener("input", applyFilter);
+
+  pillsWrap?.addEventListener("click", (e) => {
+    const pill = e.target.closest(".go-pill");
+    if(!pill) return;
+
+    active = pill.getAttribute("data-filter") || "all";
+
+    pillsWrap.querySelectorAll(".go-pill").forEach(p => p.classList.remove("active"));
+    pill.classList.add("active");
+
+    applyFilter();
+  });
+
+  const backdrop = document.getElementById("xBackdrop");
+  const closeBtn = document.getElementById("xClose");
+  const prDot = document.getElementById("mdPriorityDot");
+
+  function openModal() {
+    backdrop.classList.add("is-open");
+    backdrop.setAttribute("aria-hidden", "false");
+    document.documentElement.style.overflow = "hidden";
+  }
+  function closeModal() {
+    backdrop.classList.remove("is-open");
+    backdrop.setAttribute("aria-hidden", "true");
+    document.documentElement.style.overflow = "";
+  }
+
+  closeBtn?.addEventListener("click", closeModal);
+  backdrop?.addEventListener("click", function (e) { if (e.target === backdrop) closeModal(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeModal(); });
+
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest(".js-group-detail");
+    if (!btn) return;
+
+    const groupId = btn.getAttribute("data-groupid");
+
+    document.getElementById("mdTitle").textContent = "Group #" + groupId;
+    document.getElementById("mdOrg").textContent = btn.getAttribute("data-org") || "-";
+    document.getElementById("mdPr").textContent = btn.getAttribute("data-pr") || "0";
+    document.getElementById("mdDate").textContent = btn.getAttribute("data-date") || "-";
+    document.getElementById("mdTime").textContent = btn.getAttribute("data-time") || "-";
+
+    const prVal = btn.getAttribute("data-priority");
+    document.getElementById("mdPriority").textContent = priorityText(prVal);
+    prDot.className = "x-dot " + priorityClass(prVal);
+
+    const jsonEl = document.getElementById("group-" + groupId);
+    let chefs = [];
+    try { chefs = JSON.parse(jsonEl?.textContent || "[]"); } catch { chefs = []; }
+
+    const wrap = document.getElementById("mdChefs");
+    wrap.innerHTML = "";
+
+    if (!chefs.length) {
+      const empty = document.createElement("div");
+      empty.className = "x-muted";
+      empty.textContent = "Şef yok.";
+      wrap.appendChild(empty);
+    } else {
+      chefs.forEach(c => {
+        const row = document.createElement("div");
+        row.className = "x-chef";
+
+        const img = document.createElement("img");
+        img.src = imgUrl(c.ImageFile);
+        img.alt = c.ChefName || "Chef";
+
+        const name = document.createElement("div");
+        name.className = "x-chef-name";
+        name.textContent = c.ChefName || "-";
+
+        row.appendChild(img);
+        row.appendChild(name);
+        wrap.appendChild(row);
+      });
+    }
+
+    openModal();
+  });
+
+  applyFilter();
+})();
+</script>

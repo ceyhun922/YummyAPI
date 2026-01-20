@@ -19,13 +19,6 @@ namespace YummyAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public IActionResult GroupOrganization()
-        {
-            var values = _context.GroupOrganizations?.ToList();
-            return Ok(values);
-        }
-
         [HttpGet("groups/organizations/chefs")]
         public async Task<IActionResult> GroupOrganizationWithChefs()
         {
