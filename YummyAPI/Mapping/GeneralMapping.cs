@@ -6,6 +6,8 @@ using YummyAPI.DTOs.ContactDTO;
 using YummyAPI.DTOs.FeatureDTO;
 using YummyAPI.DTOs.FooterDTO;
 using YummyAPI.DTOs.GalleryDTO;
+using YummyAPI.DTOs.GroupOrganizationChefDTO;
+using YummyAPI.DTOs.GroupOrganizationDTO;
 using YummyAPI.DTOs.OrganizationDTO;
 using YummyAPI.DTOs.ProductDTO;
 using YummyAPI.DTOs.RezervationDTO;
@@ -36,12 +38,7 @@ namespace YummyAPI.Mapping
             CreateMap<Chef, UpdateChefDto>().ReverseMap();
             CreateMap<Chef, GetByIdChefDto>().ReverseMap();
 
-            //imagefile
-            CreateMap<Product, ResultGetAllProductWithCategoryDto>().ForMember(x => x.CategoryName, y => y.MapFrom(z => z.Category.CategoryName)).ReverseMap();
-            CreateMap<CreateChefDto, Chef>().ForMember(d => d.ImageFile, o => o.MapFrom(s => s.ImageFile));
-            CreateMap<CreateFeatureDto, Feature>().ForMember(f=>f.FeatureImageUrl, o =>o.MapFrom(s=>s.FeatureImageUrl));
-            CreateMap<CreateAboutDto, About>().ForMember(a =>a.AboutImageUrl, x =>x. MapFrom(y=>y.AboutImageUrl));
-            CreateMap<CreateTestimonialDto, Testimonial>().ForMember(t => t.TestimonialImageUrl , x=>x.MapFrom(y=>y.TestimonialImageUrl));
+
             //service
             CreateMap<Service, ResultServiceDto>().ReverseMap();
             CreateMap<Service, CreateServiceDto>().ReverseMap();
@@ -101,6 +98,31 @@ namespace YummyAPI.Mapping
             CreateMap<Rezervation, CreateRezervationDto>().ReverseMap();
             CreateMap<Rezervation, UpdateRezervationDto>().ReverseMap();
             CreateMap<Rezervation, GetByIdRezervationDto>().ReverseMap();
+
+            //GroupRezervation
+            CreateMap<GroupOrganization, ResultGroupOrganizationDto>().ReverseMap();
+            CreateMap<CreateGroupOrganizationDto, GroupOrganization>()
+           .ForMember(x => x.GroupOrganizationChefs, opt => opt.Ignore());
+            CreateMap<GroupOrganization, UpdateGroupOrganizationDto>().ReverseMap();
+            CreateMap<GroupOrganization, ResultGroupOrganizationDto>().ReverseMap();
+            CreateMap<GroupOrganization, GetByIdGroupOrganizationDto>().ReverseMap();
+
+            //imagefile
+            CreateMap<Product, ResultGetAllProductWithCategoryDto>().ForMember(x => x.CategoryName, y => y.MapFrom(z => z.Category.CategoryName)).ReverseMap();
+            CreateMap<CreateChefDto, Chef>().ForMember(d => d.ImageFile, o => o.MapFrom(s => s.ImageFile));
+            CreateMap<CreateFeatureDto, Feature>().ForMember(f => f.FeatureImageUrl, o => o.MapFrom(s => s.FeatureImageUrl));
+            CreateMap<CreateAboutDto, About>().ForMember(a => a.AboutImageUrl, x => x.MapFrom(y => y.AboutImageUrl));
+            CreateMap<CreateTestimonialDto, Testimonial>().ForMember(t => t.TestimonialImageUrl, x => x.MapFrom(y => y.TestimonialImageUrl));
+
+            CreateMap<GroupOrganizationChef, ResultGroupOrganizationChefDto>()
+                .ForMember(d => d.ChefName, o => o.MapFrom(s => s.Chef.ChefName))
+                .ForMember(d => d.ChefImage, o => o.MapFrom(s => s.Chef.ImageFile))
+                .ForMember(d => d.OrganizationName, o => o.MapFrom(s => s.GroupOrganization.Organization.OrganizationName))
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.GroupOrganization.Date))
+                .ForMember(d => d.Time, o => o.MapFrom(s => s.GroupOrganization.Time))
+                .ForMember(d => d.ParticipationRate, o => o.MapFrom(s => s.GroupOrganization.ParticipationRate))
+                .ForMember(d => d.GroupPriority, o => o.MapFrom(s => (int)s.GroupOrganization.GroupPriority));
+
 
 
 

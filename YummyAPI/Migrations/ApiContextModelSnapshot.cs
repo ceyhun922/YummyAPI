@@ -530,7 +530,7 @@ namespace YummyAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("YummyAPI.Entities.GroupOrganization", "GroupOrganization")
-                        .WithMany()
+                        .WithMany("GroupOrganizationChefs")
                         .HasForeignKey("GroupOrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -554,6 +554,11 @@ namespace YummyAPI.Migrations
             modelBuilder.Entity("YummyAPI.Entities.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("YummyAPI.Entities.GroupOrganization", b =>
+                {
+                    b.Navigation("GroupOrganizationChefs");
                 });
 #pragma warning restore 612, 618
         }

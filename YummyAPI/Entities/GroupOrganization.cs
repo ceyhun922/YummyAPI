@@ -27,10 +27,7 @@ namespace YummyAPI.Entities
         public DateOnly Date { get; set; }
         public TimeOnly Time { get; set; }
 
-        List<GroupOrganizationChef> GroupOrganizationChefs { get; set; } = new();
-
-
-
+        public List<GroupOrganizationChef> GroupOrganizationChefs { get; set; } = new();
 
     }
 }

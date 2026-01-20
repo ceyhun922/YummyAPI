@@ -12,8 +12,8 @@ using YummyAPI.Context;
 namespace YummyAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20260111140314_mig-2")]
-    partial class mig2
+    [Migration("20260120124611_mig-1")]
+    partial class mig1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,9 +95,6 @@ namespace YummyAPI.Migrations
                     b.Property<string>("ChefFacebookUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ChefImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ChefInstagramUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -114,6 +111,9 @@ namespace YummyAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ChefXUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageFile")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ChefId");
@@ -379,10 +379,10 @@ namespace YummyAPI.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductDescription")
+                    b.Property<string>("ImageFile")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProductImageUrl")
+                    b.Property<string>("ProductDescription")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("ProductPrice")
@@ -471,6 +471,9 @@ namespace YummyAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TestimonialId"));
 
+                    b.Property<string>("TestimonialImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("TestimonialMessage")
                         .HasColumnType("nvarchar(max)");
 
@@ -486,6 +489,28 @@ namespace YummyAPI.Migrations
                     b.HasKey("TestimonialId");
 
                     b.ToTable("Testimonials");
+                });
+
+            modelBuilder.Entity("YummyAPI.Entities.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("YummyAPI.Entities.GroupOrganization", b =>
@@ -508,7 +533,7 @@ namespace YummyAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("YummyAPI.Entities.GroupOrganization", "GroupOrganization")
-                        .WithMany()
+                        .WithMany("GroupOrganizationChefs")
                         .HasForeignKey("GroupOrganizationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -532,6 +557,11 @@ namespace YummyAPI.Migrations
             modelBuilder.Entity("YummyAPI.Entities.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("YummyAPI.Entities.GroupOrganization", b =>
+                {
+                    b.Navigation("GroupOrganizationChefs");
                 });
 #pragma warning restore 612, 618
         }

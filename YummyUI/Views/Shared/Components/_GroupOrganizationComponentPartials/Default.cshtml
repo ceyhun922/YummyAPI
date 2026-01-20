@@ -1,88 +1,136 @@
 @using YummyUI.DTOs.GroupOrganizationChefDTO
 @model List<ResultGroupOrganizationChefDto>
+
 @{
-  var groups = (Model ?? new())
-  .Where(x => x.GroupOrganization != null)
-  .GroupBy(x => x.GroupOrganizationId).
-  Take(5)
-  .ToList();
+    var apiBase = "http://localhost:5289";
+
+    string Img(string? path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            return "https://via.placeholder.com/32"; // istəsən local default ver
+
+        if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            return path;
+
+        return apiBase.TrimEnd('/') + "/" + path.TrimStart('/');
+    }
+
+    string ShowDate(DateOnly d) => d == default ? "-" : d.ToString("dd.MM.yyyy");
+    string ShowTime(TimeOnly t) => t == default ? "-" : t.ToString("HH:mm");
+
+    var groups = (Model ?? new List<ResultGroupOrganizationChefDto>())
+        .GroupBy(x => x.GroupOrganizationId)
+        .OrderBy(g => g.Min(x => x.Date))
+        .ThenBy(g => g.Min(x => x.Time))
+        .Take(5)
+        .ToList();
 }
+
 <div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-header">
-        <h4>Grup Organizasyonları</h4>
-      </div>
-      <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <tr>
-              <th class="text-center">
-                <div class="custom-checkbox custom-checkbox-table custom-control">
-                  <input type="checkbox" data-checkboxes="mygroup" data-checkbox-role="dad" class="custom-control-input"
-                    id="checkbox-all">
-                  <label for="checkbox-all" class="custom-control-label">&nbsp;</label>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Grup Organizasyonları</h4>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center"></th>
+                                <th>Organizasyon İsmi</th>
+                                <th>Şefler</th>
+                                <th>Katılım Oranı</th>
+                                <th>Tarih</th>
+                                <th>Saat</th>
+                                <th>Priority</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                        @if (!groups.Any())
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center py-4">Data yoxdur.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var item in groups)
+                            {
+                                var first = item.First();
+
+                                <tr>
+                                    <td class="p-0 text-center"></td>
+
+                                    <td>@first.OrganizationName</td>
+
+                                    <td class="text-truncate">
+                                        <ul class="list-unstyled order-list m-b-0">
+                                            @foreach (var c in item)
+                                            {
+                                                <li class="team-member team-member-sm">
+                                                    <img class="rounded-circle"
+                                                         src="@Img(c.ChefImage)"
+                                                         alt="@c.ChefName"
+                                                         title="@c.ChefName"
+                                                         style="width:32px;height:32px;object-fit:cover;" />
+                                                </li>
+                                            }
+                                        </ul>
+                                    </td>
+
+                                    <td class="align-middle">
+                                        @{
+                                            var pr = first.ParticipationRate;
+                                            if (pr < 0) pr = 0;
+                                            if (pr > 100) pr = 100;
+                                        }
+                                        <div class="progress-text">@pr%</div>
+                                        <div class="progress" data-height="6">
+                                            <div class="progress-bar bg-success" style="width:@pr%"></div>
+                                        </div>
+                                    </td>
+
+                                    <td>@ShowDate(first.Date)</td>
+                                    <td>@ShowTime(first.Time)</td>
+
+                                    <td>
+                                        @switch (first.GroupPriority)
+                                        {
+                                            case 1:
+                                                <div class="badge badge-warning">Az</div>
+                                                break;
+                                            case 2:
+                                                <div class="badge badge-danger">Orta</div>
+                                                break;
+                                            case 3:
+                                                <div class="badge badge-success">Yüksek</div>
+                                                break;
+                                            default:
+                                                <div class="badge badge-secondary">Unknown (@first.GroupPriority)</div>
+                                                break;
+                                        }
+                                    </td>
+
+                                    <td>
+                                        <a asp-controller="GroupOrganization"
+                                           asp-action="Detail"
+                                           asp-route-id="@first.GroupOrganizationId"
+                                           class="btn btn-outline-primary">
+                                            Detail
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        </tbody>
+                    </table>
                 </div>
-              </th>
-              <th>Organizasyon İsmi</th>
-              <th>Şefler</th>
-              <th>Katılım Oranı</th>
-              <th>Tarih</th>
-              <th>Saat</th>
-              <th>Priority</th>
-              <th>Action</th>
-            </tr>
-            @foreach (var item in groups)
-            {
-              var first = item.FirstOrDefault();
-              if (first?.GroupOrganization == null) { continue; }
-              <tr>
-                <td class="p-0 text-center">
-                  <div class="custom-checkbox custom-control">
-                    <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-1">
-                    <label for="checkbox-1" class="custom-control-label">&nbsp;</label>
-                  </div>
-                </td>
-                <td>@first.GroupOrganization.OrganizationName</td>
-                <td class="text-truncate">
-                  <ul class="list-unstyled order-list m-b-0 m-b-0">
-                    @foreach (var c in item.Where(x => x.Chef != null))
-                    {
-                      <li class="team-member team-member-sm"><img class="rounded-circle" src="@c.Chef.ImageFile"
-                          alt="user" data-toggle="tooltip" title="" data-original-title="@c.Chef!.ChefName"></li>
-                    }
+            </div>
 
-                  </ul>
-                </td>
-                <td class="align-middle">
-                  <div class="progress-text">@first.GroupOrganization.ParticipationRate%</div>
-                  <div class="progress" data-height="6">
-                    <div class="progress-bar bg-success" data-width="@first.GroupOrganization.ParticipationRate%"></div>
-                  </div>
-                </td>
-                <td>@first.GroupOrganization.Date</td>
-                <td>@first.GroupOrganization.Time</td>
-
-                <td>
-                  @if (first.GroupOrganization.GroupPriority == 1)
-                  {
-                    <div class="badge badge-warning">Az</div>
-                  }
-                  else if (first.GroupOrganization.GroupPriority == 2)
-                  {
-                    <div class="badge badge-danger">Orta</div>
-                  }
-                  else
-                  {
-                    <div class="badge badge-success">Yüksek</div>
-                  }
-                </td>
-                <td><a href="#" class="btn btn-outline-primary">Detail</a></td>
-              </tr>
-            }
-          </table>
         </div>
-      </div>
     </div>
-  </div>
 </div>

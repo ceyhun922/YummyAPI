@@ -103,6 +103,8 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> UpdateChef(GetByIdChefDto getByIdChefDto)
         {
             var client = _httpClientFactory.CreateClient();
+
+            
             var jsonData = JsonConvert.SerializeObject(getByIdChefDto);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var response = await client.PutAsync("http://localhost:5289/api/Chefs", content);

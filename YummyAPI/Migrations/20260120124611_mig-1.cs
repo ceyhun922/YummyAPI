@@ -54,7 +54,7 @@ namespace YummyAPI.Migrations
                     ChefName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ChefTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ChefDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ChefImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageFile = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ChefFacebookUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ChefXUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ChefInstagramUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -216,12 +216,28 @@ namespace YummyAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TestimonialName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TestimonialTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TestimonialImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TestimonialMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TestimonialStatus = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Testimonials", x => x.TestimonialId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -233,7 +249,7 @@ namespace YummyAPI.Migrations
                     ProductTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductPrice = table.Column<double>(type: "float", nullable: false),
-                    ProductImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageFile = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductStatus = table.Column<bool>(type: "bit", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -259,7 +275,8 @@ namespace YummyAPI.Migrations
                     GroupPriority = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ParticipationRate = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PersonCount = table.Column<int>(type: "int", nullable: false),
+                    ParticipantCount = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateOnly>(type: "date", nullable: false),
                     Time = table.Column<TimeOnly>(type: "time", nullable: false)
                 },
@@ -356,6 +373,9 @@ namespace YummyAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Testimonials");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Chefs");

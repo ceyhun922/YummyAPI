@@ -17,6 +17,7 @@ namespace YummyUI.ViewComponents
         {
             var client = _httpClientFactory.CreateClient();
             var response = await client.GetAsync("http://localhost:5289/api/Groups/groups/organizations/chefs");
+            
 
             if (response.IsSuccessStatusCode)
             {

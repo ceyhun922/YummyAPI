@@ -1,6 +1,8 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YummyAPI.Context;
+using YummyAPI.DTOs.GroupOrganizationChefDTO;
 
 namespace YummyAPI.Controllers
 {
@@ -9,10 +11,12 @@ namespace YummyAPI.Controllers
     public class GroupsController : ControllerBase
     {
         private readonly ApiContext _context;
+        private readonly IMapper _mapper;
 
-        public GroupsController(ApiContext context)
+        public GroupsController(ApiContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -23,15 +27,32 @@ namespace YummyAPI.Controllers
         }
 
         [HttpGet("groups/organizations/chefs")]
-        public IActionResult GroupOrganizationWithChefs()
+        public async Task<IActionResult> GroupOrganizationWithChefs()
         {
-            var values = _context.GroupOrganizationChefs
+            var data = await _context.GroupOrganizationChefs
                 .Include(x => x.Chef)
                 .Include(x => x.GroupOrganization)
-                    .ThenInclude(g => g.Organization)
-                .ToList();
+                    .ThenInclude(go => go.Organization)
+                .Select(x => new ResultGroupOrganizationChefDto
+                {
+                    GroupOrganizationChefId = x.GroupOrganizationChefId,
+                    ChefId = x.ChefId,
+                    ChefName = x.Chef.ChefName,
+                    ImageFile = x.Chef.ImageFile,
+                    GroupOrganizationId = x.GroupOrganizationId,
+                    OrganizationName = x.GroupOrganization.Organization.OrganizationName,
+                    ParticipationRate = x.GroupOrganization.ParticipationRate,
+                    Date = x.GroupOrganization.Date,
+                    Time = x.GroupOrganization.Time,
+                    GroupPriority = (int)x.GroupOrganization.GroupPriority
+                })
+                .ToListAsync();
 
-            return Ok(values);
+
+            var dto = _mapper.Map<List<ResultGroupOrganizationChefDto>>(data);
+
+
+            return Ok(dto);
         }
 
 
