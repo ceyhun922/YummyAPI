@@ -7,7 +7,7 @@
     string Img(string? path)
     {
         if (string.IsNullOrWhiteSpace(path))
-            return "https://via.placeholder.com/32"; // istəsən local default ver
+            return "https://via.placeholder.com/32"; 
 
         if (path.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             return path;
@@ -73,7 +73,8 @@
                                             {
                                                 <li class="team-member team-member-sm">
                                                     <img class="rounded-circle"
-                                                         src="@Img(c.ChefImage)"
+                                                         src="@Img(c.ImageFile)"
+
                                                          alt="@c.ChefName"
                                                          title="@c.ChefName"
                                                          style="width:32px;height:32px;object-fit:cover;" />

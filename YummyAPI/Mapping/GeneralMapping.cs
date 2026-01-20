@@ -116,7 +116,7 @@ namespace YummyAPI.Mapping
 
             CreateMap<GroupOrganizationChef, ResultGroupOrganizationChefDto>()
                 .ForMember(d => d.ChefName, o => o.MapFrom(s => s.Chef.ChefName))
-                .ForMember(d => d.ChefImage, o => o.MapFrom(s => s.Chef.ImageFile))
+                .ForMember(d => d.ImageFile, o => o.MapFrom(s => s.Chef.ImageFile))
                 .ForMember(d => d.OrganizationName, o => o.MapFrom(s => s.GroupOrganization.Organization.OrganizationName))
                 .ForMember(d => d.Date, o => o.MapFrom(s => s.GroupOrganization.Date))
                 .ForMember(d => d.Time, o => o.MapFrom(s => s.GroupOrganization.Time))
