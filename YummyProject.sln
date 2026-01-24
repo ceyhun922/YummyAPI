@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YummyAPI", "YummyAPI\YummyAPI.csproj", "{BBEC676B-7F5D-4B25-9073-723937FF3B9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YummyUI", "YummyUI\YummyUI.csproj", "{5E7C44C0-BF4F-4C0A-B3ED-6A20FB9F8213}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{BBEC676B-7F5D-4B25-9073-723937FF3B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBEC676B-7F5D-4B25-9073-723937FF3B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBEC676B-7F5D-4B25-9073-723937FF3B9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E7C44C0-BF4F-4C0A-B3ED-6A20FB9F8213}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E7C44C0-BF4F-4C0A-B3ED-6A20FB9F8213}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E7C44C0-BF4F-4C0A-B3ED-6A20FB9F8213}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E7C44C0-BF4F-4C0A-B3ED-6A20FB9F8213}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

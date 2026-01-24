@@ -20,7 +20,7 @@ namespace YummyAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateCategory(CreateCategoryDto createCategoryDto)
+        public IActionResult CreateCategory([FromBody] CreateCategoryDto createCategoryDto)
         {
             var values = _mapper.Map<Category>(createCategoryDto);
             _context.Categories?.Add(values);

@@ -5,7 +5,6 @@
     ViewData["Title"] = "Yeni Müşteri Görüşü";
 }
 
-
 <div class="admin-create-page">
 
     <!-- Header -->
@@ -16,14 +15,14 @@
             </div>
             <div>
                 <h1 class="hero-title">Yeni Müşteri Görüşü</h1>
-                <p class="hero-subtitle">Başlıq, mesaj, şəkil linki və status əlavə edin.</p>
+                <p class="hero-subtitle">Başlıq, mesaj, şəkil və status əlavə edin.</p>
             </div>
         </div>
 
         <div class="hero-right">
-            <span class="status-pill @(Model?.TestimonialStatus == true ? "is-active" : "is-passive")">
+            <span class="status-pill @(Model?.TestimonialStatus == true ? "is-active" : "is-passive")" id="heroStatusPill">
                 <span class="dot"></span>
-                @(Model?.TestimonialStatus == true ? "Aktiv" : "Pasif")
+                <span id="heroStatusText">@(Model?.TestimonialStatus == true ? "Aktiv" : "Pasif")</span>
             </span>
         </div>
     </div>
@@ -36,7 +35,8 @@
             </div>
 
             <div class="glass-card-body">
-                @using (Html.BeginForm("CreateTestimonial", "Testimonial", FormMethod.Post, new { @class = "glass-form", autocomplete = "off", enctype="multipart/form-data" }))
+                @using (Html.BeginForm("CreateTestimonial", "Testimonial", FormMethod.Post,
+                    new { @class = "glass-form", autocomplete = "off", enctype = "multipart/form-data" }))
                 {
                     <div class="form-row">
                         <label class="form-label">Müştəri adı</label>
@@ -54,11 +54,26 @@
                         @Html.TextAreaFor(x => x.TestimonialMessage, new { @class = "glass-textarea", rows = "5", placeholder = "Müştərinin rəyi burada yazılacaq...", id = "inpMsg" })
                     </div>
 
+                    @* ✅ URL opsionaldır (DTO-da TestimonialImage varsa saxla) *@
                     <div class="form-row">
-                        <label class="form-label">Şəkil URL</label>
-                        <input type="file" name="file" class = "glass-input" accept=".jpg,.jpeg,.png,.webp">
-                            
-                      <small class="form-hint">Şəkil linki əlavə etdikdə sağdakı önizləmədə görünəcək.</small>
+                        <label class="form-label">Şəkil URL (opsional)</label>
+                        @Html.TextBoxFor(x => x.TestimonialImageUrl, new {
+                            @class = "glass-input",
+                            placeholder = "Örn: /Yummy/assets/img/testimonials/t-1.jpg",
+                            id = "inpImgUrl",
+                            autocomplete = "off"
+                        })
+                        <small class="form-hint">URL yazsan sağdakı önizləmədə görünəcək.</small>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="form-label">Şəkil Faylı</label>
+                        <input type="file"
+                               name="file"
+                               id="inpImgFile"
+                               class="glass-input"
+                               accept=".jpg,.jpeg,.png,.webp" />
+                        <small class="form-hint">Fayl seçsən canlı önizləmə dərhal yenilənəcək.</small>
                     </div>
 
                     <div class="form-row form-row-inline">
@@ -106,13 +121,13 @@
                             <div class="preview-subtitle" id="prevTitle">Alt başlıq burada görünəcək</div>
                         </div>
 
-                        <span class="status-pill small" id="prevStatus">
+                        <span class="status-pill small is-passive" id="prevStatus">
                             <span class="dot"></span> Pasif
                         </span>
                     </div>
 
                     <div class="preview-image" id="prevImageWrap">
-                        <div class="preview-image-placeholder">
+                        <div class="preview-image-placeholder" id="prevImgPh">
                             Resim önizlemesi burada görünecek.
                         </div>
                         <img id="prevImage" src="" alt="preview" style="display:none;" />
@@ -130,21 +145,29 @@
 @section Scripts {
     <script>
         (function () {
-            const elName = document.getElementById("inpName");
-            const elTitle = document.getElementById("inpTitle");
-            const elMsg = document.getElementById("inpMsg");
-            const elImg = document.getElementById("inpImg");
-            const elStatus = document.getElementById("inpStatus");
+            const $ = (id) => document.getElementById(id);
 
-            const prevName = document.getElementById("prevName");
-            const prevTitle = document.getElementById("prevTitle");
-            const prevMsg = document.getElementById("prevMsg");
+            const elName   = $("inpName");
+            const elTitle  = $("inpTitle");
+            const elMsg    = $("inpMsg");
+            const elImgUrl = $("inpImgUrl");   // URL input (opsional)
+            const elImgFile= $("inpImgFile");  // file input
+            const elStatus = $("inpStatus");
 
-            const prevImage = document.getElementById("prevImage");
-            const prevImageWrap = document.getElementById("prevImageWrap");
-            const prevStatus = document.getElementById("prevStatus");
+            const prevName   = $("prevName");
+            const prevTitle  = $("prevTitle");
+            const prevMsg    = $("prevMsg");
+            const prevImage  = $("prevImage");
+            const prevImageWrap = $("prevImageWrap");
+            const prevImgPh  = $("prevImgPh");
+            const prevStatus = $("prevStatus");
 
-            const btnClear = document.getElementById("btnClear");
+            const heroPill   = $("heroStatusPill");
+            const heroText   = $("heroStatusText");
+
+            const btnClear = $("btnClear");
+
+            let lastObjectUrl = null; // file preview üçün cleanup
 
             function safeText(v, fallback) {
                 const t = (v ?? "").trim();
@@ -153,57 +176,99 @@
 
             function setStatus() {
                 const isOn = !!elStatus.checked;
+
+                // preview pill
                 prevStatus.innerHTML = `<span class="dot"></span> ${isOn ? "Aktiv" : "Pasif"}`;
                 prevStatus.classList.toggle("is-active", isOn);
                 prevStatus.classList.toggle("is-passive", !isOn);
+
+                // hero pill
+                heroPill.classList.toggle("is-active", isOn);
+                heroPill.classList.toggle("is-passive", !isOn);
+                heroText.textContent = isOn ? "Aktiv" : "Pasif";
             }
 
-            function setImage() {
-                const url = (elImg.value || "").trim();
-                if (!url) {
-                    prevImage.style.display = "none";
-                    prevImage.src = "";
-                    prevImageWrap.querySelector(".preview-image-placeholder").style.display = "flex";
-                    return;
-                }
-                prevImage.src = url;
+            function showPlaceholder() {
+                prevImage.style.display = "none";
+                prevImage.src = "";
+                prevImgPh.style.display = "flex";
+            }
+
+            function setImageFromUrl(url) {
+                const u = (url || "").trim();
+                if (!u) { showPlaceholder(); return; }
+
                 prevImage.onload = () => {
                     prevImage.style.display = "block";
-                    prevImageWrap.querySelector(".preview-image-placeholder").style.display = "none";
+                    prevImgPh.style.display = "none";
                 };
-                prevImage.onerror = () => {
-                    prevImage.style.display = "none";
-                    prevImageWrap.querySelector(".preview-image-placeholder").style.display = "flex";
-                };
+                prevImage.onerror = () => showPlaceholder();
+
+                prevImage.src = u;
             }
 
-            function sync() {
-                prevName.textContent = safeText(elName.value, "Başlıq burada görünəcək");
+            function setImageFromFile(file) {
+                if (!file) { showPlaceholder(); return; }
+
+                if (lastObjectUrl) URL.revokeObjectURL(lastObjectUrl);
+                lastObjectUrl = URL.createObjectURL(file);
+
+                prevImage.onload = () => {
+                    prevImage.style.display = "block";
+                    prevImgPh.style.display = "none";
+                };
+                prevImage.onerror = () => showPlaceholder();
+
+                prevImage.src = lastObjectUrl;
+            }
+
+            function syncText() {
+                prevName.textContent  = safeText(elName.value,  "Başlıq burada görünəcək");
                 prevTitle.textContent = safeText(elTitle.value, "Alt başlıq burada görünəcək");
-                prevMsg.textContent = safeText(elMsg.value, "Açıklama burada görünecek.");
-                setImage();
+                prevMsg.textContent   = safeText(elMsg.value,   "Açıklama burada görünecek.");
+            }
+
+            function syncImage() {
+                // 1) əgər file seçilibsə -> file üstünlük
+                const f = elImgFile.files && elImgFile.files[0];
+                if (f) { setImageFromFile(f); return; }
+
+                // 2) yoxdursa URL-dən
+                setImageFromUrl(elImgUrl ? elImgUrl.value : "");
+            }
+
+            function syncAll() {
+                syncText();
+                syncImage();
                 setStatus();
             }
 
+            // events
             ["input", "change", "keyup"].forEach(evt => {
-                elName.addEventListener(evt, sync);
-                elTitle.addEventListener(evt, sync);
-                elMsg.addEventListener(evt, sync);
-                elImg.addEventListener(evt, sync);
-                elStatus.addEventListener(evt, sync);
+                elName.addEventListener(evt, syncAll);
+                elTitle.addEventListener(evt, syncAll);
+                elMsg.addEventListener(evt, syncAll);
+                if (elImgUrl) elImgUrl.addEventListener(evt, syncAll);
+                elStatus.addEventListener(evt, syncAll);
             });
+
+            elImgFile.addEventListener("change", syncAll);
 
             btnClear.addEventListener("click", function () {
                 elName.value = "";
                 elTitle.value = "";
                 elMsg.value = "";
-                elImg.value = "";
+                if (elImgUrl) elImgUrl.value = "";
+                elImgFile.value = "";
                 elStatus.checked = false;
-                sync();
+
+                if (lastObjectUrl) { URL.revokeObjectURL(lastObjectUrl); lastObjectUrl = null; }
+
+                syncAll();
             });
 
             // initial
-            sync();
+            syncAll();
         })();
     </script>
 }

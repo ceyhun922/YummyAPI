@@ -276,6 +276,12 @@
         <i data-feather="calendar"></i><span>Organisayonlar</span>
       </a>
     </li>
+    <li class="dropdown">
+      <a asp-action="GroupOrganizationList" asp-controller="GroupOrganization"
+         class="nav-link @IsActive("GroupOrganization","GroupOrganizationList")">
+        <i data-feather="calendar"></i><span>Grup Organisayonları</span>
+      </a>
+    </li>
 
     <div class="menu-section">İletişim</div>
     <li class="dropdown">

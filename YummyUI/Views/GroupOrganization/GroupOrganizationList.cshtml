@@ -1,0 +1,796 @@
+@using YummyUI.DTOs.GroupOrganizationChefDTO
+@model List<ResultGroupOrganizationChefDto>
+
+@{
+    Layout = "_AdminLayout";
+    var apiBase = "http://localhost:5289";
+
+    var rows = Model ?? new List<ResultGroupOrganizationChefDto>();
+
+    var grouped = rows
+        .GroupBy(x => x.GroupOrganizationId)
+        .Select(g => new
+        {
+            GroupOrganizationId = g.Key,
+            Header = g.First(),
+            Priority = g.First().GroupPriority,
+            Chefs = g.OrderBy(x => x.ChefName).ToList()
+        })
+        .OrderByDescending(x => x.Priority)
+        .ToList();
+
+    int cntAll = grouped.Count;
+    int cntLow = grouped.Count(x => x.Priority == 1);
+    int cntAvg = grouped.Count(x => x.Priority == 2);
+    int cntHigh = grouped.Count(x => x.Priority == 3);
+
+    string PName(int p) => p == 1 ? "Low" : p == 2 ? "Average" : "High";
+    string FormatDate(DateOnly d) => d.ToString("dd.MM.yyyy");
+    string FormatTime(TimeOnly t) => t.ToString("HH:mm");
+}
+
+@section Styles {
+<style>
+:root{
+  --bg0:#0b1026; --bg1:#0f1636; --bg2:#1b1347;
+  --panel: rgba(14,20,48,.55); --panelSoft: rgba(14,20,48,.38);
+  --stroke: rgba(255,255,255,.10); --strokeStrong: rgba(255,255,255,.18);
+  --text: rgba(255,255,255,.94); --muted: rgba(255,255,255,.65); --muted2: rgba(255,255,255,.45);
+  --brand1:#6f6ad8; --brand2:#8b5cf6;
+  --warn1:#f6c34a; --warn2:#f2a51a;
+  --danger1:#ef4444; --danger2:#dc2626;
+}
+*{ box-sizing:border-box; }
+html, body{ background: var(--bg0); }
+
+.ai-go{
+  min-height:100%;
+  padding: 1.8rem 2rem 2.6rem;
+  position:relative; overflow:hidden;
+  background:
+    radial-gradient(1200px 600px at 20% 25%, rgba(111,106,216,.30), transparent 60%),
+    radial-gradient(900px 500px at 80% 70%, rgba(56,189,248,.12), transparent 60%),
+    linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 38%, var(--bg0) 100%);
+}
+.ai-go > .glass{ max-width: 1400px; margin: 0 auto; }
+
+.glass{
+  background: var(--panel);
+  border-radius: 28px;
+  border: 1px solid var(--stroke);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 40px 90px rgba(0,0,0,.45);
+  overflow:hidden;
+}
+
+/* KPI */
+.kpis{
+  display:grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .95rem;
+  padding: 1.15rem 1.25rem 0;
+}
+.kpi{
+  background: var(--panelSoft);
+  border: 1px solid var(--stroke);
+  border-radius: 18px;
+  padding: .95rem 1.05rem;
+  display:flex; align-items:center; justify-content:space-between;
+  cursor:pointer; user-select:none;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.kpi:hover{ transform: translateY(-1px); border-color: var(--strokeStrong); }
+.kpi.active{
+  background: linear-gradient(135deg, rgba(111,106,216,.22), rgba(139,92,246,.16));
+  border-color: var(--strokeStrong);
+  box-shadow: 0 18px 55px rgba(111,106,216,.25);
+}
+.kpi .label{ color: var(--muted); font-weight: 850; }
+.kpi .val{ color: var(--text); font-weight: 950; font-size: 1.35rem; }
+
+/* toolbar */
+.toolbar{
+  margin-top: 1rem;
+  padding: 1.05rem 1.25rem;
+  border-top: 1px solid rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(180deg, rgba(10,14,40,.35), rgba(10,14,40,.12));
+}
+.row{ display:flex; gap:.8rem; align-items:center; flex-wrap:wrap; }
+.search{
+  flex:1; min-width: 320px;
+  display:flex; align-items:center; gap:.65rem;
+  padding: .95rem 1.05rem;
+  border-radius: 22px;
+  background: rgba(10,14,40,.45);
+  border: 1px solid var(--stroke);
+}
+.search .hint{ color: var(--muted2); font-weight: 900; }
+.search input{
+  width:100%; border:none; outline:none; background: transparent;
+  color: var(--text); font-weight: 850;
+}
+.tabs{
+  display:inline-flex; align-items:center; gap: .35rem;
+  background: rgba(10,14,40,.45);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  padding: .28rem;
+}
+.tab{
+  border:none; background: transparent;
+  color: var(--muted);
+  font-weight: 900; font-size: .86rem;
+  padding: .6rem .95rem; border-radius: 999px;
+  cursor:pointer;
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+  display:inline-flex; align-items:center; gap:.5rem;
+}
+.tab:hover{ transform: translateY(-1px); }
+.tab.active{
+  background: linear-gradient(135deg, var(--brand1), var(--brand2));
+  color:#fff;
+  box-shadow: 0 16px 45px rgba(111,106,216,.35);
+}
+.count-pill{
+  padding: .18rem .55rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.14);
+  font-weight: 950;
+  font-size: .75rem;
+}
+
+/* list */
+.listWrap{ padding: 1.1rem 1.25rem 1.35rem; }
+.muted-empty{ padding: 1.8rem 1.1rem; color: var(--muted); font-weight: 850; }
+
+/* row card */
+.rowCard{
+  display:grid;
+  grid-template-columns: 1.6fr 1.05fr 1fr .85fr 1.1fr;
+  gap: 1rem;
+  align-items:center;
+  padding: 1.05rem 1.05rem;
+  margin-bottom: .8rem;
+  background: rgba(255,255,255,.035);
+  border: 1px solid var(--stroke);
+  border-radius: 24px;
+  box-shadow: 0 18px 55px rgba(0,0,0,.25);
+}
+.orgBlock{ min-width:0; }
+.orgName{
+  font-weight: 950; color: #fff; font-size: 1.05rem;
+  white-space: nowrap; overflow:hidden; text-overflow: ellipsis;
+}
+.orgMeta{
+  margin-top: .35rem;
+  display:flex; flex-wrap:wrap; gap:.55rem;
+  color: var(--muted);
+  font-weight: 850; font-size: .84rem;
+}
+.metaPill{
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.10);
+  padding: .28rem .55rem;
+  border-radius: 999px;
+}
+
+/* chef stack */
+.chefStack{ display:inline-flex; align-items:center; padding-left: 6px; isolation:isolate; }
+.chefAv, .chefMore{
+  width: 44px; height: 44px;
+  border-radius: 999px;
+  overflow:hidden;
+  display:grid; place-items:center;
+  margin-left: -12px;
+  position: relative;
+  border: 2px solid rgba(255,255,255,.85);
+  box-shadow: 0 12px 30px rgba(0,0,0,.20);
+  background: rgba(15,23,42,.55);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.chefAv:first-child{ margin-left:0; }
+.chefAv img{ width:100%; height:100%; object-fit: cover; display:block; }
+.chefAv.fallback{
+  font-weight: 950; color: #111827;
+  background: linear-gradient(135deg, var(--warn1), var(--warn2));
+}
+.chefMore{
+  background: linear-gradient(135deg, var(--brand1), var(--brand2));
+  color:#fff; font-weight: 950;
+}
+.chefAv:hover{
+  transform: translateY(-6px) scale(1.12);
+  z-index: 10;
+  box-shadow: 0 26px 70px rgba(0,0,0,.55);
+}
+.chefAv::after{
+  content: attr(data-name);
+  position:absolute;
+  bottom:-44px; left:50%;
+  transform: translateX(-50%);
+  background: rgba(10,14,40,.95);
+  color:#fff;
+  padding: .38rem .6rem;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: .8rem;
+  white-space: nowrap;
+  border: 1px solid rgba(255,255,255,.10);
+  box-shadow: 0 18px 55px rgba(0,0,0,.55);
+  opacity:0; pointer-events:none;
+  transition: opacity .14s ease;
+}
+.chefAv:hover::after{ opacity:1; }
+
+/* rate */
+.rateWrap{ display:flex; flex-direction:column; gap:.35rem; min-width: 160px; }
+.rateTop{ display:flex; align-items:center; justify-content:space-between; }
+.rateTop span{ color: rgba(255,255,255,.86); font-weight: 950; }
+.bar{
+  height: 10px; border-radius: 999px; overflow:hidden;
+  background: rgba(255,255,255,.10);
+  border: 1px solid var(--stroke);
+}
+.bar > span{
+  display:block; height:100%;
+  background: linear-gradient(135deg, var(--brand1), var(--brand2));
+}
+
+/* prio */
+.prio{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width: 96px;
+  padding: .44rem .9rem;
+  border-radius: 999px;
+  font-weight: 950;
+  border: 1px solid rgba(255,255,255,.14);
+}
+.prio.low{ background: rgba(255,255,255,.08); color: var(--text); }
+.prio.avg{ background: linear-gradient(135deg, var(--warn1), var(--warn2)); color:#1a1a1a; border-color: transparent; }
+.prio.high{ background: linear-gradient(135deg, var(--danger1), var(--danger2)); color:#fff; border-color: transparent; }
+
+/* actions */
+.actions{ display:flex; justify-content:flex-end; gap:.55rem; flex-wrap:wrap; }
+.btnMini{
+  border:none; cursor:pointer; text-decoration:none;
+  display:inline-flex; align-items:center; gap:.45rem;
+  padding: .66rem .95rem;
+  border-radius: 18px;
+  font-weight: 950;
+  background: rgba(255,255,255,.06);
+  color:#fff;
+  border: 1px solid rgba(255,255,255,.12);
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btnMini:hover{ transform: translateY(-1px); box-shadow: 0 16px 40px rgba(0,0,0,.25); }
+.btnMini.primary{
+  background: linear-gradient(135deg, rgba(111,106,216,.35), rgba(139,92,246,.35));
+  border-color: var(--strokeStrong);
+}
+.btnMini.danger{
+  background: linear-gradient(135deg, var(--danger1), var(--danger2));
+  border:none;
+}
+
+/* =========================
+   MODAL (DETAIL QUICKVIEW)
+   ========================= */
+.goModal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index: 9999;
+  padding: 1.2rem;
+}
+.goModal.is-open{ display:flex; }
+
+.goModal__backdrop{
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(6px);
+}
+
+.goModal__panel{
+  position:relative;
+  width:min(920px, 100%);
+  border-radius: 26px;
+  background: rgba(14,20,48,.72);
+  border: 1px solid rgba(255,255,255,.14);
+  box-shadow: 0 40px 110px rgba(0,0,0,.60);
+  overflow:hidden;
+}
+
+.goModal__top{
+  padding: 1.05rem 1.2rem;
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(180deg, rgba(10,14,40,.55), rgba(10,14,40,.22));
+}
+
+.goModal__title{
+  margin:0;
+  font-size: 1.25rem;
+  font-weight: 950;
+  color:#fff;
+}
+.goModal__sub{
+  margin:.25rem 0 0;
+  color: rgba(255,255,255,.68);
+  font-weight: 800;
+  font-size: .92rem;
+}
+.goModal__close{
+  border:none;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  color:#fff;
+  font-weight: 950;
+  border-radius: 14px;
+  padding: .55rem .75rem;
+  cursor:pointer;
+}
+
+.goModal__body{
+  padding: 1.1rem 1.2rem 1.25rem;
+  display:grid;
+  grid-template-columns: 1.25fr .95fr;
+  gap: 1rem;
+}
+
+.goModal__card{
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 20px;
+  padding: 1rem;
+}
+
+.goGrid{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .7rem;
+}
+.goField{
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 16px;
+  padding: .75rem .8rem;
+}
+.goField .k{
+  display:block;
+  color: rgba(255,255,255,.62);
+  font-weight: 850;
+  font-size: .78rem;
+}
+.goField .v{
+  display:block;
+  margin-top: .15rem;
+  color: rgba(255,255,255,.92);
+  font-weight: 950;
+}
+
+.goModal__prio{ margin-top:.7rem; }
+
+.goModal__footer{
+  padding: .95rem 1.2rem 1.1rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap: .6rem;
+  background: rgba(10,14,40,.20);
+}
+
+.goBtn{
+  border:none;
+  cursor:pointer;
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.45rem;
+  padding: .72rem 1rem;
+  border-radius: 16px;
+  font-weight: 950;
+  color:#fff;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+}
+.goBtn.primary{
+  background: linear-gradient(135deg, rgba(111,106,216,.38), rgba(139,92,246,.38));
+  border-color: rgba(255,255,255,.18);
+}
+.goBtn.warn{
+  background: linear-gradient(135deg, var(--warn1), var(--warn2));
+  color:#111827;
+  border-color: transparent;
+}
+
+@@media (max-width: 1100px){
+  .rowCard{ grid-template-columns: 1.6fr 1.05fr 1fr .85fr; }
+  .actions{ grid-column: 1 / -1; justify-content:flex-start; }
+}
+@@media (max-width: 760px){
+  .ai-go{ padding: 1.2rem; }
+  .kpis{ grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 1rem 1rem 0; }
+  .toolbar{ padding: 1rem; }
+  .listWrap{ padding: 1rem; }
+  .rowCard{ grid-template-columns: 1fr; }
+  .actions{ justify-content:flex-start; }
+  .search{ min-width: 220px; }
+
+  .goModal__body{ grid-template-columns: 1fr; }
+}
+</style>
+}
+
+<div class="ai-go">
+  <div class="glass">
+
+    <!-- KPI -->
+    <div class="kpis" id="kpiRow">
+      <div class="kpi active" data-prio="all"><div><div class="label">Hepsi</div></div><div class="val">@cntAll</div></div>
+      <div class="kpi" data-prio="1"><div><div class="label">Low</div></div><div class="val">@cntLow</div></div>
+      <div class="kpi" data-prio="2"><div><div class="label">Average</div></div><div class="val">@cntAvg</div></div>
+      <div class="kpi" data-prio="3"><div><div class="label">High</div></div><div class="val">@cntHigh</div></div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="row">
+        <div class="search">
+          <span class="hint">🔎</span>
+          <input id="q" type="text" placeholder="Organization, chef, tarih, saat..." autocomplete="off" />
+        </div>
+
+        <div class="tabs" id="prioTabs">
+          <button type="button" class="tab active" data-prio="all">Hepsi <span class="count-pill">@cntAll</span></button>
+          <button type="button" class="tab" data-prio="1">Low <span class="count-pill">@cntLow</span></button>
+          <button type="button" class="tab" data-prio="2">Average <span class="count-pill">@cntAvg</span></button>
+          <button type="button" class="tab" data-prio="3">High <span class="count-pill">@cntHigh</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="listWrap">
+      @if (!grouped.Any())
+      {
+        <div class="muted-empty">Boş.</div>
+      }
+      else
+      {
+        <div id="list">
+          @foreach (var g in grouped)
+          {
+            var h = g.Header;
+
+            var prioName  = PName(g.Priority);
+            var prioClass = g.Priority == 1 ? "low" : g.Priority == 2 ? "avg" : "high";
+
+            var chefText = string.Join(", ", (g.Chefs ?? new List<ResultGroupOrganizationChefDto>())
+                .Select(x => (x?.ChefName ?? "").Trim()).Where(x => x != ""));
+
+            // orgTitle: name boşsa fallback (SENDE organizationId yoksa bunu böyle bırak)
+            var orgNameRaw = (h.OrganizationName ?? "").Trim();
+            var orgTitle = string.IsNullOrWhiteSpace(orgNameRaw) ? $"Org{h.GroupOrganizationId}" : orgNameRaw;
+
+            var searchText = $"{orgTitle} {h.GroupOrganizationId} {prioName} {h.ParticipationRate} {h.Date} {h.Time} {chefText}"
+              .ToLowerInvariant();
+
+            var chefs = g.Chefs ?? new List<ResultGroupOrganizationChefDto>();
+            var top3  = chefs.Take(3).ToList();
+            var extra = Math.Max(0, chefs.Count - 3);
+
+            var rate = h.ParticipationRate;
+            if (rate < 0) rate = 0;
+            if (rate > 100) rate = 100;
+
+            <div class="rowCard item" data-prio="@g.Priority" data-search="@searchText">
+              <!-- Org -->
+              <div class="orgBlock">
+                <div class="orgName">@orgTitle</div>
+                <div class="orgMeta">
+                  <span class="metaPill">ID: @h.GroupOrganizationId</span>
+                  <span class="metaPill">@FormatDate(h.Date)</span>
+                  <span class="metaPill">@FormatTime(h.Time)</span>
+                </div>
+              </div>
+
+              <!-- Chefs -->
+              <div>
+                <div class="chefStack">
+                  @foreach (var c in top3)
+                  {
+                    var chefName = (c?.ChefName ?? "").Trim();
+                    var initial  = string.IsNullOrWhiteSpace(chefName) ? "?" : chefName.Substring(0, 1).ToUpperInvariant();
+
+                    var img = (c?.ImageFile ?? "").Trim();
+                    var imgSrc =
+                        string.IsNullOrWhiteSpace(img) ? "" :
+                        img.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? img :
+                        apiBase.TrimEnd('/') + "/" + img.TrimStart('/');
+
+                    if (!string.IsNullOrWhiteSpace(imgSrc))
+                    {
+                      <div class="chefAv" data-name="@chefName">
+                        <img src="@imgSrc" alt="@chefName" />
+                      </div>
+                    }
+                    else
+                    {
+                      <div class="chefAv fallback" data-name="@chefName">@initial</div>
+                    }
+                  }
+
+                  @if (extra > 0)
+                  {
+                    <div class="chefMore">+@extra</div>
+                  }
+                </div>
+              </div>
+
+              <!-- Rate -->
+              <div class="rateWrap">
+                <div class="rateTop"><span>@rate%</span></div>
+                <div class="bar"><span style="width:@rate%"></span></div>
+              </div>
+
+              <!-- Priority -->
+              <div>
+                <span class="prio @prioClass">@prioName</span>
+              </div>
+
+              <!-- Actions -->
+              <div class="actions">
+                <!-- DETAY: modal -->
+                <button type="button"
+                        class="btnMini primary js-detail"
+                        data-id="@h.GroupOrganizationId"
+                        data-org="@orgTitle"
+                        data-date="@FormatDate(h.Date)"
+                        data-time="@FormatTime(h.Time)"
+                        data-rate="@rate"
+                        data-prio="@prioName"
+                        data-prioclass="@prioClass"
+                        data-chefs="@chefText">
+                  Detay
+                </button>
+
+                <a class="btnMini"
+                   asp-controller="GroupOrganization"
+                   asp-action="Update"
+                   asp-route-id="@h.GroupOrganizationId">Düzenle</a>
+
+                <button type="button"
+                        class="btnMini danger js-delete"
+                        data-id="@h.GroupOrganizationId"
+                        data-name="@orgTitle">Sil</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+</div>
+
+<!-- =========================
+     MODAL HTML (tek kez)
+     ========================= -->
+<div class="goModal" id="goModal" aria-hidden="true">
+  <div class="goModal__backdrop" data-close="1"></div>
+
+  <div class="goModal__panel" role="dialog" aria-modal="true" aria-labelledby="goModalTitle">
+    <div class="goModal__top">
+      <div>
+        <h3 class="goModal__title" id="goModalTitle">Detay</h3>
+        <p class="goModal__sub" id="goModalSub">Özet</p>
+      </div>
+      <button type="button" class="goModal__close" id="goModalClose">Kapat</button>
+    </div>
+
+    <div class="goModal__body">
+      <div class="goModal__card">
+        <div class="goGrid">
+          <div class="goField"><span class="k">Grup ID</span><span class="v" id="m_gid">-</span></div>
+          <div class="goField"><span class="k">Organizasyon</span><span class="v" id="m_org">-</span></div>
+          <div class="goField"><span class="k">Tarih</span><span class="v" id="m_date">-</span></div>
+          <div class="goField"><span class="k">Saat</span><span class="v" id="m_time">-</span></div>
+          <div class="goField"><span class="k">Katılım</span><span class="v" id="m_rate">-</span></div>
+          <div class="goField"><span class="k">Şefler</span><span class="v" id="m_chefs">-</span></div>
+        </div>
+
+        <div class="goModal__prio" style="margin-top:.9rem;">
+          <span class="k" style="display:block;color:rgba(255,255,255,.62);font-weight:850;font-size:.78rem;margin-bottom:.35rem;">Öncelik</span>
+          <span class="prio" id="m_prioChip">-</span>
+        </div>
+      </div>
+
+      <div class="goModal__card">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:.7rem;">
+          <div style="color:rgba(255,255,255,.85); font-weight:950;">Katılım Grafiği</div>
+          <div style="color:rgba(255,255,255,.85); font-weight:950;" id="m_rateTop">0%</div>
+        </div>
+        <div class="bar" style="margin-top:.7rem;">
+          <span id="m_rateBar" style="width:0%"></span>
+        </div>
+
+        <div style="margin-top:1rem; color:rgba(255,255,255,.65); font-weight:850;">
+          Bu modal sadece hızlı özet gösterir. Tam sayfaya gitmek için “Tam Detay”a bas.
+        </div>
+      </div>
+    </div>
+
+    <div class="goModal__footer">
+      <a class="goBtn" id="m_update" href="#">Düzenle</a>
+      <a class="goBtn warn" id="m_detail" href="#">Tam Detay</a>
+    </div>
+  </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+(() => {
+  const q = document.getElementById("q");
+  const list = document.getElementById("list");
+  const tabs = document.getElementById("prioTabs");
+  const kpiRow = document.getElementById("kpiRow");
+
+  let activePrio = "all";
+
+  function applyFilters() {
+    if (!list) return;
+    const needle = (q?.value || "").trim().toLowerCase();
+    const items = Array.from(list.querySelectorAll(".item"));
+
+    items.forEach(it => {
+      const prio = it.getAttribute("data-prio");
+      const hay = (it.getAttribute("data-search") || "");
+      const okPrio = (activePrio === "all") || (prio === activePrio);
+      const okSearch = !needle || hay.includes(needle);
+      it.style.display = (okPrio && okSearch) ? "" : "none";
+    });
+  }
+
+  function setActivePrio(prio){
+    activePrio = prio || "all";
+    Array.from(tabs?.querySelectorAll(".tab") || []).forEach(x => {
+      x.classList.toggle("active", (x.getAttribute("data-prio") || "all") === activePrio);
+    });
+    Array.from(kpiRow?.querySelectorAll(".kpi") || []).forEach(x => {
+      x.classList.toggle("active", (x.getAttribute("data-prio") || "all") === activePrio);
+    });
+    applyFilters();
+  }
+
+  q?.addEventListener("input", applyFilters);
+
+  tabs?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".tab");
+    if (!btn) return;
+    setActivePrio(btn.getAttribute("data-prio") || "all");
+  });
+
+  kpiRow?.addEventListener("click", (e) => {
+    const box = e.target.closest(".kpi");
+    if (!box) return;
+    setActivePrio(box.getAttribute("data-prio") || "all");
+  });
+
+  // ===== MODAL =====
+  const modal = document.getElementById("goModal");
+  const closeBtn = document.getElementById("goModalClose");
+
+  const m_gid = document.getElementById("m_gid");
+  const m_org = document.getElementById("m_org");
+  const m_date = document.getElementById("m_date");
+  const m_time = document.getElementById("m_time");
+  const m_rate = document.getElementById("m_rate");
+  const m_chefs = document.getElementById("m_chefs");
+  const m_prioChip = document.getElementById("m_prioChip");
+
+  const m_rateTop = document.getElementById("m_rateTop");
+  const m_rateBar = document.getElementById("m_rateBar");
+
+  const m_detail = document.getElementById("m_detail");
+  const m_update = document.getElementById("m_update");
+
+  function openModal(){
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+  }
+  function closeModal(){
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+  }
+
+  closeBtn?.addEventListener("click", closeModal);
+  modal?.addEventListener("click", (e) => {
+    if (e.target?.dataset?.close) closeModal();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
+  });
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".js-detail");
+    if (!btn) return;
+
+    const id = btn.getAttribute("data-id") || "-";
+    const org = btn.getAttribute("data-org") || "-";
+    const date = btn.getAttribute("data-date") || "-";
+    const time = btn.getAttribute("data-time") || "-";
+    const rate = btn.getAttribute("data-rate") || "0";
+    const prio = btn.getAttribute("data-prio") || "-";
+    const prioClass = btn.getAttribute("data-prioclass") || "low";
+    const chefs = btn.getAttribute("data-chefs") || "-";
+
+    m_gid.textContent = id;
+    m_org.textContent = org;
+    m_date.textContent = date;
+    m_time.textContent = time;
+    m_rate.textContent = `${rate}%`;
+    m_chefs.textContent = chefs || "-";
+
+    // prio chip class reset
+    m_prioChip.className = "prio";
+    m_prioChip.classList.add(prioClass);
+    m_prioChip.textContent = prio;
+
+    // bar
+    const n = Math.max(0, Math.min(100, parseInt(rate, 10) || 0));
+    m_rateTop.textContent = `${n}%`;
+    m_rateBar.style.width = `${n}%`;
+
+    // links
+    m_detail.href = `/GroupOrganization/Detail/${encodeURIComponent(id)}`;
+    m_update.href = `/GroupOrganization/Update/${encodeURIComponent(id)}`;
+
+    openModal();
+  });
+
+  // ===== Delete confirm (mevcut) =====
+  document.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".js-delete");
+    if (!btn) return;
+
+    const id = btn.getAttribute("data-id");
+    const name = btn.getAttribute("data-name") || "";
+    if (!id) return;
+
+    const deleteUrl = `/GroupOrganization/Delete/${encodeURIComponent(id)}`;
+
+    if (typeof Swal === "undefined") {
+      if (confirm(`Emin misin?\n${name} silinecek.`)) window.location.href = deleteUrl;
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: "Emin misin?",
+      text: `${name} silinecek!`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Evet, sil",
+      cancelButtonText: "Vazgeç"
+    });
+
+    if (result.isConfirmed) window.location.href = deleteUrl;
+  });
+
+  setActivePrio("all");
+})();
+</script>
+}
