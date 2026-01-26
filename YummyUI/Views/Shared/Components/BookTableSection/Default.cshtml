@@ -1,6 +1,10 @@
+<<<<<<< HEAD
 @using YummyUI.DTOs.RezervationDTOs
 @model CreateRezervationDto
   
+=======
+
+>>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
     <h2>Book A Table</h2>
@@ -14,6 +18,7 @@
       <div class="col-lg-4 reservation-img" style="background-image: url(assets/img/reservation.jpg);"></div>
 
       <div class="col-lg-8 d-flex align-items-center reservation-form-bg" data-aos="fade-up" data-aos-delay="200">
+<<<<<<< HEAD
         @using(Html.BeginForm("CreateRezervation","Rezervation",FormMethod.Post,new {@class="php-email-form",role="form"}))
         {
         <div class="row gy-4">
@@ -34,6 +39,27 @@
             </div>
             <div class="col-lg-4 col-md-6">
               <input type="number" class="form-control" name="people" asp-action="PersonCount" id="people" placeholder="# of people" >
+=======
+        <form action="forms/book-a-table.php" method="post" role="form" class="php-email-form">
+          <div class="row gy-4">
+            <div class="col-lg-4 col-md-6">
+              <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required="">
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required="">
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <input type="text" class="form-control" name="phone" id="phone" placeholder="Your Phone" required="">
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <input type="date" name="date" class="form-control" id="date" placeholder="Date" required="">
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <input type="time" class="form-control" name="time" id="time" placeholder="Time" required="">
+            </div>
+            <div class="col-lg-4 col-md-6">
+              <input type="number" class="form-control" name="people" id="people" placeholder="# of people" required="">
+>>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
             </div>
           </div>
 
@@ -48,7 +74,11 @@
               reservation. Thank you!</div>
             <button type="submit">Book a Table</button>
           </div>
+<<<<<<< HEAD
        }
+=======
+        </form>
+>>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
       </div><!-- End Reservation Form -->
 
     </div>

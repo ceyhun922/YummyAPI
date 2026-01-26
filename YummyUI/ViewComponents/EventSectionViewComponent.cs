@@ -1,12 +1,17 @@
+<<<<<<< HEAD
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YummyUI.DTOs.OrganizationDTOs;
+=======
+using Microsoft.AspNetCore.Mvc;
+>>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
 
 namespace YummyUI.ViewComponents
 {
     public class EventSectionViewComponent : ViewComponent
     {
+<<<<<<< HEAD
         private readonly IHttpClientFactory _httpClientFactory;
 
         public EventSectionViewComponent(IHttpClientFactory httpClientFactory)
@@ -25,6 +30,10 @@ namespace YummyUI.ViewComponents
                 var values =JsonConvert.DeserializeObject<List<ResultOrganizationDto>>(jsonData);
                 return View(values);
             }
+=======
+        public IViewComponentResult Invoke()
+        {
+>>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
             return View();
         }
     }

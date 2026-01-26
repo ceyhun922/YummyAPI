@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 
 using Microsoft.AspNetCore.Mvc;
@@ -36,3 +37,17 @@ namespace YummyUI.ViewComponents
 }
 
 
+=======
+using Microsoft.AspNetCore.Mvc;
+
+namespace YummyUI.ViewComponents 
+{
+    public class ChefSectionViewComponent : ViewComponent
+    {
+        public IViewComponentResult Invoke()
+        {
+            return View();
+        }
+    }
+}
+>>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)

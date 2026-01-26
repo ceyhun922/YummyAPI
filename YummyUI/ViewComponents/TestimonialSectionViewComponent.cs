@@ -1,12 +1,17 @@
+<<<<<<< HEAD
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YummyUI.DTOs.TestimonialDTOs;
+=======
+using Microsoft.AspNetCore.Mvc;
+>>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
 
 namespace YummyUI.ViewComponents
 {
     public class TestimonialSectionViewComponent : ViewComponent
     {
+<<<<<<< HEAD
         private readonly IHttpClientFactory _httpClientFactory;
 
         public TestimonialSectionViewComponent(IHttpClientFactory httpClientFactory)
@@ -25,6 +30,10 @@ namespace YummyUI.ViewComponents
                 var values =JsonConvert.DeserializeObject<List<ResultTestimonialDto>>(jsonData);
                 return View(values);
             }
+=======
+        public IViewComponentResult Invoke()
+        {
+>>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
             return View();
         }
     }
