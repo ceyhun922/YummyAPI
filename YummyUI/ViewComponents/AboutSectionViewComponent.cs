@@ -1,17 +1,13 @@
-<<<<<<< HEAD
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using YummyAPI.DTOs.AboutDTO;
-=======
 using Microsoft.AspNetCore.Mvc;
->>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
 
 namespace YummyUI.ViewComponents
 {
     public class AboutSectionViewComponent : ViewComponent
     {
-<<<<<<< HEAD
         private readonly IHttpClientFactory _httpClientFactory;
 
         public AboutSectionViewComponent(IHttpClientFactory httpClientFactory)
@@ -31,10 +27,7 @@ namespace YummyUI.ViewComponents
                 return View(values);
 
             }
-=======
-        public IViewComponentResult Invoke()
-        {
->>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
+
             return View();
         }
     }

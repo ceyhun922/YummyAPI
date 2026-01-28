@@ -3,6 +3,7 @@
 }
 <P>Index</P>
 <div class="row ">
+  <!-- Bugünkü Organizasyon -->
   <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
     <div class="card">
       <div class="card-statistic-4">
@@ -10,9 +11,9 @@
           <div class="row ">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
               <div class="card-content">
-                <h5 class="font-15">New Booking</h5>
-                <h2 class="mb-3 font-18">258</h2>
-                <p class="mb-0"><span class="col-green">10%</span> Increase</p>
+                <h5 class="font-15">Bugünkü Organizasyon</h5>
+                <h2 class="mb-3 font-18">4</h2>
+                <p class="mb-0"><span class="col-green">+1</span> dünden fazla</p>
               </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -25,6 +26,8 @@
       </div>
     </div>
   </div>
+
+  <!-- Aktif Grup -->
   <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
     <div class="card">
       <div class="card-statistic-4">
@@ -32,9 +35,9 @@
           <div class="row ">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
               <div class="card-content">
-                <h5 class="font-15"> Customers</h5>
-                <h2 class="mb-3 font-18">1,287</h2>
-                <p class="mb-0"><span class="col-orange">09%</span> Decrease</p>
+                <h5 class="font-15">Aktif Grup</h5>
+                <h2 class="mb-3 font-18">7</h2>
+                <p class="mb-0"><span class="col-green">Stabil</span></p>
               </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -47,6 +50,8 @@
       </div>
     </div>
   </div>
+
+  <!-- Okunmamış Mesaj -->
   <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
     <div class="card">
       <div class="card-statistic-4">
@@ -54,10 +59,9 @@
           <div class="row ">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
               <div class="card-content">
-                <h5 class="font-15">New Project</h5>
-                <h2 class="mb-3 font-18">128</h2>
-                <p class="mb-0"><span class="col-green">18%</span>
-                  Increase</p>
+                <h5 class="font-15">Okunmamış Mesaj</h5>
+                <h2 class="mb-3 font-18">3</h2>
+                <p class="mb-0"><span class="col-orange">Dikkat</span> bekliyor</p>
               </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -70,6 +74,8 @@
       </div>
     </div>
   </div>
+
+  <!-- Bugün Oluşturulan -->
   <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
     <div class="card">
       <div class="card-statistic-4">
@@ -77,9 +83,9 @@
           <div class="row ">
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pr-0 pt-3">
               <div class="card-content">
-                <h5 class="font-15">Revenue</h5>
-                <h2 class="mb-3 font-18">$48,697</h2>
-                <p class="mb-0"><span class="col-green">42%</span> Increase</p>
+                <h5 class="font-15">Bugün Oluşturulan</h5>
+                <h2 class="mb-3 font-18">2</h2>
+                <p class="mb-0"><span class="col-green">Yeni</span> kayıt</p>
               </div>
             </div>
             <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pl-0">
@@ -93,6 +99,7 @@
     </div>
   </div>
 </div>
+
 @await Component.InvokeAsync("_ApexChartComponentPartilas")
 
 
@@ -105,90 +112,98 @@
 @await Component.InvokeAsync("_DailyWordChickenMenuPartials")
     <!-- Support tickets -->
   </div>
-  <div class="col-md-6 col-lg-12 col-xl-6">
-    <div class="card">
-      <div class="card-header">
-        <h4>Projects Payments</h4>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-hover mb-0">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Client Name</th>
-                <th>Date</th>
-                <th>Payment Method</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>1</td>
-                <td>John Doe </td>
-                <td>11-08-2018</td>
-                <td>NEFT</td>
-                <td>$258</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Cara Stevens
-                </td>
-                <td>15-07-2018</td>
-                <td>PayPal</td>
-                <td>$125</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>
-                  Airi Satou
-                </td>
-                <td>25-08-2018</td>
-                <td>RTGS</td>
-                <td>$287</td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>
-                  Angelica Ramos
-                </td>
-                <td>01-05-2018</td>
-                <td>CASH</td>
-                <td>$170</td>
-              </tr>
-              <tr>
-                <td>5</td>
-                <td>
-                  Ashton Cox
-                </td>
-                <td>18-04-2018</td>
-                <td>NEFT</td>
-                <td>$970</td>
-              </tr>
-              <tr>
-                <td>6</td>
-                <td>
-                  John Deo
-                </td>
-                <td>22-11-2018</td>
-                <td>PayPal</td>
-                <td>$854</td>
-              </tr>
-              <tr>
-                <td>7</td>
-                <td>
-                  Hasan Basri
-                </td>
-                <td>07-09-2018</td>
-                <td>Cash</td>
-                <td>$128</td>
-              </tr>
-            </tbody>
-          </table>
+<div class="col-md-6 col-lg-12 col-xl-6">
+  <div class="card">
+    <div class="card-header">
+      <h4>Sistem Özeti</h4>
+    </div>
+
+    <div class="card-body">
+      <!-- KPI Cards -->
+      <div class="row">
+        <div class="col-6 mb-3">
+          <div class="card mb-0">
+            <div class="card-body py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <div class="text-muted">Toplam Organizasyon</div>
+                  <div class="h4 mb-0">128</div>
+                </div>
+                <span class="badge badge-light">All</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 mb-3">
+          <div class="card mb-0">
+            <div class="card-body py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <div class="text-muted">Toplam Şef</div>
+                  <div class="h4 mb-0">24</div>
+                </div>
+                <span class="badge badge-info">Chef</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 mb-3">
+          <div class="card mb-0">
+            <div class="card-body py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <div class="text-muted">Toplam Galeri</div>
+                  <div class="h4 mb-0">312</div>
+                </div>
+                <span class="badge badge-success">Gallery</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6 mb-3">
+          <div class="card mb-0">
+            <div class="card-body py-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <div class="text-muted">Toplam Mesaj</div>
+                  <div class="h4 mb-0">54</div>
+                </div>
+                <span class="badge badge-warning">Inbox</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <hr class="my-3" />
+
+      <!-- Mini List -->
+      <div class="mb-2 font-weight-bold">Aylık Özet</div>
+      <ul class="list-unstyled mb-0">
+        <li class="d-flex justify-content-between py-2 border-bottom">
+          <span class="text-muted">Bu ay oluşturulan organizasyon</span>
+          <span class="font-weight-bold">18</span>
+        </li>
+        <li class="d-flex justify-content-between py-2 border-bottom">
+          <span class="text-muted">Bu hafta gelen mesaj</span>
+          <span class="font-weight-bold">7</span>
+        </li>
+        <li class="d-flex justify-content-between py-2">
+          <span class="text-muted">Trash'teki toplam mesaj</span>
+          <span class="font-weight-bold">12</span>
+        </li>
+      </ul>
     </div>
   </div>
+</div>
+
+
+
+
+
 </div>
 
 <div class="settingSidebar">

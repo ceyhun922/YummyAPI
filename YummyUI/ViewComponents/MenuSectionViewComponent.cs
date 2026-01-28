@@ -1,15 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-<<<<<<< HEAD
 using Newtonsoft.Json;
 using YummyUI.DTOs.CategoryDTOs;
-=======
->>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
 
 namespace YummyUI.ViewComponents
 {
     public class MenuSectionViewComponent : ViewComponent
     {
-<<<<<<< HEAD
         private readonly IHttpClientFactory _httpClientFactory;
 
         public MenuSectionViewComponent(IHttpClientFactory httpClientFactory)
@@ -28,10 +24,7 @@ namespace YummyUI.ViewComponents
                 var values =JsonConvert.DeserializeObject<List<ResultCategoryDto>>(jsonData);
                 return View(values);
             }
-=======
-        public IViewComponentResult Invoke()
-        {
->>>>>>> 4405c00 (UI Tema ViewComponentlere bölündü)
+
             return View();
         }
     }
