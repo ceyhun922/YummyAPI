@@ -14,7 +14,7 @@
 
     <div class="col-lg-8 d-flex align-items-center reservation-form-bg" data-aos="fade-up" data-aos-delay="200">
 
-      @using (Html.BeginForm("CreateRezervation", "Rezervation", FormMethod.Post, new { @class = "php-email-form", role = "form" }))
+@using (Html.BeginForm("CreateRezervation", "Rezervation", FormMethod.Post, new { @class = "php-email-form", role = "form",id = "rezForm" }))
       {
         <div class="row gy-4">
 
@@ -49,14 +49,17 @@
         </div>
 
         <div class="text-center mt-3">
-          <div class="loading">Loading</div>
-          <div class="error-message"></div>
-          <div class="sent-message">
-            Your booking request was sent. We will call back or send an Email to confirm your reservation. Thank you!
-          </div>
+          <div class="loading" style="display:none;">Loading</div>
+<div class="error-message" style="display:none;"></div>
+<div class="sent-message" style="display:none;">
+  Your booking request was sent...
+</div>
           <button type="submit">Book a Table</button>
         </div>
       }
+
+      
+
 
     </div><!-- End Reservation Form -->
   </div>

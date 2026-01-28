@@ -94,6 +94,16 @@ namespace YummyUI.Controllers
             return RedirectToAction("GroupOrganizationList");
         }
 
+        public async Task<IActionResult> Delete(int id)
+        {
+            var client =_httpClientFactory.CreateClient();
+            var res =await client.DeleteAsync("http://localhost:5289/api/GroupOrganizations?id=" + id);
+
+                return RedirectToAction("GroupOrganizationList");
+
+            
+        }
+
         
 
 

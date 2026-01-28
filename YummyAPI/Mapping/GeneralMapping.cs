@@ -105,7 +105,6 @@ namespace YummyAPI.Mapping
            .ForMember(x => x.GroupOrganizationChefs, opt => opt.Ignore());
             CreateMap<GroupOrganization, UpdateGroupOrganizationDto>().ReverseMap();
             CreateMap<GroupOrganization, ResultGroupOrganizationDto>().ReverseMap();
-            CreateMap<GroupOrganization, GetByIdGroupOrganizationDto>().ReverseMap();
 
 
             //imagefile

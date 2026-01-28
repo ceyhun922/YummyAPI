@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using YummyAPI.Context;
 using YummyAPI.DTOs.GroupOrganizationDTO;
 using YummyAPI.Entities;
@@ -74,5 +75,21 @@ namespace YummyAPI.Controllers
             }
             return Ok(new { message = "Eklendi", id = mapper.GroupOrganizationId });
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> RemoveGroupOrganization(int id)
+        {
+            var value =await _context.GroupOrganizations
+                .Include(x=>x.GroupOrganizationChefs)
+                .FirstOrDefaultAsync(x=>x.GroupOrganizationId ==id);
+            
+            if(value == null) return NotFound();
+
+            _context.GroupOrganizations.Remove(value);
+            _context.GroupOrganizationChefs.RemoveRange(value.GroupOrganizationChefs);
+            await _context.SaveChangesAsync();
+            return Ok(value);
+        }
+
     }
 }

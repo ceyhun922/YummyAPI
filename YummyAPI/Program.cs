@@ -80,6 +80,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
 var app = builder.Build();
 
 app.UseStaticFiles();

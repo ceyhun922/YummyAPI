@@ -35,6 +35,7 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> CreateRezervation(CreateRezervationDto createRezervationDto)
         {
             var client = _httpClientFactory.CreateClient();
+            client.Timeout =TimeSpan.FromSeconds(10);
             var jsonData = JsonConvert.SerializeObject(createRezervationDto);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var response = await client.PostAsync("http://localhost:5289/api/Rezervations", content);
