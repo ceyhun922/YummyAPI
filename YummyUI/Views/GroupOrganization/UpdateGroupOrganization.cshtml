@@ -1,10 +1,9 @@
 @using YummyUI.DTOs.GroupOrganizationDTO
 @using Microsoft.AspNetCore.Mvc.Rendering
-@model CreateGroupOrganizationDto
+@model UpdateGroupOrganizationDto
 
 @{
-    ViewData["Title"] = "Group Organization • Create";
-    Layout = "_AdminLayout";
+    Layout ="_AdminLayout";
 }
 
 @section Styles {
@@ -357,6 +356,7 @@
 </style>
 }
 
+
 <div class="go-page">
   <div class="go-grid-overlay"></div>
   <div class="go-orb o1"></div>
@@ -365,14 +365,13 @@
 
   <div class="go-header">
     <div>
-      <h1 class="go-title">Group Organization • Create</h1>
+      <h1 class="go-title">Group Organization • Update</h1>
       <p class="go-sub">Dropdown yok. Organizasyon kart seçimi, öncelik pill seçimi.</p>
     </div>
-    <div class="go-pill">Admin • Create</div>
+    <div class="go-pill">Admin • Update</div>
   </div>
 
   <div class="go-layout">
-    <!-- LEFT: FORM -->
     <div class="go-card">
       <div class="go-card-head">
         <h3 class="go-card-title">Form</h3>
@@ -382,11 +381,12 @@
       </div>
 
       <div class="go-body">
-        <form asp-action="CreateGroupOrganization" method="post" id="goForm">
+        <form asp-action="UpdateGroupOrganization" method="post" id="goForm">
           @Html.AntiForgeryToken()
           <div asp-validation-summary="All" class="go-val"></div>
 
-          <!-- Organization (cards) -->
+          <input asp-for="GroupOrganizationId" type="hidden" />
+
           <div class="go-field">
             <div class="go-label">
               <label>Organizasyon</label>
@@ -394,7 +394,8 @@
             </div>
 
             <div class="org-grid" id="orgGrid">
-              @foreach (var o in (IEnumerable<SelectListItem>)ViewBag.Organizations)
+                @foreach (var o in (ViewBag.Organizations as IEnumerable<SelectListItem>) ?? Enumerable.Empty<SelectListItem>())
+
               {
                   var selected = (Model?.OrganizationId.ToString() == o.Value);
 
@@ -468,19 +469,6 @@
             </div>
           </div>
 
-          <div class="go-field">
-            <div class="go-label">
-              <label>Status</label>
-              <span class="go-hint">Aktif/Pasif</span>
-            </div>
-
-            <div class="go-toggle">
-              <div class="go-switch on" id="statusSwitch" role="switch" aria-checked="true"></div>
-              <b id="statusText" style="font-weight:950">Aktif</b>
-              <span class="state ok" id="statusChip">Aktif</span>
-              <input type="hidden" name="Status" id="statusHidden" value="true" />
-            </div>
-          </div>
 
           <div class="go-field">
             <div class="go-label">
@@ -489,7 +477,8 @@
             </div>
 
             <div class="chef-grid" id="chefGrid">
-              @foreach (var c in (IEnumerable<SelectListItem>)ViewBag.Chefs)
+              @foreach (var c in (ViewBag.Chefs as IEnumerable<SelectListItem>) ?? Enumerable.Empty<SelectListItem>())
+
               {
                   var isChecked = Model?.ChefIds?.Contains(int.Parse(c.Value)) == true;
 
@@ -517,7 +506,7 @@
           </div>
 
           <div class="go-foot">
-            <button type="submit" class="go-btn primary">Yarat</button>
+            <button type="submit" class="go-btn primary">Güncelle</button>
             <a class="go-btn" href="javascript:history.back()">Geri</a>
           </div>
         </form>
@@ -536,7 +525,7 @@
             <p class="preview-title" id="pvOrg">Organizasyon: Seçilmedi</p>
             <p class="go-sub" style="margin-top:6px">Katılım / Tarih / Saat / Şefler</p>
           </div>
-          <span class="preview-badge ok" id="pvStatus">Status: Aktif</span>
+          <span class="preview-badge ok" id="pvStatus" style="display:none"></span>
         </div>
 
         <div class="preview-grid">
@@ -599,12 +588,6 @@
   const dateInput = el("dateInput");
   const timeInput = el("timeInput");
 
-  // Status
-  const statusSwitch = el("statusSwitch");
-  const statusText = el("statusText");
-  const statusChip = el("statusChip");
-  const statusHidden = el("statusHidden");
-
   // Chefs
   const chefGrid = el("chefGrid");
   const chefCount = el("chefCount");
@@ -616,7 +599,6 @@
   const pvPriority = el("pvPriority");
   const pvDate = el("pvDate");
   const pvTime = el("pvTime");
-  const pvStatus = el("pvStatus");
   const pvChefNames = el("pvChefNames");
   const pvChefStack = el("pvChefStack");
   const pvChefCountChip = el("pvChefCountChip");
@@ -675,11 +657,6 @@
     // Date/Time
     pvDate.textContent = fmtDate(dateInput?.value || "");
     pvTime.textContent = (timeInput?.value || "-");
-
-    // Status
-    const isOn = (statusHidden?.value ?? "true") === "true";
-    pvStatus.textContent = `Status: ${isOn ? "Aktif" : "Pasif"}`;
-    pvStatus.classList.toggle("ok", isOn);
 
     // Chefs
     const selected = getSelectedChefs();
@@ -747,21 +724,6 @@
   dateInput?.addEventListener("change", updatePreview);
   timeInput?.addEventListener("change", updatePreview);
 
-  // Status
-  statusSwitch?.addEventListener("click", () => {
-    if(!statusHidden) return;
-    const isOn = statusHidden.value === "true";
-    const next = !isOn;
-    statusHidden.value = next ? "true" : "false";
-
-    statusSwitch.classList.toggle("on", next);
-    statusText.textContent = next ? "Aktif" : "Pasif";
-    statusChip.classList.toggle("ok", next);
-    statusChip.textContent = next ? "Aktif" : "Pasif";
-
-    updatePreview();
-  });
-
   // Chefs
   function toggleChef(card){
     const id = card.getAttribute("data-chef-id");
@@ -800,15 +762,6 @@
     if(dateInput) dateInput.value = "";
     if(timeInput) timeInput.value = "";
 
-    // status default active
-    if(statusHidden){
-      statusHidden.value = "true";
-      statusSwitch.classList.add("on");
-      statusText.textContent = "Aktif";
-      statusChip.classList.add("ok");
-      statusChip.textContent = "Aktif";
-    }
-
     // chefs
     chefGrid.querySelectorAll(".chef-card").forEach(c => c.classList.remove("selected"));
     chefCheckboxes.forEach(cb => cb.checked = false);
@@ -819,8 +772,7 @@
   btnClear?.addEventListener("click", clearAll);
   btnClear2?.addEventListener("click", clearAll);
 
-  // Init: if Model comes with values, reflect them (optional)
-  // orgHidden/prioHidden already have values if asp-for binds (on validation return). We'll mark UI.
+  // Init from hidden values (Model bound)
   function initFromHidden(){
     // org
     if(orgHidden?.value){

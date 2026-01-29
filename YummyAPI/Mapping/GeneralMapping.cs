@@ -103,7 +103,9 @@ namespace YummyAPI.Mapping
             CreateMap<GroupOrganization, ResultGroupOrganizationDto>().ReverseMap();
             CreateMap<CreateGroupOrganizationDto, GroupOrganization>()
            .ForMember(x => x.GroupOrganizationChefs, opt => opt.Ignore());
-            CreateMap<GroupOrganization, UpdateGroupOrganizationDto>().ReverseMap();
+            CreateMap<UpdateGroupOrganizationDto, GroupOrganization>()
+                .ForMember(d => d.Date, o => o.MapFrom(s => s.Date))
+                .ForMember(d => d.Time, o => o.MapFrom(s => s.Time));
             CreateMap<GroupOrganization, ResultGroupOrganizationDto>().ReverseMap();
 
 

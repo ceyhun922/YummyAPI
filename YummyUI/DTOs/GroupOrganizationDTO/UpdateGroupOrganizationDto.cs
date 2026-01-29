@@ -4,5 +4,6 @@ namespace YummyUI.DTOs.GroupOrganizationDTO
     {
         public int GroupOrganizationId { get; set; }
 
+
     }
 }

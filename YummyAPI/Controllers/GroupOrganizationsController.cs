@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -79,17 +80,92 @@ namespace YummyAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> RemoveGroupOrganization(int id)
         {
-            var value =await _context.GroupOrganizations
-                .Include(x=>x.GroupOrganizationChefs)
-                .FirstOrDefaultAsync(x=>x.GroupOrganizationId ==id);
-            
-            if(value == null) return NotFound();
+            var value = await _context.GroupOrganizations
+                .Include(x => x.GroupOrganizationChefs)
+                .FirstOrDefaultAsync(x => x.GroupOrganizationId == id);
+
+            if (value == null) return NotFound();
 
             _context.GroupOrganizations.Remove(value);
             _context.GroupOrganizationChefs.RemoveRange(value.GroupOrganizationChefs);
             await _context.SaveChangesAsync();
             return Ok(value);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateGroupOrganization([FromQuery] int id, [FromBody] JsonElement body)
+        {
+            var dto = JsonSerializer.Deserialize<UpdateGroupOrganizationDto>(body.GetRawText(), new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (dto == null) return BadRequest("Dto boş");
+
+            var value = await _context.GroupOrganizations
+                .Include(x => x.GroupOrganizationChefs)
+                .FirstOrDefaultAsync(x => x.GroupOrganizationId == id);
+
+            if (value == null) return NotFound();
+
+            _mapper.Map(dto, value);
+
+            var newChef = (dto.ChefIds ?? new List<int>()).Distinct().ToHashSet();
+            var oldChef = value.GroupOrganizationChefs.Select(x => x.ChefId).ToHashSet();
+
+            var toRemove = value.GroupOrganizationChefs.Where(x => !newChef.Contains(x.ChefId)).ToList();
+            var toAdd = newChef.Where(chefId => !oldChef.Contains(chefId))
+                .Select(chefId => new GroupOrganizationChef
+                {
+                    GroupOrganizationId = value.GroupOrganizationId,
+                    ChefId = chefId
+                }).ToList();
+
+            if (toRemove.Count > 0) _context.GroupOrganizationChefs.RemoveRange(toRemove);
+            if (toAdd.Count > 0) await _context.GroupOrganizationChefs.AddRangeAsync(toAdd);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { id = value.GroupOrganizationId });
+        }
+
+       [HttpGet("{id:int}")]
+public async Task<IActionResult> UpdateGroupOrganization(int id)
+{
+    var data = await _context.GroupOrganizations
+        .Where(x => x.GroupOrganizationId == id)
+        .Select(x => new
+        {
+            groupOrganizationId = x.GroupOrganizationId,
+
+            organizationId = x.OrganizationId,
+            organizationName = x.Organization,
+
+            groupPriority = x.GroupPriority,
+            price = x.Price,
+            description = x.Description,
+
+            personCount = x.PersonCount,
+            participantCount = x.ParticipantCount,
+            participationRate = x.ParticipationRate,
+
+            date = x.Date,     
+            time = x.Time,     
+
+            chefIds = x.GroupOrganizationChefs
+                .Select(gc => gc.ChefId)
+                .Distinct()
+                .ToList()
+        })
+        .FirstOrDefaultAsync();
+
+    if (data == null) return NotFound();
+
+    return Ok(data);
+}
+
+
+
 
     }
 }

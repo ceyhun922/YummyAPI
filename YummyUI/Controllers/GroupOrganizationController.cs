@@ -96,15 +96,79 @@ namespace YummyUI.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            var client =_httpClientFactory.CreateClient();
-            var res =await client.DeleteAsync("http://localhost:5289/api/GroupOrganizations?id=" + id);
+            var client = _httpClientFactory.CreateClient();
+            var res = await client.DeleteAsync("http://localhost:5289/api/GroupOrganizations?id=" + id);
 
+            if (!res.IsSuccessStatusCode)
+            {
                 return RedirectToAction("GroupOrganizationList");
+            }
 
-            
+            return Ok();
         }
 
-        
+
+        [HttpGet]
+        public async Task<IActionResult> UpdateGroupOrganization(int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+
+            ViewBag.Organizations = new List<SelectListItem>();
+            ViewBag.Chefs = new List<SelectListItem>();
+
+            var response = await client.GetAsync($"http://localhost:5289/api/GroupOrganizations/{id}");
+            if (!response.IsSuccessStatusCode)
+                return View();
+
+            var jsonData = await response.Content.ReadAsStringAsync();
+            var value = JsonConvert.DeserializeObject<UpdateGroupOrganizationDto>(jsonData);
+            if (value == null)
+                return View();
+
+            var orgRes = await client.GetAsync("http://localhost:5289/api/Organizations");
+            if (orgRes.IsSuccessStatusCode)
+            {
+                var orgJson = await orgRes.Content.ReadAsStringAsync();
+                var orgs = JsonConvert.DeserializeObject<List<ResultOrganizationDto>>(orgJson) ?? new();
+
+                ViewBag.Organizations = orgs.Select(o => new SelectListItem
+                {
+                    Value = o.OrganizationId.ToString(),
+                    Text = o.OrganizationName
+                }).ToList();
+            }
+
+            var chefRes = await client.GetAsync("http://localhost:5289/api/Chefs");
+            if (chefRes.IsSuccessStatusCode)
+            {
+                var chefJson = await chefRes.Content.ReadAsStringAsync();
+                var chefs = JsonConvert.DeserializeObject<List<ResultChefDto>>(chefJson) ?? new();
+
+                ViewBag.Chefs = chefs.Select(c => new SelectListItem
+                {
+                    Value = c.ChefId.ToString(),
+                    Text = c.ChefName
+                }).ToList();
+            }
+            return View(value);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateGroupOrganization(UpdateGroupOrganizationDto updateGroupOrganizationDto)
+        {
+            var client =_httpClientFactory.CreateClient();
+            var id = updateGroupOrganizationDto.GroupOrganizationId;
+            var jsonData =JsonConvert.SerializeObject(updateGroupOrganizationDto);
+            var content =new StringContent(jsonData,Encoding.UTF8,"application/json");
+            var response =await client.PutAsync("http://localhost:5289/api/GroupOrganizations?id=" + id,content);
+            if (!response.IsSuccessStatusCode)
+            {
+                return View(updateGroupOrganizationDto);
+            }
+            return RedirectToAction("GroupOrganizationList");
+        }
+
 
 
     }
