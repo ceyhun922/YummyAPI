@@ -100,11 +100,35 @@ namespace YummyUI.Controllers
             return View();
         }
      [HttpPost]
-[ValidateAntiForgeryToken]
 
-        public async Task<IActionResult> UpdateChef(GetByIdChefDto getByIdChefDto)
+        public async Task<IActionResult> UpdateChef(GetByIdChefDto getByIdChefDto, IFormFile file)
         {
-            var client = _httpClientFactory.CreateClient();
+                        var client = _httpClientFactory.CreateClient();
+
+            if (file != null && file.Length >0)
+            {
+                using var uploadContent =new MultipartFormDataContent();
+                using var stream =file.OpenReadStream();
+
+                var fileContent =new StreamContent(stream);
+
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+                uploadContent.Add(fileContent,"file", file.FileName);
+
+                var uploadResponse =await client.PostAsync("http://localhost:5289/api/FileImage",uploadContent);
+
+                if (!uploadResponse.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError("","Yüklenmedi");
+                    return View(getByIdChefDto);
+                }
+                var uploadJson= await uploadResponse.Content.ReadAsStringAsync();
+                var doc =JsonDocument.Parse(uploadJson);
+                var fileName =doc.RootElement.GetProperty("fileName").GetString();
+                getByIdChefDto.ImageFile = $"/images/{fileName}";
+
+            }
 
             
             var jsonData = JsonConvert.SerializeObject(getByIdChefDto);

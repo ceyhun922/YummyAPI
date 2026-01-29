@@ -4,6 +4,12 @@
 @{
     ViewData["Title"] = "Şef • Update";
     Layout = "_AdminLayout";
+
+    var apiBase = "http://localhost:5289";
+
+    var currentImg = Model?.ImageFile ?? "";
+    if (!string.IsNullOrWhiteSpace(currentImg) && currentImg.StartsWith("/images/"))
+        currentImg = apiBase + currentImg;
 }
 
 @section Styles {
@@ -289,8 +295,8 @@
     <div style="display:flex; gap:12px; align-items:flex-start;">
       <div class="cu-icon">👨‍🍳</div>
       <div>
-        <h1 class="cu-title">Şef • Update</h1>
-        <p class="cu-sub">URL ile görsel + canlı önizleme. (Upload backend’i sonra bağlayacaksın.)</p>
+        <h1 class="cu-title">Şef • Güncelleme</h1>
+        <p class="cu-sub">Mevcut resim + canlı önizleme.</p>
       </div>
     </div>
     <div class="cu-pill">Admin • Update</div>
@@ -298,7 +304,6 @@
 
   <div class="cu-layout">
 
-    <!-- LEFT -->
     <div class="cu-card">
       <div class="cu-cardHead">
         <h3 class="cu-cardTitle">Form</h3>
@@ -308,13 +313,13 @@
       </div>
 
       <div class="cu-body">
-
-        <!-- BeginForm yerine TagHelper: en sorunsuz -->
-        <form asp-action="UpdateChef" asp-controller="Chef" method="post" id="chefForm"  enctype="multipart/form-data">
+        <form asp-action="UpdateChef" asp-controller="Chef" method="post" id="chefForm" enctype="multipart/form-data">
           @Html.AntiForgeryToken()
           <div asp-validation-summary="All" class="cu-val"></div>
 
           @Html.HiddenFor(x => x.ChefId)
+
+          <input type="hidden" id="inCurrentImg" name="ImageFile" value="@currentImg" />
 
           <div class="cu-field">
             <div class="cu-label"><label>Şef İsmi</label><span class="cu-hint" id="hintName">—</span></div>
@@ -333,13 +338,8 @@
 
           <div class="cu-row">
             <div class="cu-field">
-              <div class="cu-label"><label>Profil Fotoğraf URL</label><span class="cu-hint">https://...</span></div>
-              @Html.TextBoxFor(x => x.ImageFile, new { @class="cu-input", placeholder="https://..." })
-            </div>
-            <div class="cu-field">
-              <div class="cu-label"><label>Dosya</label><span class="cu-hint">Backend sonra</span></div>
-              <input type="file" class="cu-input" id="inImgFile" name="inImgFile" accept="image/*"/>
-
+              <div class="cu-label"><label>Dosya</label><span class="cu-hint">Profil Fotoğraf</span></div>
+              <input type="file" class="cu-input" id="inImgFile" name="file" accept="image/*" />
             </div>
           </div>
 
@@ -367,12 +367,10 @@
 
           <div class="cu-field">
             <div class="cu-label"><label>Status</label><span class="cu-hint">Aktif / Pasif</span></div>
-
             <div class="cu-toggle">
               <div class="cu-switch" id="statusSwitch" role="switch" aria-checked="true"></div>
               <b id="statusText" style="font-weight:950">Aktif</b>
               <span class="cu-state ok" id="statusChip">Aktif</span>
-
               @Html.CheckBoxFor(x => x.ChefStatus, new { id="statusHidden", style="display:none" })
             </div>
           </div>
@@ -382,11 +380,9 @@
             <a asp-action="ChefList" asp-controller="Chef" class="cu-btn">↩️ Vazgeç</a>
           </div>
         </form>
-
       </div>
     </div>
 
-    <!-- RIGHT -->
     <div class="cu-card cu-sticky">
       <div class="cu-cardHead">
         <h3 class="cu-cardTitle">Canlı Önizleme</h3>
@@ -402,8 +398,15 @@
           <span class="cu-pvChip ok" id="pvState">Aktif</span>
         </div>
 
-        <div class="cu-imgBox" id="pvImgBox">
-          <div class="cu-noimg">Resim önizlemesi burada görünecek.</div>
+        <div class="cu-imgBox" id="pvImgBox" data-current="@currentImg">
+          @if (!string.IsNullOrWhiteSpace(currentImg))
+          {
+              <img src="@currentImg" alt="Chef" />
+          }
+          else
+          {
+              <div class="cu-noimg">Resim önizlemesi burada görünecek.</div>
+          }
         </div>
 
         <div class="cu-wideBox">
@@ -420,7 +423,7 @@
 
         <div class="cu-foot" style="margin-top:16px;">
           <button type="button" class="cu-btn cu-btnDanger" id="btnClear2">🧹 Önizlemeyi Temizle</button>
-          <span class="cu-pill" style="padding:8px 12px;">Live</span>
+          <span class="cu-pill" style="padding:8px 12px;">Canlı Görünüm</span>
         </div>
       </div>
     </div>
@@ -434,14 +437,14 @@
   const $ = (id) => document.getElementById(id);
 
   // inputs
-  const inName   = $("inName");
-  const inTitle  = $("inTitle");
-  const inDesc   = $("inDesc");
-  const inImgFile = $("inImgFile"); // ✅ file input (DIŞARIDA)
-  const inFb     = $("inFb");
-  const inIg     = $("inIg");
-  const inLi     = $("inLi");
-  const inX      = $("inX");
+  const inName    = $("inName");
+  const inTitle   = $("inTitle");
+  const inDesc    = $("inDesc");
+  const inImgFile = $("inImgFile");
+  const inFb      = $("inFb");
+  const inIg      = $("inIg");
+  const inLi      = $("inLi");
+  const inX       = $("inX");
 
   // hints
   const hintName  = $("hintName");
@@ -459,13 +462,12 @@
   const chipX  = $("chipX");
 
   // status
-  const statusSwitch = $("statusSwitch");
-  const statusHidden = $("statusHidden");
-  const statusText   = $("statusText");
-  const statusChip   = $("statusChip");
-
-  const pvState     = $("pvState");
-  const pvStatusChip = $("pvStatusChip");
+  const statusSwitch  = $("statusSwitch");
+  const statusHidden  = $("statusHidden");
+  const statusText    = $("statusText");
+  const statusChip    = $("statusChip");
+  const pvState       = $("pvState");
+  const pvStatusChip  = $("pvStatusChip");
 
   // buttons
   const btnClear  = $("btnClear");
@@ -515,20 +517,32 @@
     }
 
     const file = inImgFile?.files?.[0];
-    if (!file) {
-      pvImgBox.innerHTML = '<div class="cu-noimg">Resim önizlemesi burada görünecek.</div>';
+
+    // ✅ yeni dosya seçildiyse onu göster
+    if (file) {
+      const url = URL.createObjectURL(file);
+      lastObjectUrl = url;
+
+      pvImgBox.innerHTML = '<img alt="Chef" />';
+      const img = pvImgBox.querySelector("img");
+      img.onerror = () => {
+        pvImgBox.innerHTML = '<div class="cu-noimg">Görsel yüklenemedi.</div>';
+      };
+      img.src = url;
       return;
     }
 
-    const url = URL.createObjectURL(file);
-    lastObjectUrl = url;
+    // ✅ dosya yoksa: dataset (API'li) veya hidden (API'li)
+    const dataVal   = (pvImgBox.dataset.current || "").trim();
+    const hiddenVal = (document.getElementById("inCurrentImg")?.value || "").trim();
+    const current   = dataVal || hiddenVal;
 
-    pvImgBox.innerHTML = '<img alt="Chef" />';
-    const img = pvImgBox.querySelector("img");
-    img.onerror = () => {
-      pvImgBox.innerHTML = '<div class="cu-noimg">Görsel yüklenemedi.</div>';
-    };
-    img.src = url;
+    if (current) {
+      pvImgBox.innerHTML = `<img alt="Chef" src="${current}" />`;
+      return;
+    }
+
+    pvImgBox.innerHTML = '<div class="cu-noimg">Resim önizlemesi burada görünecek.</div>';
   }
 
   function updatePreview() {
@@ -559,13 +573,13 @@
     updatePreview();
   });
 
-  // live binds (✅ inImgUrl yok)
+  // live binds
   [inName, inTitle, inDesc, inFb, inIg, inLi, inX].forEach(inp => {
     inp?.addEventListener("input", updatePreview);
     inp?.addEventListener("change", updatePreview);
   });
 
-  // ✅ file change listener (DOĞRU YER)
+  // file change
   inImgFile?.addEventListener("change", updatePreview);
 
   function clearAll() {
@@ -577,7 +591,7 @@
     if (inLi)    inLi.value = "";
     if (inX)     inX.value = "";
 
-    if (inImgFile) inImgFile.value = ""; // ✅ file reset
+    if (inImgFile) inImgFile.value = "";
     if (statusHidden) statusHidden.checked = false;
 
     updatePreview();
