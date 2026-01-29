@@ -1,326 +1,593 @@
 @using YummyUI.DTOs.ChefDTOs
 @model GetByIdChefDto
+
 @{
+    ViewData["Title"] = "Şef • Update";
     Layout = "_AdminLayout";
 }
 
+@section Styles {
 <style>
-/* ===== AI PREMIUM UPDATE FORM ===== */
-.ai-form,
-.ai-form *{ box-sizing:border-box; }
+#chefUpdate{
+  --bg0:#050814; --bg1:#070b1f;
+  --glass: rgba(255,255,255,.08);
+  --stroke: rgba(255,255,255,.14);
+  --txt: rgba(255,255,255,.92);
+  --muted: rgba(255,255,255,.65);
+  --muted2: rgba(255,255,255,.45);
+  --shadow: 0 18px 60px rgba(0,0,0,.45);
+  --radius: 22px;
+  --primary:#ffb020;
+  --danger:#ff4d6d;
+  --ok:#32d583;
+  --chip: rgba(0,0,0,.18);
 
-.ai-form{
-  min-height:100%;
-  padding:2rem;
+  min-height: calc(100vh - 60px);
+  padding: 90px 22px 34px; /* üst bar fixed ise */
+  color: var(--txt);
   background:
-    radial-gradient(1200px 600px at 70% 80%, rgba(139,92,246,.25), transparent 60%),
-    radial-gradient(900px 500px at 15% 20%, rgba(99,102,241,.30), transparent 60%),
-    linear-gradient(135deg,#0a0e27 0%,#16213e 40%,#0f1729 100%);
+    radial-gradient(1200px 700px at 12% 18%, rgba(255,176,32,.14), transparent 55%),
+    radial-gradient(900px 600px at 85% 20%, rgba(60,130,255,.18), transparent 60%),
+    radial-gradient(900px 600px at 70% 85%, rgba(168,85,247,.22), transparent 55%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+  position: relative;
+  border-radius: 22px;
+  overflow: visible; /* sticky bozulmasın */
 }
 
-.form-wrap{
-  max-width:720px;
-  margin:0 auto;
-  background:rgba(15,23,42,.60);
-  border-radius:28px;
-  border:1px solid rgba(255,255,255,.12);
-  backdrop-filter:blur(18px);
-  box-shadow:0 40px 90px rgba(0,0,0,.55);
-  padding:2rem 2.2rem;
+#chefUpdate .cu-grid{
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+  opacity: .18;
+  pointer-events:none;
+  mask-image: radial-gradient(circle at 40% 20%, black 30%, transparent 70%);
+  z-index:0;
 }
 
-.form-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:1rem;
-  margin-bottom:1.6rem;
-}
+#chefUpdate .cu-orb{ position:absolute; border-radius:999px; opacity:.35; pointer-events:none; z-index:0; }
+#chefUpdate .cu-orb.o1{ width:320px; height:320px; left:-120px; top:140px;
+  background: radial-gradient(circle at 30% 30%, rgba(255,176,32,.55), rgba(255,176,32,.12), transparent 70%); }
+#chefUpdate .cu-orb.o2{ width:420px; height:420px; right:-160px; top:60px;
+  background: radial-gradient(circle at 30% 30%, rgba(59,130,246,.55), rgba(59,130,246,.12), transparent 70%); }
+#chefUpdate .cu-orb.o3{ width:520px; height:520px; right:120px; bottom:-260px;
+  background: radial-gradient(circle at 30% 30%, rgba(168,85,247,.55), rgba(168,85,247,.14), transparent 70%); }
 
-.head-left{
-  display:flex;
-  align-items:center;
-  gap:1rem;
+/* Header */
+#chefUpdate .cu-head{
+  position: relative;
+  z-index:2;
+  display:flex; justify-content:space-between; align-items:flex-start;
+  gap:14px; margin-bottom:18px;
 }
-
-.form-badge{
-  width:54px;height:54px;
-  border-radius:18px;
-  display:grid;place-items:center;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  box-shadow:0 14px 40px rgba(102,126,234,.6);
-  font-size:1.6rem;
-}
-
-.form-title{
-  margin:0;
-  font-size:1.9rem;
-  font-weight:950;
-  background:linear-gradient(135deg,#fff,#a8b9ff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-}
-
-.form-sub{
-  margin:.2rem 0 0 0;
-  color:rgba(255,255,255,.65);
-  font-weight:700;
-  font-size:.95rem;
-}
-
-.preview{
-  width:64px;
-  height:64px;
-  border-radius:18px;
-  overflow:hidden;
+#chefUpdate .cu-title{ margin:0 0 6px; font-size:28px; font-weight:950; letter-spacing:.2px; }
+#chefUpdate .cu-sub{ margin:0; color:var(--muted); font-size:13.5px; }
+#chefUpdate .cu-pill{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:10px 14px; border-radius:999px;
+  background: rgba(255,255,255,.08);
   border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.06);
-  box-shadow:0 18px 45px rgba(0,0,0,.35);
-  display:grid;
-  place-items:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.35);
+  color:var(--muted); font-size:12.5px; white-space:nowrap;
+}
+#chefUpdate .cu-icon{
+  width:36px; height:36px; border-radius:14px;
+  display:grid; place-items:center;
+  background: linear-gradient(135deg, rgba(99,102,241,.85), rgba(168,85,247,.75));
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow: 0 14px 40px rgba(99,102,241,.25);
+  font-size:18px;
+}
+
+/* Layout GRID — üst üste binme bitti */
+#chefUpdate .cu-layout{
+  position: relative;
+  z-index:2;
+  display:grid !important;
+  grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr) !important;
+  gap:18px !important;
+  align-items:start !important;
+}
+@@media (max-width:1100px){
+  #chefUpdate .cu-layout{ grid-template-columns: 1fr !important; }
+}
+
+/* Card (AdminLayout .card ile çakışmaz) */
+#chefUpdate .cu-card{
+  background: var(--glass);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  overflow:hidden;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  float:none;
+  position:relative;
+}
+#chefUpdate .cu-cardHead{
+  padding:16px 18px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.10);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+}
+#chefUpdate .cu-cardTitle{
+  margin:0;
+  font-size:14px;
+  letter-spacing:.3px;
+  text-transform:uppercase;
+  color: rgba(255,255,255,.85);
+  font-weight:950;
+}
+#chefUpdate .cu-body{ padding:18px; }
+
+/* Buttons */
+#chefUpdate .cu-btn{
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+  color: rgba(255,255,255,.88);
+  border-radius:14px;
+  padding:10px 12px;
+  font-weight:950;
+  font-size:13px;
+  cursor:pointer;
+  transition:.15s ease;
+  user-select:none;
+  text-decoration:none;
+  display:inline-flex;
+  gap:8px;
+  align-items:center;
+}
+#chefUpdate .cu-btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.24); }
+#chefUpdate .cu-btnPrimary{
+  background: linear-gradient(180deg, rgba(255,176,32,.95), rgba(255,176,32,.75));
+  color: rgba(0,0,0,.82);
+  border-color: rgba(255,176,32,.60);
+}
+#chefUpdate .cu-btnDanger{
+  background: linear-gradient(180deg, rgba(255,77,109,.95), rgba(255,77,109,.70));
+  color: rgba(0,0,0,.82);
+  border-color: rgba(255,77,109,.60);
+}
+#chefUpdate .cu-btnGhost{
+  background: rgba(0,0,0,.16);
+  border-color: rgba(255,255,255,.14);
+  color: rgba(255,255,255,.85);
+}
+
+/* Form */
+#chefUpdate .cu-val{ color:#ff9aa9; margin: 0 0 10px 0; font-weight:850; font-size:13px; }
+#chefUpdate .cu-field{ margin-bottom:12px; }
+#chefUpdate .cu-label{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:7px; }
+#chefUpdate .cu-label label{ margin:0; font-weight:950; font-size:12.5px; color: rgba(255,255,255,.82); }
+#chefUpdate .cu-hint{ color: var(--muted2); font-size:12px; font-weight:800; }
+#chefUpdate .cu-input{
+  width:100%;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.18);
+  color: rgba(255,255,255,.90);
+  padding:12px 12px;
+  outline:none;
+  transition:.15s ease;
+}
+#chefUpdate .cu-input:focus{
+  border-color: rgba(255,176,32,.55);
+  box-shadow: 0 0 0 4px rgba(255,176,32,.12);
+}
+#chefUpdate textarea.cu-input{ min-height:110px; resize:vertical; }
+#chefUpdate .cu-row{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+@@media (max-width:600px){ #chefUpdate .cu-row{ grid-template-columns:1fr; } }
+
+/* Toggle */
+#chefUpdate .cu-toggle{
+  display:flex; align-items:center; gap:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.16);
+}
+#chefUpdate .cu-switch{
+  width:44px; height:26px; border-radius:999px;
+  background: rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.16);
+  position:relative;
+  cursor:pointer;
   flex:0 0 auto;
 }
-.preview img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
+#chefUpdate .cu-switch::after{
+  content:"";
+  width:20px; height:20px; border-radius:999px;
+  position:absolute; top:2px; left:2px;
+  background: rgba(255,255,255,.85);
+  transition:.18s ease;
 }
-.preview .noimg{
-  font-weight:900;
-  color:rgba(255,255,255,.8);
-  font-size:.75rem;
-}
+#chefUpdate .cu-switch.on{ background: rgba(50,213,131,.25); border-color: rgba(50,213,131,.35); }
+#chefUpdate .cu-switch.on::after{ left:22px; background: rgba(255,255,255,.95); }
 
-/* inputs */
-.f-group{ margin-bottom:1.2rem; }
-
-.f-label{
-  display:block;
-  margin-bottom:.45rem;
-  color:rgba(255,255,255,.85);
-  font-weight:800;
-  font-size:.9rem;
-}
-
-.f-input{
-  width:100%;
-  padding:.9rem 1rem;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.15);
-  background:rgba(255,255,255,.06);
-  color:#fff;
-  font-size:.95rem;
-  outline:none;
-  transition:all .45s cubic-bezier(.16,1,.3,1);
-}
-
-.f-input:focus{
-  border-color:#667eea;
-  background:rgba(255,255,255,.08);
-  box-shadow:0 0 0 4px rgba(102,126,234,.25);
-}
-
-/* textarea */
-textarea.f-input{
-  resize:none;
-  min-height:90px;
-}
-
-/* status */
-.status-wrap{
-  display:flex;
-  align-items:center;
-  gap:.6rem;
-  margin-top:.4rem;
-}
-.status-wrap label{
-  font-weight:800;
-  color:rgba(255,255,255,.85);
-}
-
-/* buttons */
-.form-actions{
-  margin-top:1.8rem;
-  display:flex;
-  gap:1rem;
-  flex-wrap:wrap;
-}
-
-.btn-ai{
-  border:none;
-  border-radius:16px;
-  padding:1rem 1.4rem;
+#chefUpdate .cu-state{
+  margin-left:auto;
+  padding:7px 10px;
+  border-radius:999px;
   font-weight:950;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  gap:.6rem;
-  color:#fff;
-  text-decoration:none;
-  transition:transform .45s cubic-bezier(.16,1,.3,1),
-             box-shadow .45s ease,
-             opacity .2s ease;
+  font-size:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.80);
 }
+#chefUpdate .cu-state.ok{ background: rgba(50,213,131,.18); border-color: rgba(50,213,131,.30); color: rgba(214,255,233,.95); }
+#chefUpdate .cu-state.off{ background: rgba(255,77,109,.14); border-color: rgba(255,77,109,.25); color: rgba(255,220,227,.92); }
 
-.btn-ai:hover{
-  transform:translateY(-2px);
-  box-shadow:0 18px 45px rgba(0,0,0,.35);
+/* Preview */
+#chefUpdate .cu-sticky{ position: sticky; top: 18px; align-self:start; }
+#chefUpdate .cu-pvHero{ display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+#chefUpdate .cu-pvName{ margin:0; font-size:18px; font-weight:950; }
+#chefUpdate .cu-pvTitle{ margin:6px 0 0 0; color:var(--muted); font-weight:800; font-size:13px; }
+#chefUpdate .cu-chip{
+  padding:8px 10px;
+  border-radius:999px;
+  font-weight:900;
+  font-size:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.78);
+  white-space:nowrap;
+  max-width: 100%;
 }
+#chefUpdate .cu-pvChip{
+  padding:8px 12px;
+  border-radius:999px;
+  font-weight:950;
+  font-size:12px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.80);
+  white-space:nowrap;
+}
+#chefUpdate .cu-pvChip.ok{ background: rgba(50,213,131,.18); border-color: rgba(50,213,131,.30); color: rgba(214,255,233,.95); }
+#chefUpdate .cu-pvChip.off{ background: rgba(255,77,109,.14); border-color: rgba(255,77,109,.25); color: rgba(255,220,227,.92); }
 
-.btn-primary{
-  background:linear-gradient(135deg,#f59e0b,#d97706);
-  box-shadow:0 14px 40px rgba(245,158,11,.35);
+#chefUpdate .cu-imgBox{
+  margin-top:12px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.22);
+  overflow:hidden;
+  height:220px;
+  display:grid;
+  place-items:center;
 }
+#chefUpdate .cu-imgBox img{ width:100%; height:100%; object-fit:cover; display:block; }
+#chefUpdate .cu-noimg{ color: rgba(255,255,255,.55); font-weight:900; text-align:center; padding:16px; }
 
-.btn-cancel{
-  background:linear-gradient(135deg,#374151,#111827);
-  box-shadow:0 14px 40px rgba(0,0,0,.45);
+#chefUpdate .cu-wideBox{
+  margin-top:14px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.14);
+  background: rgba(0,0,0,.16);
+  padding:12px;
 }
+#chefUpdate .cu-k{ color: var(--muted2); font-weight:900; font-size:12px; margin:0 0 6px; }
+#chefUpdate .cu-v{ margin:0; font-weight:950; font-size:14px; color: rgba(255,255,255,.92); }
 
-/* responsive */
-@@media(max-width:700px){
-  .form-wrap{ padding:1.5rem; }
-  .form-title{ font-size:1.6rem; }
-  .form-head{ align-items:flex-start; }
-}
+#chefUpdate .cu-chipsRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+#chefUpdate .cu-foot{ display:flex; gap:10px; justify-content:space-between; margin-top:14px; flex-wrap:wrap; }
 </style>
+}
 
-<div class="ai-form">
-  <div class="form-wrap">
+<div id="chefUpdate">
+  <div class="cu-grid"></div>
+  <div class="cu-orb o1"></div>
+  <div class="cu-orb o2"></div>
+  <div class="cu-orb o3"></div>
 
-    <div class="form-head">
-      <div class="head-left">
-        <div class="form-badge">🛠️</div>
-        <div>
-          <h1 class="form-title">Şef Güncelle</h1>
-          <p class="form-sub">Premium AI destekli şef profil düzenleme</p>
+  <div class="cu-head">
+    <div style="display:flex; gap:12px; align-items:flex-start;">
+      <div class="cu-icon">👨‍🍳</div>
+      <div>
+        <h1 class="cu-title">Şef • Update</h1>
+        <p class="cu-sub">URL ile görsel + canlı önizleme. (Upload backend’i sonra bağlayacaksın.)</p>
+      </div>
+    </div>
+    <div class="cu-pill">Admin • Update</div>
+  </div>
+
+  <div class="cu-layout">
+
+    <!-- LEFT -->
+    <div class="cu-card">
+      <div class="cu-cardHead">
+        <h3 class="cu-cardTitle">Form</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="cu-btn cu-btnGhost" id="btnClear">🧹 Önizlemeyi Temizle</button>
         </div>
       </div>
 
-      <div class="preview" id="chefPreview">
-        @if (Model.ImageFile != null)
-        {
-          <img id="chefPreviewImg"
-               src="@Model.ImageFile"
-               alt="@Model.ChefName"
-               onerror="this.onerror=null;this.style.display='none';this.parentElement.innerHTML='<div class=&quot;noimg&quot;>No Img</div>';" />
-        }
-        else
-        {
-          <div class="noimg">No Img</div>
-        }
+      <div class="cu-body">
+
+        <!-- BeginForm yerine TagHelper: en sorunsuz -->
+        <form asp-action="UpdateChef" asp-controller="Chef" method="post" id="chefForm"  enctype="multipart/form-data">
+          @Html.AntiForgeryToken()
+          <div asp-validation-summary="All" class="cu-val"></div>
+
+          @Html.HiddenFor(x => x.ChefId)
+
+          <div class="cu-field">
+            <div class="cu-label"><label>Şef İsmi</label><span class="cu-hint" id="hintName">—</span></div>
+            @Html.TextBoxFor(x => x.ChefName, new { @class="cu-input", id="inName", placeholder="Ahmet Yılmaz" })
+          </div>
+
+          <div class="cu-field">
+            <div class="cu-label"><label>Uzmanlık / Ünvan</label><span class="cu-hint" id="hintTitle">—</span></div>
+            @Html.TextBoxFor(x => x.ChefTitle, new { @class="cu-input", id="inTitle", placeholder="Baş Şef" })
+          </div>
+
+          <div class="cu-field">
+            <div class="cu-label"><label>Açıklama</label><span class="cu-hint">Canlı yansır</span></div>
+            @Html.TextAreaFor(x => x.ChefDescription, new { @class="cu-input", id="inDesc", placeholder="20 yıllık deneyime sahip..." })
+          </div>
+
+          <div class="cu-row">
+            <div class="cu-field">
+              <div class="cu-label"><label>Profil Fotoğraf URL</label><span class="cu-hint">https://...</span></div>
+              @Html.TextBoxFor(x => x.ImageFile, new { @class="cu-input", placeholder="https://..." })
+            </div>
+            <div class="cu-field">
+              <div class="cu-label"><label>Dosya</label><span class="cu-hint">Backend sonra</span></div>
+              <input type="file" class="cu-input" id="inImgFile" name="inImgFile" accept="image/*"/>
+
+            </div>
+          </div>
+
+          <div class="cu-row">
+            <div class="cu-field">
+              <div class="cu-label"><label>Facebook</label><span class="cu-hint">Opsiyonel</span></div>
+              @Html.TextBoxFor(x => x.ChefFacebookUrl, new { @class="cu-input", id="inFb", placeholder="https://facebook.com/..." })
+            </div>
+            <div class="cu-field">
+              <div class="cu-label"><label>Instagram</label><span class="cu-hint">Opsiyonel</span></div>
+              @Html.TextBoxFor(x => x.ChefInstagramUrl, new { @class="cu-input", id="inIg", placeholder="https://instagram.com/..." })
+            </div>
+          </div>
+
+          <div class="cu-row">
+            <div class="cu-field">
+              <div class="cu-label"><label>LinkedIn</label><span class="cu-hint">Opsiyonel</span></div>
+              @Html.TextBoxFor(x => x.ChefLinkedinUrl, new { @class="cu-input", id="inLi", placeholder="https://linkedin.com/in/..." })
+            </div>
+            <div class="cu-field">
+              <div class="cu-label"><label>X (Twitter)</label><span class="cu-hint">Opsiyonel</span></div>
+              @Html.TextBoxFor(x => x.ChefXUrl, new { @class="cu-input", id="inX", placeholder="https://x.com/..." })
+            </div>
+          </div>
+
+          <div class="cu-field">
+            <div class="cu-label"><label>Status</label><span class="cu-hint">Aktif / Pasif</span></div>
+
+            <div class="cu-toggle">
+              <div class="cu-switch" id="statusSwitch" role="switch" aria-checked="true"></div>
+              <b id="statusText" style="font-weight:950">Aktif</b>
+              <span class="cu-state ok" id="statusChip">Aktif</span>
+
+              @Html.CheckBoxFor(x => x.ChefStatus, new { id="statusHidden", style="display:none" })
+            </div>
+          </div>
+
+          <div class="cu-foot">
+            <button type="submit" class="cu-btn cu-btnPrimary">✨ Güncelle</button>
+            <a asp-action="ChefList" asp-controller="Chef" class="cu-btn">↩️ Vazgeç</a>
+          </div>
+        </form>
+
       </div>
     </div>
 
-    @using (Html.BeginForm("UpdateChef","Chef",FormMethod.Post))
-    {
-      @Html.HiddenFor(c=>c.ChefId)
-
-      <div class="f-group">
-        <label class="f-label">Şef İsmi</label>
-        @Html.TextBoxFor(c=>c.ChefName,new{@class="f-input", placeholder="Ahmet Yılmaz"})
+    <!-- RIGHT -->
+    <div class="cu-card cu-sticky">
+      <div class="cu-cardHead">
+        <h3 class="cu-cardTitle">Canlı Önizleme</h3>
+        <span class="cu-chip" id="pvStatusChip">Status: -</span>
       </div>
 
-      <div class="f-group">
-        <label class="f-label">Uzmanlık / Ünvan</label>
-        @Html.TextBoxFor(c=>c.ChefTitle,new{@class="f-input", placeholder="Baş Şef"})
-      </div>
+      <div class="cu-body">
+        <div class="cu-pvHero">
+          <div>
+            <p class="cu-pvName" id="pvName">Örn: —</p>
+            <p class="cu-pvTitle" id="pvTitle">Uzmanlık / Ünvan</p>
+          </div>
+          <span class="cu-pvChip ok" id="pvState">Aktif</span>
+        </div>
 
-      <div class="f-group">
-        <label class="f-label">Açıklama</label>
-        @Html.TextAreaFor(c=>c.ChefDescription,new{@class="f-input", placeholder="20 yıllık deneyime sahip..."})
-      </div>
+        <div class="cu-imgBox" id="pvImgBox">
+          <div class="cu-noimg">Resim önizlemesi burada görünecek.</div>
+        </div>
 
-      <div class="f-group">
-        <label class="f-label">Profil Fotoğraf URL</label>
-        @Html.TextBoxFor(c=>c.ImageFile,new{@class="f-input", id="ChefImageUrl", placeholder="https://..."})
-      </div>
+        <div class="cu-wideBox">
+          <p class="cu-k">“ Açıklama ”</p>
+          <p class="cu-v" id="pvDesc">Şef açıklaması burada görünür.</p>
+        </div>
 
-      <div class="f-group">
-        <label class="f-label">Facebook</label>
-        @Html.TextBoxFor(c=>c.ChefFacebookUrl,new{@class="f-input"})
-      </div>
+        <div class="cu-chipsRow">
+          <span class="cu-chip" id="chipFb">Facebook: -</span>
+          <span class="cu-chip" id="chipIg">Instagram: -</span>
+          <span class="cu-chip" id="chipLi">LinkedIn: -</span>
+          <span class="cu-chip" id="chipX">X: -</span>
+        </div>
 
-      <div class="f-group">
-        <label class="f-label">Instagram</label>
-        @Html.TextBoxFor(c=>c.ChefInstagramUrl,new{@class="f-input"})
+        <div class="cu-foot" style="margin-top:16px;">
+          <button type="button" class="cu-btn cu-btnDanger" id="btnClear2">🧹 Önizlemeyi Temizle</button>
+          <span class="cu-pill" style="padding:8px 12px;">Live</span>
+        </div>
       </div>
-
-      <div class="f-group">
-        <label class="f-label">LinkedIn</label>
-        @Html.TextBoxFor(c=>c.ChefLinkedinUrl,new{@class="f-input"})
-      </div>
-
-      <div class="f-group">
-        <label class="f-label">X (Twitter)</label>
-        @Html.TextBoxFor(c=>c.ChefXUrl,new{@class="f-input"})
-      </div>
-
-      <div class="status-wrap">
-        @Html.CheckBoxFor(c=>c.ChefStatus)
-        <label>Aktif olarak yayınla</label>
-      </div>
-
-      <div class="form-actions">
-        <button type="submit" class="btn-ai btn-primary">
-          ✨ Güncelle
-        </button>
-
-        <a asp-action="Index" asp-controller="Chef" class="btn-ai btn-cancel">
-          ↩️ Vazgeç
-        </a>
-      </div>
-    }
+    </div>
 
   </div>
 </div>
 
+@section Scripts {
 <script>
 (function () {
-  const input = document.getElementById("ChefImageUrl") || document.querySelector('input[name="ChefImageUrl"]');
-  const previewBox = document.getElementById("chefPreview") || document.querySelector(".preview");
+  const $ = (id) => document.getElementById(id);
 
-  if (!input || !previewBox) return;
+  // inputs
+  const inName   = $("inName");
+  const inTitle  = $("inTitle");
+  const inDesc   = $("inDesc");
+  const inImgFile = $("inImgFile"); // ✅ file input (DIŞARIDA)
+  const inFb     = $("inFb");
+  const inIg     = $("inIg");
+  const inLi     = $("inLi");
+  const inX      = $("inX");
 
-  let img = previewBox.querySelector("img");
+  // hints
+  const hintName  = $("hintName");
+  const hintTitle = $("hintTitle");
 
-  function showNoImg() {
-    previewBox.innerHTML = '<div class="noimg">No Img</div>';
-    img = null;
+  // preview nodes
+  const pvName   = $("pvName");
+  const pvTitle  = $("pvTitle");
+  const pvDesc   = $("pvDesc");
+  const pvImgBox = $("pvImgBox");
+
+  const chipFb = $("chipFb");
+  const chipIg = $("chipIg");
+  const chipLi = $("chipLi");
+  const chipX  = $("chipX");
+
+  // status
+  const statusSwitch = $("statusSwitch");
+  const statusHidden = $("statusHidden");
+  const statusText   = $("statusText");
+  const statusChip   = $("statusChip");
+
+  const pvState     = $("pvState");
+  const pvStatusChip = $("pvStatusChip");
+
+  // buttons
+  const btnClear  = $("btnClear");
+  const btnClear2 = $("btnClear2");
+
+  let lastObjectUrl = null;
+
+  function safeText(v, fallback) {
+    const t = (v ?? "").toString().trim();
+    return t.length ? t : (fallback ?? "—");
   }
 
-  function ensureImg() {
-    if (!img) {
-      previewBox.innerHTML = '<img id="chefPreviewImg" alt="Preview" />';
-      img = previewBox.querySelector("img");
+  function shortLink(label, url) {
+    const t = (url || "").trim();
+    if (!t) return `${label}: -`;
+    const max = 28;
+    const shown = t.length > max ? (t.slice(0, max) + "…") : t;
+    return `${label}: ${shown}`;
+  }
+
+  function paintStatus(isOn) {
+    statusSwitch?.classList.toggle("on", isOn);
+    if (statusText) statusText.textContent = isOn ? "Aktif" : "Pasif";
+
+    if (statusChip) {
+      statusChip.classList.toggle("ok", isOn);
+      statusChip.classList.toggle("off", !isOn);
+      statusChip.textContent = isOn ? "Aktif" : "Pasif";
     }
-    return img;
+
+    if (pvState) {
+      pvState.classList.toggle("ok", isOn);
+      pvState.classList.toggle("off", !isOn);
+      pvState.textContent = isOn ? "Aktif" : "Pasif";
+    }
+
+    if (pvStatusChip) pvStatusChip.textContent = `Status: ${isOn ? "Aktif" : "Pasif"}`;
   }
 
-  function updatePreview(url) {
-    const val = (url || "").trim();
-    if (!val) {
-      showNoImg();
+  function setFilePreview() {
+    if (!pvImgBox) return;
+
+    // önceki object url'i temizle
+    if (lastObjectUrl) {
+      URL.revokeObjectURL(lastObjectUrl);
+      lastObjectUrl = null;
+    }
+
+    const file = inImgFile?.files?.[0];
+    if (!file) {
+      pvImgBox.innerHTML = '<div class="cu-noimg">Resim önizlemesi burada görünecek.</div>';
       return;
     }
 
-    const el = ensureImg();
+    const url = URL.createObjectURL(file);
+    lastObjectUrl = url;
 
-    el.onload = function(){ /* ok */ };
-    el.onerror = function(){ showNoImg(); };
-
-    // Cache-bypass tiny (aynı url tekrar yazılınca da güncellesin)
-    const cacheBust = (val.includes("?") ? "&" : "?") + "v=" + Date.now();
-    el.src = val + cacheBust;
+    pvImgBox.innerHTML = '<img alt="Chef" />';
+    const img = pvImgBox.querySelector("img");
+    img.onerror = () => {
+      pvImgBox.innerHTML = '<div class="cu-noimg">Görsel yüklenemedi.</div>';
+    };
+    img.src = url;
   }
 
-  // İlk değer
-  updatePreview(input.value);
+  function updatePreview() {
+    const name  = safeText(inName?.value, "—");
+    const title = safeText(inTitle?.value, "Uzmanlık / Ünvan");
+    const desc  = safeText(inDesc?.value, "Şef açıklaması burada görünür.");
 
-  // Yazdıkça anlık
-  input.addEventListener("input", function () {
-    updatePreview(this.value);
+    if (pvName)  pvName.textContent  = `Örn: ${name}`;
+    if (pvTitle) pvTitle.textContent = title;
+    if (pvDesc)  pvDesc.textContent  = desc;
+
+    if (hintName)  hintName.textContent  = (name === "—") ? "—" : "Hazır";
+    if (hintTitle) hintTitle.textContent = (title === "Uzmanlık / Ünvan") ? "—" : "Hazır";
+
+    if (chipFb) chipFb.textContent = shortLink("Facebook", inFb?.value);
+    if (chipIg) chipIg.textContent = shortLink("Instagram", inIg?.value);
+    if (chipLi) chipLi.textContent = shortLink("LinkedIn", inLi?.value);
+    if (chipX)  chipX.textContent  = shortLink("X", inX?.value);
+
+    setFilePreview();
+    paintStatus(!!statusHidden?.checked);
+  }
+
+  // status toggle click
+  statusSwitch?.addEventListener("click", () => {
+    if (!statusHidden) return;
+    statusHidden.checked = !statusHidden.checked;
+    updatePreview();
   });
+
+  // live binds (✅ inImgUrl yok)
+  [inName, inTitle, inDesc, inFb, inIg, inLi, inX].forEach(inp => {
+    inp?.addEventListener("input", updatePreview);
+    inp?.addEventListener("change", updatePreview);
+  });
+
+  // ✅ file change listener (DOĞRU YER)
+  inImgFile?.addEventListener("change", updatePreview);
+
+  function clearAll() {
+    if (inName)  inName.value = "";
+    if (inTitle) inTitle.value = "";
+    if (inDesc)  inDesc.value = "";
+    if (inFb)    inFb.value = "";
+    if (inIg)    inIg.value = "";
+    if (inLi)    inLi.value = "";
+    if (inX)     inX.value = "";
+
+    if (inImgFile) inImgFile.value = ""; // ✅ file reset
+    if (statusHidden) statusHidden.checked = false;
+
+    updatePreview();
+  }
+
+  btnClear?.addEventListener("click", clearAll);
+  btnClear2?.addEventListener("click", clearAll);
+
+  // init
+  updatePreview();
 })();
 </script>
+}

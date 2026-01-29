@@ -1,53 +1,552 @@
 @using YummyUI.DTOs.AboutDTO
 @model GetAboutByIdDto
+
 @{
-    Layout="_AdminLayout";
+    ViewData["Title"] = "About • Update";
+    Layout = "_AdminLayout";
 }
 
-<div class="section">
-    <div class="section-body">
-        <div class="row">
-            <div class="col-12 md-12 col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Öne Çıkan Alan</h4>
-                    </div>
-                    <div class="card-body w-25">
-                        @using (Html.BeginForm("AboutUpdate", "About", FormMethod.Post))
-                        {
-                            @Html.HiddenFor(x => x.AboutId)
-                            <div class="form-group">
-                                <label>Başlık</label>
-                                @Html.TextBoxFor(x => x.AboutTitle, new { @class = "form-control" })
-                            </div>
+@section Styles{
+<style>
+  :root{
+    --bg0:#050814; --bg1:#070b1f;
+    --glass: rgba(255,255,255,.08);
+    --glass2: rgba(255,255,255,.06);
+    --stroke: rgba(255,255,255,.14);
+    --stroke2: rgba(255,255,255,.10);
+    --txt: rgba(255,255,255,.92);
+    --muted: rgba(255,255,255,.65);
+    --muted2: rgba(255,255,255,.45);
+    --shadow: 0 22px 70px rgba(0,0,0,.55);
+    --shadow2: 0 14px 44px rgba(0,0,0,.45);
+    --radius: 22px;
+    --radius2: 18px;
 
-                            <div class="form-group">
-                                <label>Alt Başlık</label>
-                                @Html.TextBoxFor(x => x.AboutSubTitle, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                <label>Hakkında</label>
-                                @Html.TextAreaFor(x => x.AboutTitleChecked1, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                <label>Hakkında</label>
-                                @Html.TextAreaFor(x => x.AboutTitleChecked2, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                <label>Hakkında</label>
-                                @Html.TextAreaFor(x => x.AboutTitleChecked3, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(x => x.AboutImageUrl, new { @class = "form-control" })
-                            </div>
-                            <div class="form-group">
-                                @Html.TextBoxFor(x => x.AboutVideoUrl, new { @class = "form-control" })
-                            </div>
-                            <button type="submit" class="btn btn-primary mt-4">Save</button>
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
+    --primary:#ffb020;
+    --primary2:#ffd27a;
+    --danger:#ff4d6d;
+
+    --ring: rgba(255,176,32,.16);
+    --ring2: rgba(99,102,241,.16);
+  }
+
+  .ab-page{
+    min-height: calc(100vh - 60px);
+    padding: 24px 22px 34px;
+    color: var(--txt);
+    background:
+      radial-gradient(1200px 700px at 12% 18%, rgba(255,176,32,.18), transparent 55%),
+      radial-gradient(900px 600px at 85% 20%, rgba(60,130,255,.20), transparent 60%),
+      radial-gradient(900px 600px at 70% 85%, rgba(168,85,247,.22), transparent 55%),
+      linear-gradient(180deg, var(--bg0), var(--bg1));
+    position: relative;
+    overflow: hidden;
+    border-radius: 22px;
+  }
+
+  .ab-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: .16;
+    pointer-events:none;
+    mask-image: radial-gradient(circle at 40% 20%, black 30%, transparent 70%);
+  }
+
+  .ab-orb{ position:absolute; border-radius: 999px; opacity:.34; pointer-events:none; filter: blur(.2px);}
+  .ab-orb.o1{ width:340px; height:340px; left:-140px; top:120px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,176,32,.58), rgba(255,176,32,.12), transparent 70%); }
+  .ab-orb.o2{ width:440px; height:440px; right:-170px; top:50px;
+    background: radial-gradient(circle at 30% 30%, rgba(59,130,246,.55), rgba(59,130,246,.12), transparent 70%); }
+  .ab-orb.o3{ width:560px; height:560px; right:110px; bottom:-290px;
+    background: radial-gradient(circle at 30% 30%, rgba(168,85,247,.55), rgba(168,85,247,.14), transparent 70%); }
+
+  .ab-header{
+    position: relative;
+    display:flex; justify-content:space-between; align-items:flex-start;
+    gap: 14px; margin-bottom: 18px;
+  }
+
+  .ab-title{
+    margin:0 0 6px;
+    font-size: 30px;
+    font-weight: 950;
+    letter-spacing:.2px;
+    text-shadow: 0 12px 34px rgba(0,0,0,.35);
+  }
+  .ab-sub{ margin:0; color: var(--muted); font-size: 13.5px; }
+
+  .ab-pill{
+    display:inline-flex; align-items:center; gap:10px;
+    padding: 10px 14px; border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    color: var(--muted);
+    font-size: 12.5px;
+    white-space:nowrap;
+  }
+
+  .ab-layout{
+    position: relative;
+    display:grid;
+    grid-template-columns: 1.08fr .92fr;
+    gap: 18px;
+  }
+  @@media (max-width: 1100px){ .ab-layout{ grid-template-columns: 1fr; } }
+
+  .ab-card{
+    background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.06));
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    overflow: hidden;
+    position: relative;
+  }
+  .ab-card::before{
+    content:"";
+    position:absolute; inset:-2px;
+    background: radial-gradient(700px 260px at 18% 0%, rgba(255,176,32,.18), transparent 60%),
+                radial-gradient(700px 260px at 88% 12%, rgba(99,102,241,.18), transparent 55%);
+    opacity:.55;
+    pointer-events:none;
+  }
+  .ab-card > *{ position:relative; }
+
+  .ab-head{
+    padding: 16px 18px;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom: 1px solid rgba(255,255,255,.10);
+    background: linear-gradient(180deg, rgba(0,0,0,.10), transparent);
+  }
+
+  .ab-head-left{ display:flex; align-items:center; gap: 12px; }
+  .ab-icon{
+    width: 46px; height: 46px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,.18);
+    background:
+      radial-gradient(circle at 30% 30%, rgba(255,255,255,.26), rgba(255,255,255,.08)),
+      linear-gradient(180deg, rgba(99,102,241,.45), rgba(168,85,247,.30));
+    box-shadow: 0 16px 40px rgba(0,0,0,.35);
+    display:grid; place-items:center;
+    font-weight: 950;
+    color: rgba(255,255,255,.92);
+  }
+
+  .ab-card-title{
+    margin:0;
+    font-size: 16px;
+    font-weight: 950;
+    letter-spacing:.2px;
+  }
+  .ab-card-sub{
+    margin:2px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 800;
+  }
+
+  .ab-body{ padding: 18px; }
+
+  .ab-btn{
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.08);
+    color: rgba(255,255,255,.88);
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-weight: 950;
+    font-size: 13px;
+    cursor:pointer;
+    transition: .15s ease;
+    user-select:none;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    box-shadow: 0 14px 44px rgba(0,0,0,.30);
+  }
+  .ab-btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.24); }
+  .ab-btn.primary{
+    background: linear-gradient(180deg, rgba(255,176,32,.98), rgba(255,176,32,.74));
+    color: rgba(0,0,0,.82);
+    border-color: rgba(255,176,32,.60);
+  }
+  .ab-btn.ghost{ background: rgba(255,255,255,.06); }
+
+  .ab-val{ color:#ff9aa9; margin: 0 0 10px 0; font-weight: 850; font-size: 13px; }
+
+  .ab-row{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @@media (max-width: 700px){ .ab-row{ grid-template-columns: 1fr; } }
+
+  .ab-field{ margin-bottom: 12px; }
+  .ab-label{
+    display:flex; align-items:center; justify-content:space-between; gap: 10px;
+    margin-bottom: 7px;
+  }
+  .ab-label label{ margin:0; font-weight: 950; font-size: 12.8px; color: rgba(255,255,255,.84); }
+  .ab-hint{ color: var(--muted2); font-size: 12px; font-weight: 850; }
+
+  .ab-input, .ab-textarea{
+    width: 100%;
+    border-radius: 16eme: 14px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.18);
+    color: rgba(255,255,255,.92);
+    padding: 12px 12px;
+    outline: none;
+    transition: .15s ease;
+  }
+  .ab-textarea{ min-height: 100px; resize: vertical; }
+
+  .ab-input:focus, .ab-textarea:focus{
+    border-color: rgba(255,176,32,.55);
+    box-shadow: 0 0 0 4px var(--ring);
+  }
+
+  .ab-divider{
+    height: 1px;
+    background: rgba(255,255,255,.10);
+    margin: 14px 0;
+  }
+
+  /* Preview */
+  .ab-sticky{ position: sticky; top: 18px; }
+
+  .pv-hero{
+    display:flex; align-items:flex-start; justify-content:space-between; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .pv-title{ margin:0; font-size: 18px; font-weight: 950; }
+  .pv-sub{ margin: 6px 0 0; color: var(--muted); font-size: 13px; font-weight: 850; }
+
+  .pv-shot{
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.18);
+    padding: 10px;
+    box-shadow: var(--shadow2);
+  }
+  .pv-shot img{
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    display:block;
+  }
+
+  .pv-grid{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .pv-block{
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.16);
+    padding: 12px;
+  }
+  .pv-k{ color: var(--muted2); font-weight: 900; font-size: 12px; margin:0 0 6px; }
+  .pv-v{ margin:0; font-weight: 900; font-size: 14px; color: rgba(255,255,255,.92); }
+
+  .pv-list{
+    margin:0; padding-left: 18px;
+    color: rgba(255,255,255,.90);
+    font-weight: 850;
+    line-height: 1.55;
+  }
+  .pv-list li{ margin: 6px 0; }
+  .pv-link{
+    display:inline-flex; gap:8px; align-items:center;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.88);
+    text-decoration:none;
+    font-weight: 900;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ab-foot{ display:flex; gap:10px; justify-content:space-between; margin-top: 14px; }
+</style>
+}
+
+<div class="ab-page">
+  <div class="ab-grid"></div>
+  <div class="ab-orb o1"></div>
+  <div class="ab-orb o2"></div>
+  <div class="ab-orb o3"></div>
+
+  <div class="ab-header">
+    <div>
+      <h1 class="ab-title">Yeni Hakkımızda Alan Girişi</h1>
+      <p class="ab-sub">Başlıq, maddələr, şəkil və video linki əlavə edin</p>
     </div>
+    <div class="ab-pill">Admin • About • Update</div>
+  </div>
+
+  <div class="ab-layout">
+
+    <!-- LEFT: FORM -->
+    <div class="ab-card">
+      <div class="ab-head">
+        <div class="ab-head-left">
+          <div class="ab-icon">i</div>
+          <div>
+            <p class="ab-card-title">Yeni Hakkımızda Alan Girişi</p>
+            <p class="ab-card-sub">Başlıq, maddələr, şəkil və video linki əlavə edin</p>
+          </div>
+        </div>
+
+        <button type="button" class="ab-btn ghost" id="btnClear">
+          Önizlemeyi Temizle
+        </button>
+      </div>
+
+      <div class="ab-body">
+        <form asp-controller="About" asp-action="AboutUpdate" method="post" id="aboutForm">
+          @Html.AntiForgeryToken()
+
+          <input asp-for="AboutId" type="hidden" />
+
+          <div asp-validation-summary="All" class="ab-val"></div>
+
+          <div class="ab-field">
+            <div class="ab-label">
+              <label asp-for="AboutTitle">Başlıq</label>
+              <span class="ab-hint">qısa</span>
+            </div>
+            <input asp-for="AboutTitle" class="ab-input" id="inTitle" />
+          </div>
+
+          <div class="ab-field">
+            <div class="ab-label">
+              <label asp-for="AboutSubTitle">Alt Başlıq</label>
+              <span class="ab-hint">1 cümlə</span>
+            </div>
+            <input asp-for="AboutSubTitle" class="ab-input" id="inSub" />
+          </div>
+
+          <div class="ab-field">
+            <div class="ab-label">
+              <label asp-for="AboutTitleChecked1">Madde 1</label>
+              <span class="ab-hint">✓</span>
+            </div>
+            <input asp-for="AboutTitleChecked1" class="ab-input" id="inM1" />
+          </div>
+
+          <div class="ab-field">
+            <div class="ab-label">
+              <label asp-for="AboutTitleChecked2">Madde 2</label>
+              <span class="ab-hint">✓</span>
+            </div>
+            <input asp-for="AboutTitleChecked2" class="ab-input" id="inM2" />
+          </div>
+
+          <div class="ab-field">
+            <div class="ab-label">
+              <label asp-for="AboutTitleChecked3">Madde 3</label>
+              <span class="ab-hint">✓</span>
+            </div>
+            <input asp-for="AboutTitleChecked3" class="ab-input" id="inM3" />
+          </div>
+
+          <div class="ab-divider"></div>
+
+          <div class="ab-row">
+            <div class="ab-field">
+              <div class="ab-label">
+                <label asp-for="AboutImageUrl">Image URL</label>
+                <span class="ab-hint">https://...</span>
+              </div>
+              <input asp-for="AboutImageUrl" class="ab-input" id="inImg" placeholder="https://..." />
+            </div>
+
+            <div class="ab-field">
+              <div class="ab-label">
+                <label asp-for="AboutVideoUrl">Video URL</label>
+                <span class="ab-hint">youtube/drive</span>
+              </div>
+              <input asp-for="AboutVideoUrl" class="ab-input" id="inVid" placeholder="https://..." />
+            </div>
+          </div>
+
+          <div class="ab-field">
+            <div class="ab-label">
+              <label>Açıklama</label>
+              <span class="ab-hint">opsional</span>
+            </div>
+            <!-- Səndə Description field yoxdursa, bunu sil -->
+            <textarea class="ab-textarea" id="inDesc" placeholder="hakkında alanı..."></textarea>
+          </div>
+
+          <div class="ab-foot">
+            <button type="submit" class="ab-btn primary">Save</button>
+            <a class="ab-btn ghost" href="javascript:history.back()">Geri</a>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- RIGHT: PREVIEW -->
+    <div class="ab-card ab-sticky">
+      <div class="ab-head">
+        <div class="ab-head-left">
+          <div style="width:12px"></div>
+          <div>
+            <p class="ab-card-title" id="pvTitle">@(Model?.AboutTitle ?? "Bizim Kafemiz")</p>
+            <p class="ab-card-sub" id="pvSub">@(Model?.AboutSubTitle ?? "Dad, rahatlıq və səmimiyyət bir arada")</p>
+          </div>
+        </div>
+        <span class="ab-pill" style="padding:8px 12px;">Live</span>
+      </div>
+
+      <div class="ab-body">
+        <div class="pv-shot">
+          <img id="pvImg"
+               src="@(string.IsNullOrWhiteSpace(Model?.AboutImageUrl) ? "https://via.placeholder.com/1200x600?text=Preview" : Model.AboutImageUrl)"
+               alt="preview" />
+        </div>
+
+        <div class="pv-grid">
+          <div class="pv-block">
+            <p class="pv-k">hakkında alanı</p>
+            <p class="pv-v" id="pvDesc">hakkında alanı</p>
+          </div>
+
+          <div class="pv-block">
+            <ul class="pv-list" id="pvList">
+              <li id="pvM1">@(Model?.AboutTitleChecked1 ?? "Dad, rahatlıq və səmimiyyət bir arada")</li>
+              <li id="pvM2">@(Model?.AboutTitleChecked2 ?? "Dad, rahatlıq və səmimiyyət bir arada")</li>
+              <li id="pvM3">@(Model?.AboutTitleChecked3 ?? "Dad, rahatlıq və səmimiyyət bir arada")</li>
+            </ul>
+          </div>
+
+          <div class="pv-block">
+            <a class="pv-link" id="pvVideo" href="@(Model?.AboutVideoUrl ?? "#")" target="_blank" rel="noopener">
+              🎬 Video:
+              <span style="opacity:.85; font-weight:850;" id="pvVidTxt">
+                @(string.IsNullOrWhiteSpace(Model?.AboutVideoUrl) ? "https://www.youtube.com/watch?v=VIDEO_ID" : Model.AboutVideoUrl)
+              </span>
+            </a>
+          </div>
+        </div>
+
+        <div class="ab-foot" style="margin-top:16px;">
+          <button type="button" class="ab-btn ghost" id="btnClear2">Önizlemeyi Temizle</button>
+          <span class="ab-pill" style="padding:8px 12px;">Preview</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
+
+@section Scripts{
+<script>
+(function(){
+  const el = (id) => document.getElementById(id);
+
+  const inTitle = el("inTitle");
+  const inSub   = el("inSub");
+  const inM1    = el("inM1");
+  const inM2    = el("inM2");
+  const inM3    = el("inM3");
+  const inImg   = el("inImg");
+  const inVid   = el("inVid");
+  const inDesc  = el("inDesc");
+
+  const pvTitle = el("pvTitle");
+  const pvSub   = el("pvSub");
+  const pvM1    = el("pvM1");
+  const pvM2    = el("pvM2");
+  const pvM3    = el("pvM3");
+  const pvImg   = el("pvImg");
+  const pvVideo = el("pvVideo");
+  const pvVidTxt= el("pvVidTxt");
+  const pvDesc  = el("pvDesc");
+
+  const btnClear  = el("btnClear");
+  const btnClear2 = el("btnClear2");
+
+  const FALL_TITLE = "Bizim Kafemiz";
+  const FALL_SUB   = "Dad, rahatlıq və səmimiyyət bir arada";
+  const FALL_M     = "Dad, rahatlıq və səmimiyyət bir arada";
+  const FALL_V     = "https://www.youtube.com/watch?v=VIDEO_ID";
+  const FALL_IMG   = "https://via.placeholder.com/1200x600?text=Preview";
+  const FALL_DESC  = "hakkında alanı";
+
+  function setText(node, v, fallback){
+    if(!node) return;
+    const t = (v || "").trim();
+    node.textContent = t ? t : fallback;
+  }
+
+  function setImg(url){
+    const u = (url || "").trim();
+    pvImg.src = u ? u : FALL_IMG;
+  }
+
+  function setVideo(url){
+    const u = (url || "").trim();
+    const link = u ? u : FALL_V;
+    pvVideo.href = link;
+    pvVidTxt.textContent = link;
+  }
+
+  function update(){
+    setText(pvTitle, inTitle?.value, FALL_TITLE);
+    setText(pvSub,   inSub?.value,   FALL_SUB);
+    setText(pvM1,    inM1?.value,    FALL_M);
+    setText(pvM2,    inM2?.value,    FALL_M);
+    setText(pvM3,    inM3?.value,    FALL_M);
+
+    setText(pvDesc,  inDesc?.value,  FALL_DESC);
+
+    setImg(inImg?.value);
+    setVideo(inVid?.value);
+  }
+
+  function clearAll(){
+    if(inTitle) inTitle.value = "";
+    if(inSub)   inSub.value = "";
+    if(inM1)    inM1.value = "";
+    if(inM2)    inM2.value = "";
+    if(inM3)    inM3.value = "";
+    if(inImg)   inImg.value = "";
+    if(inVid)   inVid.value = "";
+    if(inDesc)  inDesc.value = "";
+    update();
+  }
+
+  ["input","change"].forEach(evt=>{
+    inTitle?.addEventListener(evt, update);
+    inSub?.addEventListener(evt, update);
+    inM1?.addEventListener(evt, update);
+    inM2?.addEventListener(evt, update);
+    inM3?.addEventListener(evt, update);
+    inImg?.addEventListener(evt, update);
+    inVid?.addEventListener(evt, update);
+    inDesc?.addEventListener(evt, update);
+  });
+
+  btnClear?.addEventListener("click", clearAll);
+  btnClear2?.addEventListener("click", clearAll);
+
+  // init
+  update();
+})();
+</script>
+}

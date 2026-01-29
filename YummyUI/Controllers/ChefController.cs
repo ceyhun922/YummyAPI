@@ -99,6 +99,8 @@ namespace YummyUI.Controllers
             }
             return View();
         }
+     [HttpPost]
+[ValidateAntiForgeryToken]
 
         public async Task<IActionResult> UpdateChef(GetByIdChefDto getByIdChefDto)
         {
@@ -117,6 +119,5 @@ namespace YummyUI.Controllers
 
 
         }
-
     }
 }
