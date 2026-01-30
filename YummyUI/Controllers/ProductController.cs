@@ -99,6 +99,7 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> ProductUpdate(int id)
         {
             var client = _httpClientFactory.CreateClient();
+            
 
             var ProductResponse = await client.GetAsync("http://localhost:5289/api/Products/GetOneProduct?id=" + id);
             var productJson = await ProductResponse.Content.ReadAsStringAsync();
@@ -117,10 +118,35 @@ namespace YummyUI.Controllers
 
             return View(Product);
         }
-
-        public async Task<IActionResult> ProductUpdate(GetByIdProductDto getByIdProductDto)
+        
+        [HttpPost]
+        public async Task<IActionResult> ProductUpdate(GetByIdProductDto getByIdProductDto, IFormFile file)
         {
             var client = _httpClientFactory.CreateClient();
+
+           if (file != null && file.Length > 0)
+            {
+                using var uploadContent = new MultipartFormDataContent();
+                using var stream = file.OpenReadStream();
+
+                var fileContent = new StreamContent(stream);
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+                uploadContent.Add(fileContent, "File", file.FileName);
+
+                var fileResponse = await client.PostAsync("http://localhost:5289/api/FileImage", uploadContent);
+                if (!fileResponse.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError("", "Hata");
+                    return View(getByIdProductDto);
+                }
+                var uploadJson = await fileResponse.Content.ReadAsStringAsync();
+                var doc = JsonDocument.Parse(uploadJson);
+                var fileName = doc.RootElement.GetProperty("fileName").GetString();
+
+                getByIdProductDto.ImageFile = $"/images/{fileName}";
+            }
+            
             var jsonData = JsonConvert.SerializeObject(getByIdProductDto);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
