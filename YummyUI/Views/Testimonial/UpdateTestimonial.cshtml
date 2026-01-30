@@ -1,71 +1,80 @@
 @using YummyUI.DTOs.TestimonialDTOs
 @model GetByIdTestimonialDto
+
 @{
     Layout = "_AdminLayout";
-    ViewData["Title"] = "Müşteri Görüşü Güncəllə";
+    ViewData["Title"] = "Müşteri Görüşü Güncelle";
+
+    var apiBase = "http://localhost:5289";
+    var existingImg = Model?.TestimonialImageUrl ?? "";
+    if (!string.IsNullOrWhiteSpace(existingImg) && existingImg.StartsWith("/images/"))
+        existingImg = apiBase + existingImg;
 }
 
 <div class="admin-create-page">
 
-    <!-- Header -->
     <div class="page-hero">
         <div class="hero-left">
             <div class="hero-icon">
-                <i class="fas fa-pen-nib"></i>
+                <i class="fas fa-pen-to-square"></i>
             </div>
             <div>
-                <h1 class="hero-title">Müşteri Görüşü Güncəllə</h1>
-                <p class="hero-subtitle">Məlumatları yeniləyin və sağdakı önizləmədə canlı görün.</p>
+                <h1 class="hero-title">Müşteri Görüşü Güncelle</h1>
+                <p class="hero-subtitle">Başlık, mesaj, görsel ve durumu güncelleyin.</p>
             </div>
         </div>
 
         <div class="hero-right">
-            <span class="status-pill @(Model?.TestimonialStatus == true ? "is-active" : "is-passive")" id="topStatusPill">
+            <span class="status-pill @(Model.TestimonialStatus ? "is-active" : "is-passive")" id="heroStatusPill">
                 <span class="dot"></span>
-                @(Model?.TestimonialStatus == true ? "Aktiv" : "Pasif")
+                <span id="heroStatusText">@(Model.TestimonialStatus ? "Aktif" : "Pasif")</span>
             </span>
         </div>
     </div>
 
     <div class="grid-2">
-        <!-- LEFT: FORM -->
         <div class="glass-card">
             <div class="glass-card-header">
-                <h3>Görüş güncəlləmə paneli</h3>
+                <h3>Görüş Güncelleme Paneli</h3>
             </div>
 
             <div class="glass-card-body">
-                @using (Html.BeginForm("UpdateTestimonial", "Testimonial", FormMethod.Post, new { @class = "glass-form", autocomplete = "off" }))
+                @using (Html.BeginForm("UpdateTestimonial", "Testimonial", FormMethod.Post,
+                    new { enctype = "multipart/form-data", @class = "glass-form", autocomplete = "off" }))
                 {
                     @Html.HiddenFor(x => x.TestimonialId)
 
+                    <input type="hidden" id="existingImg" name="TestimonialImageUrl" value="@existingImg" />
+
                     <div class="form-row">
-                        <label class="form-label">Müştəri adı</label>
-                        @Html.TextBoxFor(x => x.TestimonialName, new { @class = "glass-input", placeholder = "Örn: Elvin Məmmədov", id = "inpName" })
+                        <label class="form-label">Müşteri Adı</label>
+                        @Html.TextBoxFor(x => x.TestimonialName, new { @class = "glass-input", id = "inpName" })
                     </div>
 
                     <div class="form-row">
-                        <label class="form-label">Vəzifə / Başlıq</label>
-                        @Html.TextBoxFor(x => x.TestimonialTitle, new { @class = "glass-input", placeholder = "Örn: Müştəri / CEO / Menecer...", id = "inpTitle" })
+                        <label class="form-label">Ünvan / Başlık</label>
+                        @Html.TextBoxFor(x => x.TestimonialTitle, new { @class = "glass-input", id = "inpTitle" })
                     </div>
 
                     <div class="form-row">
                         <label class="form-label">Mesaj</label>
-                        @Html.TextAreaFor(x => x.TestimonialMessage, new { @class = "glass-textarea", rows = "5", placeholder = "Müştərinin rəyi burada yazılacaq...", id = "inpMsg" })
+                        @Html.TextAreaFor(x => x.TestimonialMessage, new { @class = "glass-textarea", rows = 5, id = "inpMsg" })
                     </div>
 
                     <div class="form-row">
-                        <label class="form-label">Şəkil URL</label>
-                        @Html.TextBoxFor(x => x.TestimonialImageUrl, new { @class = "glass-input", placeholder = "https://...", id = "inpImg" })
-                        <small class="form-hint">Link düzgün olarsa şəkil sağdakı önizləmədə görünəcək.</small>
+                        <label class="form-label">Görsel (Sadece Dosya)</label>
+                        <input type="file"
+                               name="file"
+                               id="inpImgFile"
+                               class="glass-input"
+                               accept=".jpg,.jpeg,.png,.webp" />
+                        <small class="form-hint">
+                            Dosya seçmezseniz mevcut görsel korunur.
+                        </small>
                     </div>
 
                     <div class="form-row form-row-inline">
-                        <div class="inline-left">
-                            <label class="form-label">Status</label>
-                            <small class="form-hint">Pasif olan rəylər saytda görünməyə bilər.</small>
-                        </div>
-
+                        <label class="form-label">Durum</label>
                         <label class="switch">
                             @Html.CheckBoxFor(x => x.TestimonialStatus, new { id = "inpStatus" })
                             <span class="slider"></span>
@@ -74,52 +83,51 @@
 
                     <div class="form-actions">
                         <button class="btn-primary" type="submit">
-                            <i class="fas fa-save"></i>
-                            Güncəllə
+                            <i class="fas fa-save"></i> Güncelle
                         </button>
-
-                        <a class="btn-secondary" href="/Testimonial/Index">
-                            <i class="fas fa-arrow-left"></i>
-                            Geri
+                        <a href="/Testimonial/TestimonialList" class="btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Geri Dön
                         </a>
                     </div>
                 }
             </div>
         </div>
 
-        <!-- RIGHT: LIVE PREVIEW -->
         <div class="glass-card">
-            <div class="glass-card-header preview-header">
-                <h3>Live Preview</h3>
+            <div class="glass-card-header">
+                <h3>Canlı Önizleme</h3>
             </div>
 
             <div class="glass-card-body">
                 <div class="preview-card">
+
                     <div class="preview-top">
-                        <div class="preview-avatar" id="prevAvatar">
-                            <i class="fas fa-user"></i>
-                        </div>
+                        <div class="preview-avatar"><i class="fas fa-user"></i></div>
 
                         <div class="preview-meta">
-                            <div class="preview-title" id="prevName">Başlıq burada görünəcək</div>
-                            <div class="preview-subtitle" id="prevTitle">Alt başlıq burada görünəcək</div>
+                            <div class="preview-title" id="prevName"></div>
+                            <div class="preview-subtitle" id="prevTitle"></div>
                         </div>
 
                         <span class="status-pill small" id="prevStatus">
-                            <span class="dot"></span> Pasif
+                            <span class="dot"></span>
                         </span>
                     </div>
 
-                    <div class="preview-image" id="prevImageWrap">
-                        <div class="preview-image-placeholder">
-                            Resim önizlemesi burada görünecek.
+                    <div class="preview-image">
+                        <img id="prevImage"
+                             src="@existingImg"
+                             style="@(string.IsNullOrEmpty(existingImg) ? "display:none" : "display:block")" />
+
+                        <div id="prevImgPh"
+                             class="preview-image-placeholder"
+                             style="@(string.IsNullOrEmpty(existingImg) ? "display:flex" : "display:none")">
+                            Görsel önizlemesi
                         </div>
-                        <img id="prevImage" src="" alt="preview" style="display:none;" />
                     </div>
 
-                    <div class="preview-message" id="prevMsg">
-                        Açıklama burada görünecek.
-                    </div>
+                    <div class="preview-message" id="prevMsg"></div>
+
                 </div>
             </div>
         </div>
@@ -127,82 +135,89 @@
 </div>
 
 @section Scripts {
-    <script>
-        (function () {
-            const elName = document.getElementById("inpName");
-            const elTitle = document.getElementById("inpTitle");
-            const elMsg = document.getElementById("inpMsg");
-            const elImg = document.getElementById("inpImg");
-            const elStatus = document.getElementById("inpStatus");
+<script>
+(function () {
+    const $ = id => document.getElementById(id);
+    const API_BASE = "http://localhost:5289";
 
-            const prevName = document.getElementById("prevName");
-            const prevTitle = document.getElementById("prevTitle");
-            const prevMsg = document.getElementById("prevMsg");
+    const elName = $("inpName");
+    const elTitle = $("inpTitle");
+    const elMsg = $("inpMsg");
+    const elFile = $("inpImgFile");
+    const elStatus = $("inpStatus");
 
-            const prevImage = document.getElementById("prevImage");
-            const prevImageWrap = document.getElementById("prevImageWrap");
-            const prevStatus = document.getElementById("prevStatus");
-            const topStatusPill = document.getElementById("topStatusPill");
+    const prevName = $("prevName");
+    const prevTitle = $("prevTitle");
+    const prevMsg = $("prevMsg");
+    const prevImg = $("prevImage");
+    const prevPh = $("prevImgPh");
+    const prevStatus = $("prevStatus");
+    const heroPill = $("heroStatusPill");
+    const heroText = $("heroStatusText");
 
-            function safeText(v, fallback) {
-                const t = (v ?? "").trim();
-                return t.length ? t : fallback;
-            }
+    let lastUrl = null;
 
-            function setStatus() {
-                const isOn = !!elStatus.checked;
+    function syncText() {
+        prevName.textContent = elName.value || "Başlık";
+        prevTitle.textContent = elTitle.value || "Alt Başlık";
+        prevMsg.textContent = elMsg.value || "Mesaj içeriği";
+    }
 
-                prevStatus.innerHTML = `<span class="dot"></span> ${isOn ? "Aktiv" : "Pasif"}`;
-                prevStatus.classList.toggle("is-active", isOn);
-                prevStatus.classList.toggle("is-passive", !isOn);
+    function syncStatus() {
+        const on = elStatus.checked;
+        prevStatus.className = `status-pill small ${on ? "is-active" : "is-passive"}`;
+        prevStatus.innerHTML = `<span class="dot"></span> ${on ? "Aktif" : "Pasif"}`;
+        heroPill.className = `status-pill ${on ? "is-active" : "is-passive"}`;
+        heroText.textContent = on ? "Aktif" : "Pasif";
+    }
 
-                if (topStatusPill) {
-                    topStatusPill.innerHTML = `<span class="dot"></span> ${isOn ? "Aktiv" : "Pasif"}`;
-                    topStatusPill.classList.toggle("is-active", isOn);
-                    topStatusPill.classList.toggle("is-passive", !isOn);
-                }
-            }
+    function normalizeToFullUrl(pathOrUrl) {
+        const v = (pathOrUrl || "").trim();
+        if (!v) return "";
+        if (v.startsWith("http://") || v.startsWith("https://")) return v;
+        if (v.startsWith("/")) return API_BASE + v;
+        return API_BASE + "/" + v;
+    }
 
-            function setImage() {
-                const url = (elImg.value || "").trim();
-                const placeholder = prevImageWrap.querySelector(".preview-image-placeholder");
+    function syncImageFromFile() {
+        const f = elFile.files[0];
+        if (!f) return;
 
-                if (!url) {
-                    prevImage.style.display = "none";
-                    prevImage.src = "";
-                    if (placeholder) placeholder.style.display = "flex";
-                    return;
-                }
+        if (lastUrl) URL.revokeObjectURL(lastUrl);
+        lastUrl = URL.createObjectURL(f);
 
-                prevImage.src = url;
-                prevImage.onload = () => {
-                    prevImage.style.display = "block";
-                    if (placeholder) placeholder.style.display = "none";
-                };
-                prevImage.onerror = () => {
-                    prevImage.style.display = "none";
-                    if (placeholder) placeholder.style.display = "flex";
-                };
-            }
+        prevImg.src = lastUrl;
+        prevImg.style.display = "block";
+        prevPh.style.display = "none";
+    }
 
-            function sync() {
-                prevName.textContent = safeText(elName.value, "Başlıq burada görünəcək");
-                prevTitle.textContent = safeText(elTitle.value, "Alt başlıq burada görünəcək");
-                prevMsg.textContent = safeText(elMsg.value, "Açıklama burada görünecek.");
-                setImage();
-                setStatus();
-            }
+    function showExistingIfAny() {
+        const existing = normalizeToFullUrl($("existingImg")?.value);
 
-            ["input", "change", "keyup"].forEach(evt => {
-                elName.addEventListener(evt, sync);
-                elTitle.addEventListener(evt, sync);
-                elMsg.addEventListener(evt, sync);
-                elImg.addEventListener(evt, sync);
-                elStatus.addEventListener(evt, sync);
-            });
+        if (!existing) {
+            prevImg.style.display = "none";
+            prevPh.style.display = "flex";
+            return;
+        }
 
-            // initial sync (pre-filled values on update)
-            sync();
-        })();
-    </script>
+        prevImg.onload = () => { prevImg.style.display = "block"; prevPh.style.display = "none"; };
+        prevImg.onerror = () => { prevImg.style.display = "none"; prevPh.style.display = "flex"; };
+
+        prevImg.src = existing;
+    }
+
+    ["input","change"].forEach(e=>{
+        elName.addEventListener(e, syncText);
+        elTitle.addEventListener(e, syncText);
+        elMsg.addEventListener(e, syncText);
+        elStatus.addEventListener(e, syncStatus);
+    });
+
+    elFile.addEventListener("change", syncImageFromFile);
+
+    syncText();
+    syncStatus();
+    showExistingIfAny();
+})();
+</script>
 }

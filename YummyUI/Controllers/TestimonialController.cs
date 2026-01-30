@@ -90,9 +90,32 @@ namespace YummyUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateTestimonial(GetByIdTestimonialDto getByIdTestimonialDto)
+        public async Task<IActionResult> UpdateTestimonial(GetByIdTestimonialDto getByIdTestimonialDto, IFormFile file)
         {
             var client = _httpClientFactory.CreateClient();
+             if (file != null && file.Length > 0)
+            {
+                using var uploadContent = new MultipartFormDataContent();
+                using var stream = file.OpenReadStream();
+
+                var fileContent = new StreamContent(stream);
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+                uploadContent.Add(fileContent, "file", file.FileName);
+
+                var uploadResp = await client.PostAsync("http://localhost:5289/api/FileImage", uploadContent);
+                if (!uploadResp.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError("", "Şəkil yükləmə alınmadı.");
+                    return View(getByIdTestimonialDto);
+                }
+
+                var uploadJson = await uploadResp.Content.ReadAsStringAsync();
+                var doc = JsonDocument.Parse(uploadJson);
+                var fileName = doc.RootElement.GetProperty("fileName").GetString();
+
+                getByIdTestimonialDto.TestimonialImageUrl = $"/images/{fileName}";
+            }
             var jsonData = JsonConvert.SerializeObject(getByIdTestimonialDto);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var response = await client.PutAsync("http://localhost:5289/api/Testimonials", content);
