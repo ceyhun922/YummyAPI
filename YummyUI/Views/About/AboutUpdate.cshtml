@@ -4,6 +4,14 @@
 @{
     ViewData["Title"] = "About • Update";
     Layout = "_AdminLayout";
+
+    var apiBase = "http://localhost:5289";
+
+    var currentRaw = Model?.AboutImageUrl ?? "";
+
+    var currentImg = currentRaw;
+    if (!string.IsNullOrWhiteSpace(currentImg) && currentImg.StartsWith("/images/"))
+        currentImg = apiBase + currentImg;
 }
 
 @section Styles{
@@ -138,18 +146,8 @@
     color: rgba(255,255,255,.92);
   }
 
-  .ab-card-title{
-    margin:0;
-    font-size: 16px;
-    font-weight: 950;
-    letter-spacing:.2px;
-  }
-  .ab-card-sub{
-    margin:2px 0 0;
-    font-size: 13px;
-    color: var(--muted);
-    font-weight: 800;
-  }
+  .ab-card-title{ margin:0; font-size: 16px; font-weight: 950; letter-spacing:.2px; }
+  .ab-card-sub{ margin:2px 0 0; font-size: 13px; color: var(--muted); font-weight: 800; }
 
   .ab-body{ padding: 18px; }
 
@@ -194,7 +192,7 @@
 
   .ab-input, .ab-textarea{
     width: 100%;
-    border-radius: 16eme: 14px;
+    border-radius: 14px;
     border: 1px solid rgba(255,255,255,.14);
     background: rgba(0,0,0,.18);
     color: rgba(255,255,255,.92);
@@ -215,16 +213,9 @@
     margin: 14px 0;
   }
 
-  /* Preview */
   .ab-sticky{ position: sticky; top: 18px; }
 
-  .pv-hero{
-    display:flex; align-items:flex-start; justify-content:space-between; gap: 12px;
-    margin-bottom: 14px;
-  }
-  .pv-title{ margin:0; font-size: 18px; font-weight: 950; }
-  .pv-sub{ margin: 6px 0 0; color: var(--muted); font-size: 13px; font-weight: 850; }
-
+  /* Preview */
   .pv-shot{
     border-radius: 18px;
     border: 1px solid rgba(255,255,255,.14);
@@ -242,13 +233,7 @@
     display:block;
   }
 
-  .pv-grid{
-    display:grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin-top: 12px;
-  }
-
+  .pv-grid{ display:grid; gap: 10px; margin-top: 12px; }
   .pv-block{
     border-radius: 18px;
     border: 1px solid rgba(255,255,255,.14);
@@ -265,6 +250,7 @@
     line-height: 1.55;
   }
   .pv-list li{ margin: 6px 0; }
+
   .pv-link{
     display:inline-flex; gap:8px; align-items:center;
     padding: 10px 12px;
@@ -279,7 +265,95 @@
     white-space: nowrap;
   }
 
-  .ab-foot{ display:flex; gap:10px; justify-content:space-between; margin-top: 14px; }
+  .ab-foot{ display:flex; gap:10px; justify-content:space-between; margin-top: 14px; flex-wrap:wrap; }
+
+  /* ===== Mini YouTube Search Panel ===== */
+  .yt-openbtn{ margin-top:10px; width:100%; }
+
+  .yt-panel{
+    display:none;
+    margin-top:10px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.22);
+    box-shadow: var(--shadow2);
+    overflow: hidden;
+  }
+  .yt-panel.on{ display:block; }
+
+  .yt-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:10px;
+    border-bottom: 1px solid rgba(255,255,255,.10);
+    background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
+  }
+
+  .yt-title{
+    margin:0;
+    font-weight:950;
+    font-size:13px;
+    color: rgba(255,255,255,.88);
+  }
+
+  .yt-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+  .yt-body{ padding:10px; }
+
+  .yt-results{
+    max-height: 320px;
+    overflow:auto;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(0,0,0,.16);
+  }
+
+  .yt-item{
+    display:grid;
+    grid-template-columns: 82px 1fr;
+    gap:10px;
+    padding:10px;
+    cursor:pointer;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+  }
+  .yt-item:last-child{ border-bottom:none; }
+
+  .yt-thumb{
+    width:82px; height:52px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.06);
+    object-fit:cover;
+  }
+
+  .yt-meta{ min-width:0; }
+  .yt-name{
+    margin:0;
+    font-weight:950;
+    font-size:13px;
+    color: rgba(255,255,255,.92);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+  }
+  .yt-ch{
+    margin:4px 0 0;
+    font-weight:850;
+    font-size:12px;
+    color: rgba(255,255,255,.65);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow: ellipsis;
+  }
+
+  .yt-empty{
+    padding:14px;
+    color: rgba(255,255,255,.65);
+    font-weight:900;
+    font-size:13px;
+  }
 </style>
 }
 
@@ -291,41 +365,40 @@
 
   <div class="ab-header">
     <div>
-      <h1 class="ab-title">Yeni Hakkımızda Alan Girişi</h1>
-      <p class="ab-sub">Başlıq, maddələr, şəkil və video linki əlavə edin</p>
+      <h1 class="ab-title">Hakkımızda • Update</h1>
+      <p class="ab-sub">Başlık, maddələr, şəkil və video linki — canlı önizleme.</p>
     </div>
     <div class="ab-pill">Admin • About • Update</div>
   </div>
 
   <div class="ab-layout">
 
-    <!-- LEFT: FORM -->
     <div class="ab-card">
       <div class="ab-head">
         <div class="ab-head-left">
           <div class="ab-icon">i</div>
           <div>
-            <p class="ab-card-title">Yeni Hakkımızda Alan Girişi</p>
-            <p class="ab-card-sub">Başlıq, maddələr, şəkil və video linki əlavə edin</p>
+            <p class="ab-card-title">Hakkımızda Güncelle</p>
+            <p class="ab-card-sub">Başlık, maddələr, şəkil və video linki</p>
           </div>
         </div>
 
-        <button type="button" class="ab-btn ghost" id="btnClear">
-          Önizlemeyi Temizle
-        </button>
+        <button type="button" class="ab-btn ghost" id="btnClear">🧹 Önizlemeyi Temizle</button>
       </div>
 
       <div class="ab-body">
-        <form asp-controller="About" asp-action="AboutUpdate" method="post" id="aboutForm">
+        <form asp-controller="About" asp-action="AboutUpdate" method="post" id="aboutForm" enctype="multipart/form-data">
           @Html.AntiForgeryToken()
 
           <input asp-for="AboutId" type="hidden" />
+
+          <input asp-for="AboutImageUrl" type="hidden" id="hiddenImgUrl" value="@currentRaw" />
 
           <div asp-validation-summary="All" class="ab-val"></div>
 
           <div class="ab-field">
             <div class="ab-label">
-              <label asp-for="AboutTitle">Başlıq</label>
+              <label asp-for="AboutTitle">Başlık</label>
               <span class="ab-hint">qısa</span>
             </div>
             <input asp-for="AboutTitle" class="ab-input" id="inTitle" />
@@ -333,8 +406,8 @@
 
           <div class="ab-field">
             <div class="ab-label">
-              <label asp-for="AboutSubTitle">Alt Başlıq</label>
-              <span class="ab-hint">1 cümlə</span>
+              <label asp-for="AboutSubTitle">Alt Başlık</label>
+              <span class="ab-hint">1 cümle</span>
             </div>
             <input asp-for="AboutSubTitle" class="ab-input" id="inSub" />
           </div>
@@ -368,10 +441,10 @@
           <div class="ab-row">
             <div class="ab-field">
               <div class="ab-label">
-                <label asp-for="AboutImageUrl">Image URL</label>
-                <span class="ab-hint">https://...</span>
+                <label>Fotoğraf</label>
+                <span class="ab-hint">seçince sağda değişir</span>
               </div>
-              <input asp-for="AboutImageUrl" class="ab-input" id="inImg" placeholder="https://..." />
+              <input type="file" name="file" class="ab-input" id="inImg" accept="image/*" />
             </div>
 
             <div class="ab-field">
@@ -379,7 +452,27 @@
                 <label asp-for="AboutVideoUrl">Video URL</label>
                 <span class="ab-hint">youtube/drive</span>
               </div>
-              <input asp-for="AboutVideoUrl" class="ab-input" id="inVid" placeholder="https://..." />
+
+              <input asp-for="AboutVideoUrl" class="ab-input" id="inVid" placeholder="https://... veya arama kelimesi yaz" />
+
+              <button type="button" class="ab-btn ghost yt-openbtn" id="ytOpen">
+                🔎 YouTube Ara
+              </button>
+
+              <div class="yt-panel" id="ytPanel">
+                <div class="yt-head">
+                  <p class="yt-title">Sonuçlar: tıkla → Video URL dolsun</p>
+                  <div class="yt-actions">
+                    <button type="button" class="ab-btn ghost" id="ytSearch">Ara</button>
+                    <button type="button" class="ab-btn ghost" id="ytClear">YouTube Temizle</button>
+                  </div>
+                </div>
+                <div class="yt-body">
+                  <div class="yt-results" id="ytResults">
+                    <div class="yt-empty">Aramak için “YouTube Ara” → sonra “Ara”.</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -388,19 +481,17 @@
               <label>Açıklama</label>
               <span class="ab-hint">opsional</span>
             </div>
-            <!-- Səndə Description field yoxdursa, bunu sil -->
             <textarea class="ab-textarea" id="inDesc" placeholder="hakkında alanı..."></textarea>
           </div>
 
           <div class="ab-foot">
-            <button type="submit" class="ab-btn primary">Save</button>
-            <a class="ab-btn ghost" href="javascript:history.back()">Geri</a>
+            <button type="submit" class="ab-btn primary">💾 Save</button>
+            <a class="ab-btn ghost" href="javascript:history.back()">↩️ Geri</a>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- RIGHT: PREVIEW -->
     <div class="ab-card ab-sticky">
       <div class="ab-head">
         <div class="ab-head-left">
@@ -414,10 +505,16 @@
       </div>
 
       <div class="ab-body">
-        <div class="pv-shot">
-          <img id="pvImg"
-               src="@(string.IsNullOrWhiteSpace(Model?.AboutImageUrl) ? "https://via.placeholder.com/1200x600?text=Preview" : Model.AboutImageUrl)"
-               alt="preview" />
+        <div class="pv-shot" id="pvShot" data-current="@currentImg">
+          @if (!string.IsNullOrWhiteSpace(currentImg))
+          {
+            <img id="pvImg" src="@currentImg" alt="preview" />
+          }
+          else
+          {
+            <img id="pvImg" src="" alt="preview" style="display:none;" />
+            <div id="pvNoImg" class="pv-v" style="opacity:.65; padding:12px;">Görsel önizlemesi burada görünecek.</div>
+          }
         </div>
 
         <div class="pv-grid">
@@ -428,9 +525,9 @@
 
           <div class="pv-block">
             <ul class="pv-list" id="pvList">
-              <li id="pvM1">@(Model?.AboutTitleChecked1 ?? "Dad, rahatlıq və səmimiyyət bir arada")</li>
-              <li id="pvM2">@(Model?.AboutTitleChecked2 ?? "Dad, rahatlıq və səmimiyyət bir arada")</li>
-              <li id="pvM3">@(Model?.AboutTitleChecked3 ?? "Dad, rahatlıq və səmimiyyət bir arada")</li>
+              <li id="pvM1">@(Model?.AboutTitleChecked1 ?? "Madde 1")</li>
+              <li id="pvM2">@(Model?.AboutTitleChecked2 ?? "Madde 2")</li>
+              <li id="pvM3">@(Model?.AboutTitleChecked3 ?? "Madde 3")</li>
             </ul>
           </div>
 
@@ -445,8 +542,8 @@
         </div>
 
         <div class="ab-foot" style="margin-top:16px;">
-          <button type="button" class="ab-btn ghost" id="btnClear2">Önizlemeyi Temizle</button>
-          <span class="ab-pill" style="padding:8px 12px;">Preview</span>
+          <button type="button" class="ab-btn ghost" id="btnRestore">↺ Mevcut Resme Dön</button>
+          <button type="button" class="ab-btn ghost" id="btnClear2">🧹 Önizlemeyi Temizle</button>
         </div>
       </div>
     </div>
@@ -459,6 +556,11 @@
 (function(){
   const el = (id) => document.getElementById(id);
 
+  // ====== YOUTUBE KEY (BURAYA KEY YAZ) ======
+  // NOT: Bu key client-side görünür. Google Cloud Console'da mutlaka "HTTP referrer restriction" koy.
+  const YT_API_KEY = "";
+
+  // form inputs
   const inTitle = el("inTitle");
   const inSub   = el("inSub");
   const inM1    = el("inM1");
@@ -468,25 +570,44 @@
   const inVid   = el("inVid");
   const inDesc  = el("inDesc");
 
+  const hiddenImgUrl = el("hiddenImgUrl");
+
+  // preview nodes
   const pvTitle = el("pvTitle");
   const pvSub   = el("pvSub");
   const pvM1    = el("pvM1");
   const pvM2    = el("pvM2");
   const pvM3    = el("pvM3");
   const pvImg   = el("pvImg");
-  const pvVideo = el("pvVideo");
-  const pvVidTxt= el("pvVidTxt");
-  const pvDesc  = el("pvDesc");
+  const pvNoImg = el("pvNoImg");
+  const pvShot  = el("pvShot");
 
-  const btnClear  = el("btnClear");
-  const btnClear2 = el("btnClear2");
+  const pvVideo  = el("pvVideo");
+  const pvVidTxt = el("pvVidTxt");
+  const pvDesc   = el("pvDesc");
 
+  // buttons
+  const btnClear   = el("btnClear");
+  const btnClear2  = el("btnClear2");
+  const btnRestore = el("btnRestore");
+
+  // youtube panel
+  const ytOpen    = el("ytOpen");
+  const ytPanel   = el("ytPanel");
+  const ytSearch  = el("ytSearch");
+  const ytClear   = el("ytClear");
+  const ytResults = el("ytResults");
+
+  // fallbacks
   const FALL_TITLE = "Bizim Kafemiz";
   const FALL_SUB   = "Dad, rahatlıq və səmimiyyət bir arada";
-  const FALL_M     = "Dad, rahatlıq və səmimiyyət bir arada";
+  const FALL_M1    = "Madde 1";
+  const FALL_M2    = "Madde 2";
+  const FALL_M3    = "Madde 3";
   const FALL_V     = "https://www.youtube.com/watch?v=VIDEO_ID";
-  const FALL_IMG   = "https://via.placeholder.com/1200x600?text=Preview";
   const FALL_DESC  = "hakkında alanı";
+
+  let lastObjectUrl = null;
 
   function setText(node, v, fallback){
     if(!node) return;
@@ -494,58 +615,263 @@
     node.textContent = t ? t : fallback;
   }
 
-  function setImg(url){
-    const u = (url || "").trim();
-    pvImg.src = u ? u : FALL_IMG;
-  }
-
   function setVideo(url){
     const u = (url || "").trim();
     const link = u ? u : FALL_V;
-    pvVideo.href = link;
-    pvVidTxt.textContent = link;
+    if(pvVideo) pvVideo.href = link;
+    if(pvVidTxt) pvVidTxt.textContent = link;
+  }
+
+  function showImg(src){
+    if(!pvImg) return;
+
+    if (pvNoImg) pvNoImg.style.display = "none";
+    pvImg.style.display = "block";
+    pvImg.src = src || "";
+
+    pvImg.onerror = () => {
+      pvImg.style.display = "none";
+      if (pvNoImg) {
+        pvNoImg.textContent = "Görsel yüklenemedi.";
+        pvNoImg.style.display = "block";
+      }
+    };
+  }
+
+  function showNoImg(msg){
+    if(pvImg) {
+      pvImg.src = "";
+      pvImg.style.display = "none";
+    }
+    if(pvNoImg) {
+      pvNoImg.textContent = msg || "Görsel önizlemesi burada görünecek.";
+      pvNoImg.style.display = "block";
+    }
+  }
+
+  function setPreviewToCurrent(){
+    if(lastObjectUrl){
+      URL.revokeObjectURL(lastObjectUrl);
+      lastObjectUrl = null;
+    }
+
+    const current = (pvShot?.dataset.current || "").trim();
+    if(current){
+      showImg(current);
+      return;
+    }
+    showNoImg("Görsel önizlemesi burada görünecek.");
+  }
+
+  function setPreviewFromFile(){
+    if(lastObjectUrl){
+      URL.revokeObjectURL(lastObjectUrl);
+      lastObjectUrl = null;
+    }
+
+    const file = inImg?.files?.[0];
+    if(!file){
+      setPreviewToCurrent();
+      return;
+    }
+
+    lastObjectUrl = URL.createObjectURL(file);
+    showImg(lastObjectUrl);
   }
 
   function update(){
     setText(pvTitle, inTitle?.value, FALL_TITLE);
     setText(pvSub,   inSub?.value,   FALL_SUB);
-    setText(pvM1,    inM1?.value,    FALL_M);
-    setText(pvM2,    inM2?.value,    FALL_M);
-    setText(pvM3,    inM3?.value,    FALL_M);
+
+    setText(pvM1,    inM1?.value,    FALL_M1);
+    setText(pvM2,    inM2?.value,    FALL_M2);
+    setText(pvM3,    inM3?.value,    FALL_M3);
 
     setText(pvDesc,  inDesc?.value,  FALL_DESC);
-
-    setImg(inImg?.value);
     setVideo(inVid?.value);
+
+    setPreviewFromFile();
   }
 
-  function clearAll(){
+  function clearAllPreview(){
     if(inTitle) inTitle.value = "";
     if(inSub)   inSub.value = "";
     if(inM1)    inM1.value = "";
     if(inM2)    inM2.value = "";
     if(inM3)    inM3.value = "";
-    if(inImg)   inImg.value = "";
     if(inVid)   inVid.value = "";
     if(inDesc)  inDesc.value = "";
+    if(inImg)   inImg.value = "";
+
+    // resim DB'den de silinsin istiyorsan:
+    if(hiddenImgUrl) hiddenImgUrl.value = "";
+
+    setPreviewToCurrent();
     update();
   }
 
+  // restore current image (DB value)
+  btnRestore?.addEventListener("click", () => {
+    if(inImg) inImg.value = "";
+    if(hiddenImgUrl) hiddenImgUrl.value = "@currentRaw";
+    setPreviewToCurrent();
+  });
+
+  // live binds
   ["input","change"].forEach(evt=>{
     inTitle?.addEventListener(evt, update);
     inSub?.addEventListener(evt, update);
     inM1?.addEventListener(evt, update);
     inM2?.addEventListener(evt, update);
     inM3?.addEventListener(evt, update);
-    inImg?.addEventListener(evt, update);
     inVid?.addEventListener(evt, update);
     inDesc?.addEventListener(evt, update);
   });
+  inImg?.addEventListener("change", update);
 
-  btnClear?.addEventListener("click", clearAll);
-  btnClear2?.addEventListener("click", clearAll);
+  btnClear?.addEventListener("click", clearAllPreview);
+  btnClear2?.addEventListener("click", clearAllPreview);
+
+  // =======================
+  // YouTube Mini Panel
+  // =======================
+
+  function setYtEmpty(msg){
+    if(!ytResults) return;
+    ytResults.innerHTML = `<div class="yt-empty">${msg}</div>`;
+  }
+
+  function openYtPanel(open){
+    if(!ytPanel) return;
+    ytPanel.classList.toggle("on", !!open);
+  }
+
+  function escapeHtml(s){
+    return (s ?? "")
+      .toString()
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function parseVideoIdFromUrl(url){
+    try{
+      const u = new URL(url);
+      if(u.hostname.includes("youtu.be")) return u.pathname.replace("/","").trim();
+      if(u.searchParams.get("v")) return u.searchParams.get("v").trim();
+      return "";
+    }catch{
+      return "";
+    }
+  }
+
+  // Panel aç/kapat (search input yerinde kalır, panel scroll olur)
+  ytOpen?.addEventListener("click", () => {
+    const isOn = ytPanel?.classList.contains("on");
+    openYtPanel(!isOn);
+    if(!isOn){
+      setYtEmpty("Aramak için Video URL alanına kelime yaz → Ara.");
+    }
+  });
+
+  // sadece youtube paneli/sonuçları temizle, input yerinde kalsın
+  ytClear?.addEventListener("click", () => {
+    setYtEmpty("Temizlendi. Video URL alanına kelime yaz → Ara.");
+    openYtPanel(false);
+  });
+
+  // DIRECT YOUTUBE SEARCH (JS)
+  ytSearch?.addEventListener("click", async () => {
+    const qRaw = (inVid?.value || "").trim();
+    if(!qRaw){
+      setYtEmpty("Önce Video URL alanına arama kelimesi yaz.");
+      return;
+    }
+
+    // kullanıcı zaten URL yapıştırdıysa => preview güncelle, paneli kapat
+    const maybeId = parseVideoIdFromUrl(qRaw);
+    if(maybeId){
+      update();
+      openYtPanel(false);
+      return;
+    }
+
+    // key kontrol (placeholder kaldıysa)
+    if(!YT_API_KEY || YT_API_KEY === "BURAYA_KEY"){
+      setYtEmpty("API KEY yok. Scriptte YT_API_KEY alanına key yaz.");
+      return;
+    }
+
+    setYtEmpty("Aranıyor...");
+
+    try{
+      const maxResults = 12;
+
+      const url =
+        "https://www.googleapis.com/youtube/v3/search" +
+        `?part=snippet&type=video&maxResults=${maxResults}` +
+        `&q=${encodeURIComponent(qRaw)}` +
+        `&key=${encodeURIComponent(YT_API_KEY)}`;
+
+      const resp = await fetch(url);
+      const json = await resp.json();
+
+      if(!resp.ok || json?.error){
+        const msg = json?.error?.message || "YouTube API hata verdi.";
+        setYtEmpty(escapeHtml(msg));
+        return;
+      }
+
+      const items = Array.isArray(json?.items) ? json.items : [];
+      if(items.length === 0){
+        setYtEmpty("Sonuç yok.");
+        return;
+      }
+
+      ytResults.innerHTML = "";
+
+      items.forEach(it => {
+        const videoId = (it?.id?.videoId || "").trim();
+        const title   = (it?.snippet?.title || "").trim();
+        const channel = (it?.snippet?.channelTitle || "").trim();
+        const thumb   =
+          it?.snippet?.thumbnails?.medium?.url ||
+          it?.snippet?.thumbnails?.high?.url ||
+          (videoId ? `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg` : "");
+
+        const row = document.createElement("div");
+        row.className = "yt-item";
+        row.innerHTML = `
+          <img class="yt-thumb" src="${escapeHtml(thumb)}" alt="thumb">
+          <div class="yt-meta">
+            <p class="yt-name">${escapeHtml(title || "Video")}</p>
+            <p class="yt-ch">${escapeHtml(channel || "")}</p>
+          </div>
+        `;
+
+        row.addEventListener("click", () => {
+          if(!videoId) return;
+          const vidUrl = `https://www.youtube.com/watch?v=${videoId}`;
+          if(inVid) inVid.value = vidUrl;
+          update();
+          openYtPanel(false);
+        });
+
+        ytResults.appendChild(row);
+      });
+
+      // panel açık kalsın (sonuçlar scroll)
+      openYtPanel(true);
+
+    }catch(e){
+      setYtEmpty("Arama çalışmadı (network/cors).");
+    }
+  });
 
   // init
+  setPreviewToCurrent();
   update();
 })();
 </script>
