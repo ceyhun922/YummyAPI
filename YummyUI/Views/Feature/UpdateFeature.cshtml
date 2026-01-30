@@ -1,480 +1,594 @@
 @using YummyUI.DTOs.FeatureDTO
 @model GetByIdFeatureDto
+
 @{
-    Layout = "_Adminlayout";
+    Layout = "_AdminLayout";
+
+    var apiBase = "http://localhost:5289";
+    
+    var currentRaw = Model?.FeatureImageUrl ?? "";
+
+    var currentImg = currentRaw;
+    if (!string.IsNullOrWhiteSpace(currentImg) && currentImg.StartsWith("/images/"))
+        currentImg = apiBase + currentImg;
 }
 
+@section Styles {
 <style>
-  .ai-form-container,
-  .ai-form-container * {
-    box-sizing: border-box;
-  }
+  /* ====== Premium AI Glass (Update) ====== */
+  #featureUpdate{
+    --bg0:#050814; --bg1:#070b1f;
+    --glass: rgba(255,255,255,.08);
+    --stroke: rgba(255,255,255,.14);
+    --txt: rgba(255,255,255,.92);
+    --muted: rgba(255,255,255,.65);
+    --muted2: rgba(255,255,255,.45);
+    --shadow: 0 18px 60px rgba(0,0,0,.45);
+    --radius: 22px;
+    --primary:#ffb020;
+    --danger:#ff4d6d;
+    --ok:#32d583;
+    --chip: rgba(0,0,0,.18);
 
-  .ai-form-container {
-    height: 100%;
-    min-height: 0;
-    padding: 1.6rem 2rem;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-
-    /* AI background */
+    min-height: calc(100vh - 60px);
+    padding: 90px 22px 34px;
+    color: var(--txt);
     background:
-      radial-gradient(1200px 600px at 70% 80%, rgba(99, 102, 241, 0.15), transparent 60%),
-      radial-gradient(900px 500px at 15% 20%, rgba(139, 92, 246, 0.18), transparent 60%),
-      radial-gradient(800px 420px at 90% 10%, rgba(79, 172, 254, 0.12), transparent 55%),
-      linear-gradient(135deg, #0a0e27 0%, #0f1435 40%, #0a1128 100%);
-  }
-
-  /* grid overlay */
-  .grid-overlay {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.08;
-    background-image:
-      linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px);
-    background-size: 50px 50px;
-    animation: grid-move 20s linear infinite;
-  }
-
-  @@keyframes grid-move {
-    0% { background-position: 0 0; }
-    100% { background-position: 50px 50px; }
-  }
-
-  /* soft orbs */
-  .orb {
-    position: absolute;
-    border-radius: 999px;
-    filter: blur(80px);
-    opacity: 0.5;
-    animation: floaty 20s ease-in-out infinite;
-    pointer-events: none;
-  }
-
-  .orb.a { 
-    width: 500px; 
-    height: 500px; 
-    left: -250px; 
-    top: -250px; 
-    background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
-  }
-  
-  .orb.b { 
-    width: 400px; 
-    height: 400px; 
-    right: -200px; 
-    bottom: -200px; 
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
-    animation-delay: 5s; 
-  }
-  
-  .orb.c { 
-    width: 350px; 
-    height: 350px; 
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(79, 172, 254, 0.08) 0%, transparent 70%);
-    animation-delay: 10s; 
-  }
-
-  @@keyframes floaty {
-    0%, 100% { transform: translate(0, 0); }
-    33% { transform: translate(30px, -30px); }
-    66% { transform: translate(-20px, 20px); }
-  }
-
-  .content-wrapper {
+      radial-gradient(1200px 700px at 12% 18%, rgba(255,176,32,.14), transparent 55%),
+      radial-gradient(900px 600px at 85% 20%, rgba(60,130,255,.18), transparent 60%),
+      radial-gradient(900px 600px at 70% 85%, rgba(168,85,247,.22), transparent 55%),
+      linear-gradient(180deg, var(--bg0), var(--bg1));
     position: relative;
-    z-index: 5;
-    max-width: 800px;
-    width: 100%;
-    margin: 0 auto;
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
+    border-radius: 22px;
+    overflow: visible;
   }
+
+  #featureUpdate .fu-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: .18;
+    pointer-events:none;
+    mask-image: radial-gradient(circle at 40% 20%, black 30%, transparent 70%);
+    z-index:0;
+  }
+
+  #featureUpdate .fu-orb{ position:absolute; border-radius:999px; opacity:.35; pointer-events:none; z-index:0; }
+  #featureUpdate .fu-orb.o1{ width:320px; height:320px; left:-120px; top:140px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,176,32,.55), rgba(255,176,32,.12), transparent 70%); }
+  #featureUpdate .fu-orb.o2{ width:420px; height:420px; right:-160px; top:60px;
+    background: radial-gradient(circle at 30% 30%, rgba(59,130,246,.55), rgba(59,130,246,.12), transparent 70%); }
+  #featureUpdate .fu-orb.o3{ width:520px; height:520px; right:120px; bottom:-260px;
+    background: radial-gradient(circle at 30% 30%, rgba(168,85,247,.55), rgba(168,85,247,.14), transparent 70%); }
 
   /* Header */
-  .page-header {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    flex-shrink: 0;
-    padding: 0.2rem 0;
-  }
-
-  .header-badge {
-    width: 52px;
-    height: 52px;
-    border-radius: 16px;
-    display: grid;
-    place-items: center;
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    animation: icon-pulse 2s ease-in-out infinite;
-  }
-
-  @@keyframes icon-pulse {
-    0%, 100% { 
-      transform: scale(1); 
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); 
-    }
-    50% { 
-      transform: scale(1.05); 
-      box-shadow: 0 0 30px rgba(245, 158, 11, 0.8); 
-    }
-  }
-
-  .header-badge span {
-    font-size: 1.6rem;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
-  }
-
-  .page-header h1 {
-    margin: 0;
-    color: #e5e7eb;
-    font-size: 2rem;
-    font-weight: 850;
-    letter-spacing: 0.2px;
-    text-shadow: 0 2px 20px rgba(99, 102, 241, 0.5);
-  }
-
-  /* Form Container */
-  .form-container {
-    flex: 1;
-    min-height: 0;
-    overflow: auto;
-    padding: 0.8rem 0;
-  }
-
-  .form-container::-webkit-scrollbar { width: 8px; }
-  .form-container::-webkit-scrollbar-thumb { 
-    background: linear-gradient(135deg, #6366f1, #8b5cf6); 
-    border-radius: 10px; 
-  }
-  .form-container::-webkit-scrollbar-track { 
-    background: rgba(255, 255, 255, 0.05); 
-    border-radius: 10px; 
-  }
-
-  /* Form Card */
-  .form-card {
-    border-radius: 28px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    box-shadow:
-      0 20px 60px rgba(0, 0, 0, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    padding: 2.5rem;
-    animation: slideUp 0.6s ease forwards;
+  #featureUpdate .fu-head{
     position: relative;
+    z-index:2;
+    display:flex; justify-content:space-between; align-items:flex-start;
+    gap:14px; margin-bottom:18px;
+  }
+  #featureUpdate .fu-title{ margin:0 0 6px; font-size:28px; font-weight:950; letter-spacing:.2px; }
+  #featureUpdate .fu-sub{ margin:0; color:var(--muted); font-size:13.5px; }
+  #featureUpdate .fu-pill{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:10px 14px; border-radius:999px;
+    background: rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+    color:var(--muted); font-size:12.5px; white-space:nowrap;
+  }
+  #featureUpdate .fu-icon{
+    width:36px; height:36px; border-radius:14px;
+    display:grid; place-items:center;
+    background: linear-gradient(135deg, rgba(99,102,241,.85), rgba(168,85,247,.75));
+    border:1px solid rgba(255,255,255,.18);
+    box-shadow: 0 14px 40px rgba(99,102,241,.25);
+    font-size:18px;
   }
 
-  @@keyframes slideUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  /* Layout */
+  #featureUpdate .fu-layout{
+    position: relative;
+    z-index:2;
+    display:grid !important;
+    grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr) !important;
+    gap:18px !important;
+    align-items:start !important;
+  }
+  @@media (max-width:1100px){
+    #featureUpdate .fu-layout{ grid-template-columns:1fr !important; }
   }
 
-  /* Glowing border */
-  .form-card::before {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899, #4facfe);
-    border-radius: 28px;
-    opacity: 0;
-    z-index: 0;
-    transition: opacity 0.4s ease;
-    background-size: 400% 400%;
-    animation: gradient-rotate 8s ease infinite;
+  /* Card */
+  #featureUpdate .fu-card{
+    background: var(--glass);
+    border: 1px solid var(--stroke);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    overflow:hidden;
+    width:100%;
+    min-width:0;
+    max-width:100%;
+    position:relative;
   }
-
-  @@keyframes gradient-rotate {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+  #featureUpdate .fu-cardHead{
+    padding:16px 18px;
+    display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid rgba(255,255,255,.10);
+    background: linear-gradient(180deg, rgba(255,255,255,.06), transparent);
   }
-
-  .form-card:hover::before {
-    opacity: 0.5;
+  #featureUpdate .fu-cardTitle{
+    margin:0;
+    font-size:14px;
+    letter-spacing:.3px;
+    text-transform:uppercase;
+    color: rgba(255,255,255,.85);
+    font-weight:950;
   }
+  #featureUpdate .fu-body{ padding:18px; }
 
   /* Form */
-  .ai-form {
-    position: relative;
-    z-index: 1;
+  #featureUpdate .fu-val{ color:#ff9aa9; margin:0 0 10px; font-weight:850; font-size:13px; }
+  #featureUpdate .fu-field{ margin-bottom:12px; }
+  #featureUpdate .fu-label{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:7px; }
+  #featureUpdate .fu-label label{ margin:0; font-weight:950; font-size:12.5px; color: rgba(255,255,255,.82); }
+  #featureUpdate .fu-hint{ color: var(--muted2); font-size:12px; font-weight:800; }
+  #featureUpdate .fu-input{
+    width:100%;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.18);
+    color: rgba(255,255,255,.90);
+    padding:12px 12px;
+    outline:none;
+    transition:.15s ease;
+  }
+  #featureUpdate .fu-input:focus{
+    border-color: rgba(255,176,32,.55);
+    box-shadow: 0 0 0 4px rgba(255,176,32,.12);
+  }
+  #featureUpdate textarea.fu-input{ min-height:120px; resize:vertical; }
+
+  /* Buttons */
+  #featureUpdate .fu-btn{
+    border:1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.08);
+    color: rgba(255,255,255,.88);
+    border-radius:14px;
+    padding:10px 12px;
+    font-weight:950;
+    font-size:13px;
+    cursor:pointer;
+    transition:.15s ease;
+    user-select:none;
+    text-decoration:none;
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+  }
+  #featureUpdate .fu-btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.24); }
+  #featureUpdate .fu-btnPrimary{
+    background: linear-gradient(180deg, rgba(255,176,32,.95), rgba(255,176,32,.75));
+    color: rgba(0,0,0,.82);
+    border-color: rgba(255,176,32,.60);
+  }
+  #featureUpdate .fu-btnGhost{
+    background: rgba(0,0,0,.16);
+    border-color: rgba(255,255,255,.14);
+    color: rgba(255,255,255,.85);
   }
 
-  .form-group {
-    margin-bottom: 1.5rem;
+  /* Switch */
+  #featureUpdate .fu-toggle{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 12px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.16);
+  }
+  #featureUpdate .fu-switch{
+    width:44px; height:26px; border-radius:999px;
+    background: rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.16);
+    position:relative;
+    cursor:pointer;
+    flex:0 0 auto;
+  }
+  #featureUpdate .fu-switch::after{
+    content:"";
+    width:20px; height:20px; border-radius:999px;
+    position:absolute; top:2px; left:2px;
+    background: rgba(255,255,255,.85);
+    transition:.18s ease;
+  }
+  #featureUpdate .fu-switch.on{ background: rgba(50,213,131,.25); border-color: rgba(50,213,131,.35); }
+  #featureUpdate .fu-switch.on::after{ left:22px; background: rgba(255,255,255,.95); }
+
+  #featureUpdate .fu-state{
+    margin-left:auto;
+    padding:7px 10px;
+    border-radius:999px;
+    font-weight:950;
+    font-size:12px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.80);
+  }
+  #featureUpdate .fu-state.ok{ background: rgba(50,213,131,.18); border-color: rgba(50,213,131,.30); color: rgba(214,255,233,.95); }
+  #featureUpdate .fu-state.off{ background: rgba(255,77,109,.14); border-color: rgba(255,77,109,.25); color: rgba(255,220,227,.92); }
+
+  /* Preview */
+  #featureUpdate .fu-sticky{ position: sticky; top: 18px; align-self:start; }
+  #featureUpdate .fu-pvTitle{ margin:0; font-size:18px; font-weight:950; }
+  #featureUpdate .fu-pvSub{ margin:6px 0 0; color:var(--muted); font-weight:800; font-size:13px; }
+  #featureUpdate .fu-chip{
+    padding:8px 10px;
+    border-radius:999px;
+    font-weight:900;
+    font-size:12px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.78);
+    white-space:nowrap;
   }
 
-  .form-group label {
-    display: block;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 0.5rem;
-    letter-spacing: 0.3px;
+  #featureUpdate .fu-imgBox{
+    margin-top:12px;
+    border-radius:18px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.22);
+    overflow:hidden;
+    height:220px;
+    display:grid;
+    place-items:center;
   }
+  #featureUpdate .fu-imgBox img{ width:100%; height:100%; object-fit:cover; display:block; }
+  #featureUpdate .fu-noimg{ color: rgba(255,255,255,.55); font-weight:900; text-align:center; padding:16px; }
 
-  .form-control {
-    width: 100%;
-    padding: 0.875rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 12px;
-    color: #e5e7eb;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
+  #featureUpdate .fu-wideBox{
+    margin-top:14px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.16);
+    padding:12px;
   }
-
-  .form-control:focus {
-    outline: none;
-    border-color: rgba(99, 102, 241, 0.6);
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-  }
-
-  .form-control::placeholder {
-    color: rgba(255, 255, 255, 0.4);
-  }
-
-  textarea.form-control {
-    min-height: 120px;
-    resize: vertical;
-  }
-
-  /* Custom Switch */
-  .custom-switch {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .custom-switch-input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .custom-switch-indicator {
-    position: relative;
-    display: inline-block;
-    width: 52px;
-    height: 28px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 100px;
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    transition: all 0.3s ease;
-  }
-
-  .custom-switch-indicator::before {
-    content: '';
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 20px;
-    height: 20px;
-    background: #e5e7eb;
-    border-radius: 50%;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }
-
-  .custom-switch-input:checked + .custom-switch-indicator {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
-    border-color: rgba(99, 102, 241, 0.6);
-  }
-
-  .custom-switch-input:checked + .custom-switch-indicator::before {
-    transform: translateX(24px);
-  }
-
-  .switch-label {
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
-
-  /* Submit Button */
-  .btn-submit {
-    width: 100%;
-    padding: 1rem;
-    border: none;
-    border-radius: 16px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color: #fff;
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
-    margin-top: 1rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-submit::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.5s, height 0.5s;
-  }
-
-  .btn-submit:hover::before {
-    width: 300px;
-    height: 300px;
-  }
-
-  .btn-submit:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 35px rgba(245, 158, 11, 0.5);
-  }
-
-  .btn-submit:active {
-    transform: translateY(-1px);
-    opacity: 0.96;
-  }
-
-  .btn-submit span {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* Image Preview */
-  .image-preview {
-    margin-top: 1rem;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid rgba(99, 102, 241, 0.2);
-    max-height: 200px;
-  }
-
-  .image-preview img {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    display: block;
-  }
-
-  /* Responsive */
-  @@media (max-width: 768px) {
-    .ai-form-container {
-      padding: 1rem;
-    }
-
-    .page-header h1 {
-      font-size: 1.6rem;
-    }
-
-    .form-card {
-      padding: 1.5rem;
-    }
-  }
+  #featureUpdate .fu-k{ color: var(--muted2); font-weight:900; font-size:12px; margin:0 0 6px; }
+  #featureUpdate .fu-v{ margin:0; font-weight:950; font-size:14px; color: rgba(255,255,255,.92); }
+  #featureUpdate .fu-foot{ display:flex; gap:10px; justify-content:space-between; margin-top:14px; flex-wrap:wrap; }
 </style>
+}
 
-<div class="ai-form-container">
-  <!-- soft orbs + grid -->
-  <div class="orb a"></div>
-  <div class="orb b"></div>
-  <div class="orb c"></div>
-  <div class="grid-overlay"></div>
+<div id="featureUpdate">
+  <div class="fu-grid"></div>
+  <div class="fu-orb o1"></div>
+  <div class="fu-orb o2"></div>
+  <div class="fu-orb o3"></div>
 
-  <div class="content-wrapper">
-    <div class="page-header">
-      <div class="header-badge"><span>✏️</span></div>
-      <h1>Öne Çıkan Alan Güncelle</h1>
+  <div class="fu-head">
+    <div style="display:flex; gap:12px; align-items:flex-start;">
+      <div class="fu-icon">✨</div>
+      <div>
+        <h1 class="fu-title">Öne Çıkan Alan • Update</h1>
+        <p class="fu-sub">Başlık / açıklama / fotoğraf / status — canlı önizleme.</p>
+      </div>
     </div>
 
-    <div class="form-container">
-      <div class="form-card">
-        @using (Html.BeginForm("UpdateFeature", "Feature", FormMethod.Post, new { @class = "ai-form" }))
+    <div class="fu-pill">
+      <span class="fu-chip" id="topStatusChip">Status: -</span>
+    </div>
+  </div>
+
+  <div class="fu-layout">
+
+    <div class="fu-card">
+      <div class="fu-cardHead">
+        <h3 class="fu-cardTitle">Form</h3>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button type="button" class="fu-btn fu-btnGhost" id="btnClear">🧹 Temizle</button>
+        </div>
+      </div>
+
+      <div class="fu-body">
+        @using (Html.BeginForm("UpdateFeature", "Feature", FormMethod.Post, new { id="featureForm", enctype="multipart/form-data" }))
         {
+          @Html.AntiForgeryToken()
+
+          <div asp-validation-summary="All" class="fu-val"></div>
+
           @Html.HiddenFor(x => x.FeatureId)
 
-          <div class="form-group">
-            <label>Başlık</label>
-            @Html.TextBoxFor(x => x.FeatureTitle, new { @class = "form-control", placeholder = "Örn: Yeni İli Bizimle Keçirin" })
+          @Html.HiddenFor(x => x.FeatureImageUrl, new { id="hiddenImgUrl" })
+
+          <div class="fu-field">
+            <div class="fu-label"><label>Başlık</label><span class="fu-hint" id="hintT1">—</span></div>
+            @Html.TextBoxFor(x => x.FeatureTitle, new { @class="fu-input", id="inT1", placeholder="Örn: Yeni İli Bizimle Keçirin" })
           </div>
 
-          <div class="form-group">
-            <label>Alt Başlık</label>
-            @Html.TextBoxFor(x => x.FeatureTitle2, new { @class = "form-control", placeholder = "Açıklama metni giriniz" })
+          <div class="fu-field">
+            <div class="fu-label"><label>Alt Başlık</label><span class="fu-hint" id="hintT2">—</span></div>
+            @Html.TextBoxFor(x => x.FeatureTitle2, new { @class="fu-input", id="inT2", placeholder="Açıklama metni..." })
           </div>
 
-          <div class="form-group">
-            <label>Hakkında</label>
-            @Html.TextAreaFor(x => x.FeatureDescription, new { @class = "form-control", placeholder = "Detaylı açıklama..." })
+          <div class="fu-field">
+            <div class="fu-label"><label>Hakkında</label><span class="fu-hint">Canlı yansır</span></div>
+            @Html.TextAreaFor(x => x.FeatureDescription, new { @class="fu-input", id="inDesc", placeholder="Detaylı açıklama..." })
           </div>
 
-          <div class="form-group">
-            <label>Görsel URL</label>
-            @Html.TextBoxFor(x => x.FeatureImageUrl, new { @class = "form-control", placeholder = "https://...", id = "imageUrl" })
-            
-            @if (!string.IsNullOrEmpty(Model.FeatureImageUrl))
-            {
-              <div class="image-preview">
-                <img src="@Model.FeatureImageUrl" alt="Önizleme" id="previewImage" />
-              </div>
-            }
+          <div class="fu-field">
+            <div class="fu-label"><label>Fotoğraf</label><span class="fu-hint">Seçince sağda değişir</span></div>
+            <input type="file" class="fu-input" id="inImgFile" name="file" accept="image/*" />
           </div>
 
-          <div class="form-group">
-            <label class="custom-switch">
-              @Html.CheckBoxFor(x => x.FeatureStatus, new { @class = "custom-switch-input" })
-              <span class="custom-switch-indicator"></span>
-              <span class="switch-label">Aktif</span>
-            </label>
+          <div class="fu-field">
+            <div class="fu-label"><label>Status</label><span class="fu-hint">Aktif / Pasif</span></div>
+
+            <div class="fu-toggle">
+              <div class="fu-switch" id="statusSwitch" role="switch"></div>
+              <b id="statusText" style="font-weight:950">Aktif</b>
+              <span class="fu-state ok" id="statusChip">Aktif</span>
+
+              @Html.CheckBoxFor(x => x.FeatureStatus, new { id="statusHidden", style="display:none" })
+            </div>
           </div>
 
-          <button type="submit" class="btn-submit">
-            <span>💾 Güncelle</span>
-          </button>
+          <div class="fu-foot">
+            <button type="submit" class="fu-btn fu-btnPrimary">💾 Güncelle</button>
+            <a href="/Feature/FeatureArea" class="fu-btn">↩️ Geri</a>
+          </div>
         }
       </div>
     </div>
+
+    <div class="fu-card fu-sticky">
+      <div class="fu-cardHead">
+        <h3 class="fu-cardTitle">Canlı Önizleme</h3>
+        <span class="fu-chip" id="pvStatusChip">Status: -</span>
+      </div>
+
+      <div class="fu-body">
+        <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start;">
+          <div style="min-width:0;">
+            <p class="fu-pvTitle" id="pvT1">—</p>
+            <p class="fu-pvSub" id="pvT2">Alt başlık</p>
+          </div>
+          <span class="fu-chip" id="pvStateChip">Aktif</span>
+        </div>
+
+        <div class="fu-imgBox" id="pvImgBox" data-current="@currentImg">
+          @if (!string.IsNullOrWhiteSpace(currentImg))
+          {
+            <img id="pvImg" src="@currentImg" alt="Preview" />
+          }
+          else
+          {
+            <div class="fu-noimg" id="pvNoImg">Görsel önizlemesi burada görünecek.</div>
+          }
+        </div>
+
+        <div class="fu-wideBox">
+          <p class="fu-k">“ Açıklama ”</p>
+          <p class="fu-v" id="pvDesc">Açıklama burada görünür.</p>
+        </div>
+
+        <div class="fu-foot" style="margin-top:16px;">
+          <button type="button" class="fu-btn fu-btnGhost" id="btnRestore">↺ Mevcut Resme Dön</button>
+          <span class="fu-pill" style="padding:8px 12px;">Live</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-@section Scripts {
+@section Scripts{
 <script>
-  // Görsel URL değiştiğinde önizlemeyi güncelle
-  document.getElementById('imageUrl')?.addEventListener('input', function(e) {
-    const previewImg = document.getElementById('previewImage');
-    const url = e.target.value;
-    
-    if (previewImg && url) {
-      previewImg.src = url;
+(function () {
+  const $ = (id) => document.getElementById(id);
+
+  // inputs
+  const inT1    = $("inT1");
+  const inT2    = $("inT2");
+  const inDesc  = $("inDesc");
+  let   inImgFile = $("inImgFile"); 
+
+  // hidden: file seçilmezse mevcut değer kalsın
+  const hiddenImgUrl = $("hiddenImgUrl");
+
+  // hints
+  const hintT1  = $("hintT1");
+  const hintT2  = $("hintT2");
+
+  // preview texts
+  const pvT1    = $("pvT1");
+  const pvT2    = $("pvT2");
+  const pvDesc  = $("pvDesc");
+
+  // preview image box
+  const pvImgBox = $("pvImgBox");
+
+  // status
+  const statusSwitch = $("statusSwitch");
+  const statusHidden = $("statusHidden");
+  const statusText   = $("statusText");
+  const statusChip   = $("statusChip");
+
+  const pvStateChip   = $("pvStateChip");
+  const pvStatusChip  = $("pvStatusChip");
+  const topStatusChip = $("topStatusChip");
+
+  // buttons
+  const btnClear   = $("btnClear");
+  const btnRestore = $("btnRestore");
+
+  let lastObjectUrl = null;
+
+  function safeText(v, fallback) {
+    const t = (v ?? "").toString().trim();
+    return t.length ? t : (fallback ?? "—");
+  }
+
+  function paintStatus(isOn) {
+    statusSwitch?.classList.toggle("on", isOn);
+
+    if (statusText) statusText.textContent = isOn ? "Aktif" : "Pasif";
+
+    if (statusChip) {
+      statusChip.classList.toggle("ok", isOn);
+      statusChip.classList.toggle("off", !isOn);
+      statusChip.textContent = isOn ? "Aktif" : "Pasif";
     }
+
+    if (pvStateChip) {
+      pvStateChip.textContent = isOn ? "Aktif" : "Pasif";
+      pvStateChip.style.borderColor = isOn ? "rgba(50,213,131,.30)" : "rgba(255,77,109,.25)";
+      pvStateChip.style.background  = isOn ? "rgba(50,213,131,.18)" : "rgba(255,77,109,.14)";
+      pvStateChip.style.color       = isOn ? "rgba(214,255,233,.95)" : "rgba(255,220,227,.92)";
+    }
+
+    const text = `Status: ${isOn ? "Aktif" : "Pasif"}`;
+    if (pvStatusChip)  pvStatusChip.textContent  = text;
+    if (topStatusChip) topStatusChip.textContent = text;
+  }
+
+  // ✅ file input’u kesin sıfırlama (tarayıcı farklarını bypass)
+  function resetFileInput(el){
+    if(!el || !el.parentNode) return el;
+    const clone = el.cloneNode(true);
+    el.parentNode.replaceChild(clone, el);
+    return clone;
+  }
+
+  function setPreviewToCurrent() {
+    if (!pvImgBox) return;
+
+    // eski blob url temizle
+    if (lastObjectUrl) {
+      URL.revokeObjectURL(lastObjectUrl);
+      lastObjectUrl = null;
+    }
+
+    const current = (pvImgBox.dataset.current || "").trim();
+    pvImgBox.innerHTML = "";
+
+    if (current) {
+      const img = document.createElement("img");
+      img.alt = "Preview";
+      img.src = current;
+      img.onerror = () => {
+        pvImgBox.innerHTML = '<div class="fu-noimg">Mevcut görsel yüklenemedi.</div>';
+      };
+      pvImgBox.appendChild(img);
+      return;
+    }
+
+    pvImgBox.innerHTML = '<div class="fu-noimg">Görsel önizlemesi burada görünecek.</div>';
+  }
+
+  function setPreviewFromFile() {
+    if (!pvImgBox) return;
+
+    // eski blob url temizle
+    if (lastObjectUrl) {
+      URL.revokeObjectURL(lastObjectUrl);
+      lastObjectUrl = null;
+    }
+
+    const file = inImgFile?.files?.[0];
+
+    // file yoksa mevcut görsel
+    if (!file) {
+      setPreviewToCurrent();
+      return;
+    }
+
+    // file varsa blob preview
+    lastObjectUrl = URL.createObjectURL(file);
+    pvImgBox.innerHTML = "";
+
+    const img = document.createElement("img");
+    img.alt = "Preview";
+    img.src = lastObjectUrl;
+    img.onerror = () => {
+      pvImgBox.innerHTML = '<div class="fu-noimg">Görsel yüklenemedi.</div>';
+    };
+    pvImgBox.appendChild(img);
+  }
+
+  function updatePreview() {
+    const t1   = safeText(inT1?.value, "—");
+    const t2   = safeText(inT2?.value, "Alt başlık");
+    const desc = safeText(inDesc?.value, "Açıklama burada görünür.");
+
+    if (pvT1)   pvT1.textContent   = t1;
+    if (pvT2)   pvT2.textContent   = t2;
+    if (pvDesc) pvDesc.textContent = desc;
+
+    if (hintT1) hintT1.textContent = (t1 === "—") ? "—" : "Hazır";
+    if (hintT2) hintT2.textContent = (t2 === "Alt başlık") ? "—" : "Hazır";
+
+    paintStatus(!!statusHidden?.checked);
+
+    // ✅ resim preview (file varsa file, yoksa current)
+    setPreviewFromFile();
+  }
+
+  // status toggle click
+  statusSwitch?.addEventListener("click", () => {
+    if (!statusHidden) return;
+    statusHidden.checked = !statusHidden.checked;
+    updatePreview();
   });
+
+  // live binds
+  [inT1, inT2, inDesc].forEach(inp => {
+    inp?.addEventListener("input", updatePreview);
+    inp?.addEventListener("change", updatePreview);
+  });
+
+  // ✅ file change
+  inImgFile?.addEventListener("change", updatePreview);
+
+  // ✅ restore current image: file input’u clone ile sıfırla + current’i anında çiz
+  btnRestore?.addEventListener("click", () => {
+    // input'u kesin resetle
+    inImgFile = resetFileInput(inImgFile);
+    // yeni input'a event'i geri bağla
+    inImgFile?.addEventListener("change", updatePreview);
+
+    // preview'u direkt current'e döndür
+    setPreviewToCurrent();
+
+    // diğer alanları güncel tut
+    paintStatus(!!statusHidden?.checked);
+  });
+
+  // clear all
+  function clearAll() {
+    if (inT1) inT1.value = "";
+    if (inT2) inT2.value = "";
+    if (inDesc) inDesc.value = "";
+
+    // file input reset (clone)
+    inImgFile = resetFileInput(inImgFile);
+    inImgFile?.addEventListener("change", updatePreview);
+
+    // eğer "temizle" resim silmekse:
+    if (hiddenImgUrl) hiddenImgUrl.value = "";
+
+    if (statusHidden) statusHidden.checked = false;
+
+    updatePreview();
+  }
+
+  btnClear?.addEventListener("click", clearAll);
+
+  // init
+  updatePreview();
+})();
 </script>
 }

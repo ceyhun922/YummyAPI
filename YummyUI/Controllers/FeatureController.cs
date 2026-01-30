@@ -101,9 +101,34 @@ namespace YummyUI.Controllers
         } 
 
         [HttpPost]
-        public async Task<IActionResult> UpdateFeature(GetByIdFeatureDto getByIdFeatureDto)
+        public async Task<IActionResult> UpdateFeature(GetByIdFeatureDto getByIdFeatureDto, IFormFile file)
         {
             var client =_httpClientFactory.CreateClient();
+
+            if (file != null && file.Length > 0)
+            {
+                using var uploadContent =new MultipartFormDataContent();
+                using var stream =file.OpenReadStream();
+
+                var fileContent =new StreamContent(stream);
+                fileContent.Headers.ContentType =new MediaTypeHeaderValue(file.ContentType);
+                
+                uploadContent.Add(fileContent,"File",file.FileName);
+
+                var uploadResponse =await client.PostAsync("http://localhost:5289/api/FileImage",uploadContent);
+                if (!uploadResponse.IsSuccessStatusCode)
+                {
+                    ModelState.AddModelError("","Öne Çıkan Alan Resmi Yüklenmedi");
+                    return View(getByIdFeatureDto);
+                }
+
+                var json =await uploadResponse.Content.ReadAsStringAsync();
+                var doc =JsonDocument.Parse(json);
+                var fileName =doc.RootElement.GetProperty("fileName").GetString();
+                getByIdFeatureDto.FeatureImageUrl =$"/images/{fileName}";
+                
+            }
+            
             var jsonData =JsonConvert.SerializeObject(getByIdFeatureDto);
             var content =new StringContent(jsonData,Encoding.UTF8,"application/json");
             
