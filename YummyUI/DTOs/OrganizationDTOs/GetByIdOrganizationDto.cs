@@ -10,5 +10,7 @@ namespace YummyUI.DTOs.OrganizationDTOs
         public string? SelectedGalleryUrl { get; set; }
 
         public bool OrganizationStatus { get; set; }
+                public DateOnly Date { get; set; }
+
     }
 }

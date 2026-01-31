@@ -11,9 +11,11 @@ namespace YummyAPI.Entities
         public string? Subject { get; set; }
         public string? Message { get; set; }
 
-        public MessageBoxType messageBox {get;set;}=MessageBoxType.Inbox;
+        public MessageBoxType messageBox { get; set; } = MessageBoxType.Inbox;
 
-        public bool IsRead {get;set;} =false;
+        public bool IsRead { get; set; } = false;
+        public DateOnly CreateDate { get; set; }
+
 
     }
 }

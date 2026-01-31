@@ -9,5 +9,6 @@ namespace YummyAPI.DTOs.OrganizationDTO
         public string? OrganizationImage { get; set; }
 
         public bool OrganizationStatus { get; set; }
+
     }
 }

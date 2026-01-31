@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YummyAPI.Context;
@@ -71,5 +72,30 @@ namespace YummyAPI.Controllers
             return Ok(dto);
         }
 
+        [HttpGet("dashboard-summary")]
+        public async Task<IActionResult> DashboardSummary()
+        {
+            var now = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            var TotalOrg = await _context.Organizations.CountAsync();
+            var TotalChef = await _context.Chefs.CountAsync();
+            var TotalGal = await _context.Galleries.CountAsync();
+            var TotalMsg = await _context.Contacts.CountAsync();
+            var MonthOrg = await _context.Organizations.CountAsync(x => x.CreateDate.Month == now.Month &&
+    x.CreateDate.Year == now.Year);
+            var WeekMsg = await _context.Contacts.CountAsync(x => x.CreateDate >= now.AddDays(-7));
+            var TrashMsg = await _context.Contacts.Where(x => x.messageBox == Entities.MessageBoxType.Trash).CountAsync();
+
+            return Ok(new
+            {
+                TotalOrg,
+                TotalChef,
+                TotalGal,
+                TotalMsg,
+                MonthOrg,
+                WeekMsg,
+                TrashMsg
+            });
+        }
     }
 }

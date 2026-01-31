@@ -8,5 +8,7 @@ namespace YummyUI.DTOs.OrganizationDTOs
         public double OrganizationPrice { get; set; }
         public string? OrganizationImage { get; set; }
         public bool OrganizationStatus { get; set; }
+        public DateOnly Date { get; set; }
+
     }
 }
