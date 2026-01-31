@@ -108,96 +108,11 @@
 
 <div class="row">
   <div class="col-md-6 col-lg-12 col-xl-6">
-    <!-- Support tickets -->
-@await Component.InvokeAsync("_DailyWordChickenMenuPartials")
-    <!-- Support tickets -->
+    @await Component.InvokeAsync("_DailyWordChickenMenuPartials")
   </div>
+  
 <div class="col-md-6 col-lg-12 col-xl-6">
-  <div class="card">
-    <div class="card-header">
-      <h4>Sistem Özeti</h4>
-    </div>
-
-    <div class="card-body">
-      <!-- KPI Cards -->
-      <div class="row">
-        <div class="col-6 mb-3">
-          <div class="card mb-0">
-            <div class="card-body py-3">
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <div class="text-muted">Toplam Organizasyon</div>
-                  <div class="h4 mb-0">128</div>
-                </div>
-                <span class="badge badge-light">All</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-6 mb-3">
-          <div class="card mb-0">
-            <div class="card-body py-3">
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <div class="text-muted">Toplam Şef</div>
-                  <div class="h4 mb-0">24</div>
-                </div>
-                <span class="badge badge-info">Chef</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-6 mb-3">
-          <div class="card mb-0">
-            <div class="card-body py-3">
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <div class="text-muted">Toplam Galeri</div>
-                  <div class="h4 mb-0">312</div>
-                </div>
-                <span class="badge badge-success">Gallery</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-6 mb-3">
-          <div class="card mb-0">
-            <div class="card-body py-3">
-              <div class="d-flex align-items-center justify-content-between">
-                <div>
-                  <div class="text-muted">Toplam Mesaj</div>
-                  <div class="h4 mb-0">54</div>
-                </div>
-                <span class="badge badge-warning">Inbox</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <hr class="my-3" />
-
-      <!-- Mini List -->
-      <div class="mb-2 font-weight-bold">Aylık Özet</div>
-      <ul class="list-unstyled mb-0">
-        <li class="d-flex justify-content-between py-2 border-bottom">
-          <span class="text-muted">Bu ay oluşturulan organizasyon</span>
-          <span class="font-weight-bold">18</span>
-        </li>
-        <li class="d-flex justify-content-between py-2 border-bottom">
-          <span class="text-muted">Bu hafta gelen mesaj</span>
-          <span class="font-weight-bold">7</span>
-        </li>
-        <li class="d-flex justify-content-between py-2">
-          <span class="text-muted">Trash'teki toplam mesaj</span>
-          <span class="font-weight-bold">12</span>
-        </li>
-      </ul>
-    </div>
-  </div>
+  @await Component.InvokeAsync("_SystemSummaryPartials")
 </div>
 
 

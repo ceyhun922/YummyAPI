@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using YummyAPI.Context;
 using YummyAPI.DTOs.DashboardDTO;
 
@@ -70,5 +71,18 @@ namespace YummyAPI.Controllers
             return Ok(dto);
         }
 
+        [HttpGet("system-summary")]
+        public async Task<IActionResult> SystemSummary()
+        {
+            var now = DateTime.Now;
+
+            var totalOrg = await _context.Organizations.CountAsync();
+            var totalChef = await _context.Chefs.CountAsync();
+            var totalGal = await _context.Galleries.CountAsync();
+            var totalMsg = await _context.Contacts.CountAsync();
+
+            return Ok(new { totalOrg, totalChef, totalGal,totalMsg });
+        }
+
     }
-    }
+}

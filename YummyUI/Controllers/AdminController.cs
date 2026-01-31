@@ -35,36 +35,5 @@ namespace YummyUI.Controllers
             var dto = JsonConvert.DeserializeObject<DashboardRevenueDto>(json);
             return Json(dto);
         }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> MessagesList()
-        {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync("http://localhost:5289/api/Contacts");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var jsonData = await response.Content.ReadAsStringAsync();
-                var values = JsonConvert.DeserializeObject<List<ResultMessageDto>>(jsonData);
-                return View(values);
-            }
-            return View();
-        }
-
-
-        
-       
-        public IActionResult ProductList()
-        {
-            return View();
-        }
-        public IActionResult ChefList()
-        {
-            return View();
-        }
     }
 }
