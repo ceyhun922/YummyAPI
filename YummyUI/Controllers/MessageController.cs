@@ -73,6 +73,8 @@ namespace YummyUI.Controllers
         public async Task<IActionResult> MessageDetail(int id)
         {
             var client = _httpClientFactory.CreateClient();
+                await client.PostAsync($"http://localhost:5289/api/Contacts/message/message-isread-true?id={id}", null);
+
             var response = await client.GetAsync($"http://localhost:5289/api/Contacts/{id}");
             if (response.IsSuccessStatusCode)
             {
@@ -131,6 +133,17 @@ namespace YummyUI.Controllers
             return Ok();
         }
 
+        public async Task<IActionResult> MessageIsReadTrue(int id)
+        {
+            var client =_httpClientFactory.CreateClient();
+            var res = await client.PostAsync("http://localhost:5289/api/Contacts/message/message-isread-true?id="+id,null);
+            if (!res.IsSuccessStatusCode)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
 
 
 

@@ -23,15 +23,42 @@ namespace YummyAPI.Controllers
         [HttpGet]
         public IActionResult ContactList()
         {
-            var values = _context.Contacts?.Where(x => x.IsRead == true).ToList();
+            var values = _context.Contacts
+                .Where(x => x.messageBox == MessageBoxType.Inbox)
+                .OrderByDescending(x => x.ContactId)
+                .ToList();
+
             var mapper = _mapper.Map<List<ResultContactDto>>(values);
             return Ok(mapper);
+        }
+
+        [HttpGet("message/message-isread")]
+        public IActionResult MessageIsRead()
+        {
+            var value = _context.Contacts.Where(x => x.IsRead == true).ToList();
+            return Ok(value);
+        }
+
+        [HttpPost("message/message-isread-true")]
+        public IActionResult MessageIsReadTrue(int id)
+        {
+            var msg = _context.Contacts.Find(id);
+            if (msg == null) return NotFound();
+
+            if (!msg.IsRead)
+            {
+                msg.IsRead = true;
+                _context.SaveChanges();
+            }
+
+            return Ok(new { success = true, message = "Mesaj Okundu." });
         }
 
         [HttpPost]
         public IActionResult ContactCreate(CreateContactDto createContactDto)
         {
             createContactDto.messageBox = MessageBoxType.Inbox;
+
             var mapper = _mapper.Map<Contact>(createContactDto);
             _context.Contacts?.Add(mapper);
             _context.SaveChanges();
@@ -54,35 +81,40 @@ namespace YummyAPI.Controllers
         public IActionResult ContactUpdate(UpdateContactDto updateContactDto)
         {
             var mapper = _mapper.Map<Contact>(updateContactDto);
-            if (mapper == null)
-            {
-                return Ok(mapper);
-            }
+            if (mapper == null) return Ok(mapper);
+
             _context.Contacts?.Update(mapper);
             _context.SaveChanges();
             return Ok(mapper);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetMessage(int id)
-        {
-            var value = _context.Contacts?.Find(id);
-            var mapper = _mapper.Map<GetByIdContactDto>(value);
-            return Ok(mapper);
-        }
+[HttpGet("{id}")]
+public async Task<IActionResult> GetMessage(int id)
+{
+    var value = await _context.Contacts.FindAsync(id);
+    if (value == null) return NotFound();
+
+    // ✅ Mesaj açıldıysa okundu yap
+    if (!value.IsRead)
+    {
+        value.IsRead = true;
+        await _context.SaveChangesAsync();
+    }
+
+    var mapper = _mapper.Map<GetByIdContactDto>(value);
+    return Ok(mapper);
+}
 
 
         [HttpPost("message/message-trash")]
-
         public async Task<IActionResult> MessageMoveTorash(int id)
         {
-            var msj = _context.Contacts?.Find(id);
+            var msj = await _context.Contacts.FindAsync(id);
             if (msj == null)
-            {
                 return Ok(new { success = false, message = "Mesaj bulunmadı" });
-            }
+
             msj.messageBox = MessageBoxType.Trash;
-            msj.IsRead = false;
+
             await _context.SaveChangesAsync();
             return Ok(new { success = true, message = "Çöp kutusuna taşındı." });
         }
@@ -92,11 +124,10 @@ namespace YummyAPI.Controllers
         {
             var msj = await _context.Contacts.FindAsync(id);
             if (msj == null)
-            {
                 return Ok(new { success = false, message = "Mesaj bulunmadı" });
-            }
+
             msj.messageBox = MessageBoxType.Archived;
-            msj.IsRead = false;
+
             await _context.SaveChangesAsync();
             return Ok(new { success = true, message = "Arşive taşındı" });
         }
@@ -106,11 +137,10 @@ namespace YummyAPI.Controllers
         {
             var msj = await _context.Contacts.FindAsync(id);
             if (msj == null)
-            {
                 return Ok(new { success = false, message = "Mesaj bulunmadı" });
-            }
-            msj.messageBox =MessageBoxType.Inbox;
-            msj.IsRead =true;
+
+            msj.messageBox = MessageBoxType.Inbox;
+
             await _context.SaveChangesAsync();
             return Ok(new { success = true, message = "Mesaj Geri Alındı" });
         }
@@ -134,6 +164,7 @@ namespace YummyAPI.Controllers
 
             return Ok(values);
         }
+
         [HttpGet("message/message-restore-list")]
         public IActionResult MessageMoveTorestoreList()
         {
@@ -143,7 +174,5 @@ namespace YummyAPI.Controllers
 
             return Ok(values);
         }
-
-
     }
 }

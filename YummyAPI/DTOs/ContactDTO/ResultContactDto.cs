@@ -9,6 +9,8 @@ namespace YummyAPI.DTOs.ContactDTO
         public string? Email { get; set; }
         public string? Subject { get; set; }
         public string? Message { get; set; }
+        public bool IsRead { get; set; }
+
         public MessageBoxType messageBox {get;set;}
 
     }

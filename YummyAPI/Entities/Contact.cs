@@ -13,7 +13,7 @@ namespace YummyAPI.Entities
 
         public MessageBoxType messageBox {get;set;}=MessageBoxType.Inbox;
 
-        public bool IsRead {get;set;} =true;
+        public bool IsRead {get;set;} =false;
 
     }
 }

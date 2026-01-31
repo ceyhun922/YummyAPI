@@ -19,6 +19,11 @@ namespace YummyUI.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
+
                 [HttpGet]
         public async Task<IActionResult> Revenue()
         {
