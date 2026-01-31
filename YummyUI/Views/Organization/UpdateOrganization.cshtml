@@ -2,6 +2,10 @@
 @model GetByIdOrganizationDto
 @{
     Layout = "_AdminLayout";
+    var apiBase ="http://localhost:5289";
+    var currentImg =Model?.OrganizationImage ?? "";
+    if(!string.IsNullOrWhiteSpace(currentImg) && currentImg.StartsWith("/images"))
+        currentImg = apiBase + currentImg;
 }
 
 @section Styles {
@@ -546,9 +550,13 @@
             </div>
 
             <div class="body">
-                @using (Html.BeginForm("UpdateOrganization", "Organization", FormMethod.Post))
+                @using (Html.BeginForm("UpdateOrganization", "Organization", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     @Html.HiddenFor(x => x.OrganizationId)
+                    @Html.HiddenFor(x=>x.OrganizationImage, new { id = "OrgImage" })
+                    @Html.HiddenFor(x => x.SelectedGalleryUrl, new { id = "SelectedGalleryUrl" })
+
+
 
                     <div class="grid2">
                         <!-- LEFT -->
@@ -587,41 +595,14 @@
                             <label class="label" for="OrgImage">Görsel Yolu</label>
 
                             <div class="row">
-                                @Html.TextBoxFor(x => x.OrganizationImage, new {
-                                                                @class = "input",
-                                                                id = "OrgImage",
-                                                                placeholder = "Örn: /Yummy/assets/img/organization/org-1.jpg",
-                                                                autocomplete = "off"
-                                                                })
+                               <input type="file" name="file" id="OrgImageFile" class="input">
 
                                 <div class="previewBox" title="Canlı görsel">
-                                    <img id="ImgPreview" alt="preview" />
+                                    <img src="@currentImg" id="ImgPreview" alt="preview" />
                                     <div class="ph" id="ImgPh">IMG</div>
                                 </div>
-
-                                <button type="button" class="pick" id="PickRandom">4 Resimden Seç</button>
                             </div>
-
-                            <!-- ✅ 4 hazır görsel (yolları burada güncelle) -->
-                            <div class="thumbs" id="Thumbs">
-                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-1.jpg">
-                                    <img src="/Yummy/assets/img/organization/org-1.jpg" alt="org-1" />
-                                </div>
-                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-2.jpg">
-                                    <img src="/Yummy/assets/img/organization/org-2.jpg" alt="org-2" />
-                                </div>
-                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-3.jpg">
-                                    <img src="/Yummy/assets/img/organization/org-3.jpg" alt="org-3" />
-                                </div>
-                                <div class="thumb" data-src="/Yummy/assets/img/organization/org-4.jpg">
-                                    <img src="/Yummy/assets/img/organization/org-4.jpg" alt="org-4" />
-                                </div>
-                            </div>
-
-                            <div
-                                style="margin-top:.55rem; color: rgba(255,255,255,.70); font-weight:800; font-size:.92rem;">
-                                Resmi tıkla seç. Input’a yol otomatik yazılır və sağda preview yenilənir.
-                            </div>
+                        @await Component.InvokeAsync("_GalleryListİncideOrganizationPartials");
                         </div>
 
                         <div class="group">
@@ -645,7 +626,6 @@
                         </div>
                     </div>
 
-                    <!-- RIGHT: LIVE -->
                     <div class="live">
                         <div class="liveImg">
                             <img id="LiveImg"
@@ -670,126 +650,144 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        (function () {
-            const $ = (id) => document.getElementById(id);
+@section Scripts
+{
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
 
-            const nameI = $("OrgName");
-            const descI = $("OrgDesc");
-            const priceI = $("OrgPrice");
-            const imgI = $("OrgImage");
-            const cb = $("OrgStatusCb");
+  const nameI  = $("OrgName");
+  const descI  = $("OrgDesc");
+  const priceI = $("OrgPrice");
 
-            const imgPrev = $("ImgPreview");
-            const imgPh = $("ImgPh");
-            const liveImg = $("LiveImg");
-            const liveName = $("LiveName");
-            const liveDesc = $("LiveDesc");
-            const livePrice = $("LivePrice");
-            const liveStatus = $("LiveStatus");
+  const selectedGalleryUrl = $("SelectedGalleryUrl");  
+  const imgHidden = $("OrgImage");                     
+  const fileI     = $("OrgImageFile");                
 
-            const sw = $("OrgSwitch");
-            const st = $("OrgStatusText");
+  const cb = $("OrgStatusCb");
 
-            const thumbs = $("Thumbs");
-            const pickBtn = $("PickRandom");
+  const imgPrev = $("ImgPreview");
+  const imgPh   = $("ImgPh");
+  const liveImg = $("LiveImg");
 
-            const PRESET = [
-                "/Yummy/assets/img/organization/org-1.jpg",
-                "/Yummy/assets/img/organization/org-2.jpg",
-                "/Yummy/assets/img/organization/org-3.jpg",
-                "/Yummy/assets/img/organization/org-4.jpg"
-            ];
+  const liveName   = $("LiveName");
+  const liveDesc   = $("LiveDesc");
+  const livePrice  = $("LivePrice");
+  const liveStatus = $("LiveStatus");
 
-            function setPreview(src) {
-                const v = (src || "").trim();
-                if (!v) {
-                    imgPrev.style.display = "none";
-                    imgPh.style.display = "block";
-                    liveImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'%3E%3Crect width='1200' height='600' fill='%230b1225'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23667eea' font-family='Arial' font-size='44'%3EPreview%3C/text%3E%3C/svg%3E";
-                    return;
-                }
+  const sw = $("OrgSwitch");
+  const st = $("OrgStatusText");
 
-                imgPrev.src = v;
-                liveImg.src = v;
+  const thumbs = $("Thumbs"); 
 
-                imgPrev.onload = () => { imgPrev.style.display = "block"; imgPh.style.display = "none"; };
-                imgPrev.onerror = () => { imgPrev.style.display = "none"; imgPh.style.display = "block"; };
+  function money(v) {
+    const n = Number(v);
+    if (isNaN(n)) return "₼ 0.00";
+    return "₼ " + n.toFixed(2);
+  }
 
-                liveImg.onerror = () => {
-                    liveImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'%3E%3Crect width='1200' height='600' fill='%230b1225'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23ef4444' font-family='Arial' font-size='44'%3EImage%20Not%20Found%3C/text%3E%3C/svg%3E";
-                };
-            }
+  function setStatus(on) {
+    if (on) {
+      sw.classList.add("on");
+      st.classList.add("on");
+      st.textContent = "Aktif";
+      liveStatus.className = "pill green";
+      liveStatus.textContent = "Aktif";
+    } else {
+      sw.classList.remove("on");
+      st.classList.remove("on");
+      st.textContent = "Pasif";
+      liveStatus.className = "pill orange";
+      liveStatus.textContent = "Pasif";
+    }
+    cb.checked = !!on;
+  }
 
-            function setStatus(on) {
-                if (on) {
-                    sw.classList.add("on");
-                    st.classList.add("on");
-                    st.textContent = "Aktif";
-                    liveStatus.className = "pill green";
-                    liveStatus.textContent = "Aktif";
-                } else {
-                    sw.classList.remove("on");
-                    st.classList.remove("on");
-                    st.textContent = "Pasif";
-                    liveStatus.className = "pill orange";
-                    liveStatus.textContent = "Pasif";
-                }
-                cb.checked = !!on;
-            }
+  function setPreview(src) {
+    const v = (src || "").trim();
 
-            function money(v) {
-                const n = Number(v);
-                if (isNaN(n)) return "₼ 0.00";
-                return "₼ " + n.toFixed(2);
-            }
+    if (!v) {
+      if (imgPrev) imgPrev.style.display = "none";
+      if (imgPh) imgPh.style.display = "block";
+      liveImg.src =
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'%3E%3Crect width='1200' height='600' fill='%230b1225'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23667eea' font-family='Arial' font-size='44'%3EPreview%3C/text%3E%3C/svg%3E";
+      return;
+    }
 
-            // init from model values
-            liveName.textContent = (nameI.value || "").trim() || "Örn: Organizasyon Adı";
-            liveDesc.textContent = (descI.value || "").trim() || "Açıklama burada canlı görünür.";
-            livePrice.textContent = money(priceI.value);
-            setPreview(imgI.value);
-            setStatus(cb.checked);
+    if (imgPrev) imgPrev.src = v;
+    liveImg.src = v;
 
-            // events
-            nameI.addEventListener("input", e => {
-                liveName.textContent = (e.target.value || "").trim() || "Örn: Organizasyon Adı";
-            });
-            descI.addEventListener("input", e => {
-                liveDesc.textContent = (e.target.value || "").trim() || "Açıklama burada canlı görünür.";
-            });
-            priceI.addEventListener("input", e => {
-                livePrice.textContent = money(e.target.value);
-            });
-            imgI.addEventListener("input", e => {
-                setPreview(e.target.value);
-            });
+    if (imgPrev) {
+      imgPrev.onload = () => {
+        imgPrev.style.display = "block";
+        if (imgPh) imgPh.style.display = "none";
+      };
+      imgPrev.onerror = () => {
+        imgPrev.style.display = "none";
+        if (imgPh) imgPh.style.display = "block";
+      };
+    }
 
-            // thumbs click
-            thumbs.addEventListener("click", (e) => {
-                const t = e.target.closest(".thumb");
-                if (!t) return;
-                const src = t.getAttribute("data-src");
-                imgI.value = src;
-                setPreview(src);
-            });
+    liveImg.onerror = () => {
+      liveImg.src =
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='600'%3E%3Crect width='1200' height='600' fill='%230b1225'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' fill='%23ef4444' font-family='Arial' font-size='44'%3EImage%20Not%20Found%3C/text%3E%3C/svg%3E";
+    };
+  }
 
-            // random pick
-            pickBtn.addEventListener("click", () => {
-                const src = PRESET[Math.floor(Math.random() * PRESET.length)];
-                imgI.value = src;
-                setPreview(src);
-            });
+  const initialImg = imgPrev?.getAttribute("src") || imgHidden?.value || "";
+  setPreview(initialImg);
 
-            // switch
-            sw.addEventListener("click", () => setStatus(!cb.checked));
-            sw.addEventListener("keydown", (e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setStatus(!cb.checked);
-                }
-            });
-        })();
-    </script>
+  if (selectedGalleryUrl) selectedGalleryUrl.value = "";
+
+  liveName.textContent  = (nameI?.value || "").trim() || "Örn: Organizasyon Adı";
+  liveDesc.textContent  = (descI?.value || "").trim() || "Açıklama burada canlı görünür.";
+  livePrice.textContent = money(priceI?.value);
+  setStatus(!!cb?.checked);
+
+  nameI?.addEventListener("input", (e) => {
+    liveName.textContent = (e.target.value || "").trim() || "Örn: Organizasyon Adı";
+  });
+  descI?.addEventListener("input", (e) => {
+    liveDesc.textContent = (e.target.value || "").trim() || "Açıklama burada canlı görünür.";
+  });
+  priceI?.addEventListener("input", (e) => {
+    livePrice.textContent = money(e.target.value);
+  });
+
+
+  fileI?.addEventListener("change", (e) => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+
+    if (selectedGalleryUrl) selectedGalleryUrl.value = ""; 
+    const url = URL.createObjectURL(f);
+    setPreview(url);
+  });
+
+  if (thumbs) {
+    thumbs.addEventListener("click", (e) => {
+      const t = e.target.closest(".thumb");
+      if (!t) return;
+
+      const src = t.getAttribute("data-src");
+      if (!src) return;
+
+      if (selectedGalleryUrl) selectedGalleryUrl.value = src; 
+      if (imgHidden) imgHidden.value = src;                   
+      if (fileI) fileI.value = "";
+
+      setPreview(src);
+    });
+  }
+
+  sw?.addEventListener("click", () => setStatus(!cb.checked));
+  sw?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setStatus(!cb.checked);
+    }
+  });
+})();
+</script>
+
 }

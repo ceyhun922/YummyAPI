@@ -7,6 +7,8 @@ namespace YummyUI.DTOs.OrganizationDTOs
         public string? OrganizationDescription { get; set; }
         public double OrganizationPrice { get; set; }
         public string? OrganizationImage { get; set; }
+        public string? SelectedGalleryUrl { get; set; }
+
         public bool OrganizationStatus { get; set; }
     }
 }

@@ -1,0 +1,22 @@
+@using YummyUI.DTOs.GalleryDTO
+@model List<ResultGalleryDto>
+
+@{
+    var apiBase = "http://localhost:5289";
+}
+
+<div class="group">
+
+    <div class="thumbs" id="Thumbs">
+        @if (Model != null)
+        {
+            foreach (var g in Model)
+            {
+                var fullUrl = apiBase + g.GalleryImageUrl;
+                <div class="thumb" data-src="@fullUrl">
+                    <img src="@fullUrl" alt="@g.GalleryTitle" />
+                </div>
+            }
+        }
+    </div>
+</div>
