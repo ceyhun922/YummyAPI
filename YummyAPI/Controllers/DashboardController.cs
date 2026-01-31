@@ -97,5 +97,23 @@ namespace YummyAPI.Controllers
                 TrashMsg
             });
         }
+
+        [HttpGet("dashboard-widget")]
+        public async Task<IActionResult> DashboardWidget()
+        {
+            var today = DateOnly.FromDateTime(DateTime.UtcNow);
+
+            var TodayOrg = await _context.Organizations.CountAsync(x => x.CreateDate == today);
+            var UncomingOrg = await _context.Organizations.CountAsync(x => x.CreateDate >= today && x.CreateDate <= today.AddDays(7));
+            var UnreadMsg = await _context.Contacts.Where(x => x.IsRead == false).CountAsync();
+            var PendingRez = await _context.Rezervations.Where(x => x.RezervationStatus == Entities.RezervationStatus.Pending).CountAsync();
+            return Ok(new
+            {
+                TodayOrg,
+                UncomingOrg,
+                UnreadMsg,
+                PendingRez
+            });
+        }
     }
 }
