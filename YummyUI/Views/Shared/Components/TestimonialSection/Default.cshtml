@@ -1,20 +1,17 @@
 @using YummyUI.DTOs.TestimonialDTOs
 @model List<ResultTestimonialDto>
-<!-- Section Title -->
-<div class="container section-title" data-aos="fade-up">
-  <h2>TESTIMONIALS</h2>
-  <p>What Are They <span class="description-title">Saying About Us</span></p>
-</div><!-- End Section Title -->
+@{
+  var apiBase ="http://localhost:5289";
 
-<div class="container" data-aos="fade-up" data-aos-delay="100">
+  
+}
+ <section id="testimonials" class="testimonials section light-background">
 
-  <div class="swiper init-swiper">
-    <script type="application/json" class="swiper-config">
- <!-- Section Title -->
+      <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
-        <h2>TESTIMONIALS</h2>
-        <p>What Are They <span class="description-title">Saying About Us</span></p>
-      </div><!-- End Section Title -->
+        <h2>Müşterilerimiz</h2>
+        <p>Bizim <span class="description-title">Hakkımızda Ne düşünüyorlar</span></p>
+      </div>
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
@@ -34,43 +31,42 @@
               }
             }
           </script>
-    <div class="swiper-wrapper">
+          <div class="swiper-wrapper">
 
-      @foreach (var item in Model)
-      {
-        <div class="swiper-slide">
-          <div class="testimonial-item">
-            <div class="row gy-4 justify-content-center">
-              <div class="col-lg-6">
-                <div class="testimonial-content">
-                  <p>
-                    <i class="bi bi-quote quote-icon-left"></i>
-                    <span>@item.TestimonialMessage</span>
-                    <i class="bi bi-quote quote-icon-right"></i>
-                  </p>
-                  <h3>@item.TestimonialName</h3>
-                  <h4>@item.TestimonialTitle</h4>
-                  <div class="stars">
-                    <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-                      class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                  @foreach(var item in Model){
+
+                      var currentImg = item?.TestimonialImageUrl ?? "";
+  if(! string.IsNullOrWhiteSpace(currentImg) && currentImg.StartsWith("/images/"))
+    currentImg = apiBase + currentImg;
+  
+            <div class="swiper-slide">
+              <div class="testimonial-item">
+                <div class="row gy-4 justify-content-center">
+                  <div class="col-lg-6">
+                    <div class="testimonial-content">
+                      <p>
+                        <i class="bi bi-quote quote-icon-left"></i>
+                        <span>@item.TestimonialMessage .</span>
+                        <i class="bi bi-quote quote-icon-right"></i>
+                      </p>
+                      <h3>@item.TestimonialName</h3>
+                      <h4>@item.TestimonialTitle</h4>
+                      <div class="stars">
+                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-2 text-center">
+                    <img src="@currentImg" class="img-fluid testimonial-img" alt="@item.TestimonialTitle">
                   </div>
                 </div>
               </div>
-              <div class="col-lg-2 text-center">
-                @{
-                  var apiBase ="http://localhost:5289";
-                }
-                <img src="@(apiBase + item.TestimonialImageUrl)" class="img-fluid testimonial-img" alt="">
-              </div>
             </div>
+                  }
           </div>
+          <div class="swiper-pagination"></div>
         </div>
-      
-        <!-- End testimonial item -->
-      }
-    </div>
-    <div class="swiper-pagination"></div>
-  </div>
 
-</div>
+      </div>
 
+    </section><!-- /Testimonials Section -->

@@ -373,7 +373,6 @@
         <div class="grid">
           @foreach (var photo in Model)
           {
-            <!-- CARD 1 -->
             <div class="cardx">
               <div class="imgwrap">
                 <img src="@(apiBase + photo.GalleryImageUrl)" alt="@photo.GalleryTitle" />
@@ -407,7 +406,6 @@
 @section Scripts {
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
-    // SweetAlert2 yoksa fallback confirm
     function confirmDelete(url) {
       if (typeof Swal === "undefined") {
         if (confirm("Emin misin? Bu görsel kalıcı olarak silinecek!")) window.location.href = url;

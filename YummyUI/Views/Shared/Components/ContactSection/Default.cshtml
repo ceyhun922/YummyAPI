@@ -3,8 +3,8 @@
   @model List<ResultFooterDto>
   <!-- Section Title -->
   <div class="container section-title" data-aos="fade-up">
-    <h2>Contact</h2>
-    <p><span>Need Help?</span> <span class="description-title">Contact Us</span></p>
+    <h2>İletişim</h2>
+    <p><span>Yardıma mı</span> <span class="description-title">İhtiyacınız var ?</span></p>
   </div><!-- End Section Title -->
     @{
        var first = Model.FirstOrDefault();
@@ -27,9 +27,8 @@
         <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="200">
           <i class="icon bi bi-geo-alt flex-shrink-0"></i>
           <div>
-            <h3>Address</h3>
+            <h3>Adresimiz</h3>
             <p>@first.Address</p>
-            <p>A108 Adam Street, New York, NY 535022</p>
           </div>
         </div>
       </div><!-- End Info Item -->
@@ -38,9 +37,8 @@
         <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="300">
           <i class="icon bi bi-telephone flex-shrink-0"></i>
           <div>
-            <h3>Call Us</h3>
+            <h3>Telefon</h3>
             <p>@first.CallUs</p>
-            <p>+1 5589 55488 55</p>
           </div>
         </div>
       </div><!-- End Info Item -->
@@ -49,9 +47,8 @@
         <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="400">
           <i class="icon bi bi-envelope flex-shrink-0"></i>
           <div>
-            <h3>Email Us</h3>
+            <h3>E-mail</h3>
             <p>@first.EmailUs</p>
-            <p>info@example.com</p>
           </div>
         </div>
       </div><!-- End Info Item -->
@@ -60,8 +57,8 @@
         <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="500">
           <i class="icon bi bi-clock flex-shrink-0"></i>
           <div>
-            <h3>Opening Hours<br></h3>
-            <p><strong>Mon-Sat:</strong> 11AM - 23PM; <strong>Sunday:</strong> Closed</p>
+            <h3>Çalışma Saatlerimiz<br></h3>
+            <p><strong> @first.OpeningHours </strong></p>
           </div>
         </div>
       </div><!-- End Info Item -->

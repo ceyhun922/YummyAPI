@@ -1,5 +1,8 @@
 @using YummyUI.DTOs.ProductDTOs
 @model List<ResultProductDto>
+@{
+    var apiBase ="http://localhost:5289";
+}
 
 <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
 @{
@@ -16,16 +19,14 @@
          id="menu-@g.Key">
 
         <div class="tab-header text-center">
-            <p>Menu</p>
-            <h3>Category</h3>
         </div>
 
         <div class="row gy-5">
             @foreach (var item in g)
             {
                 <div class="col-lg-4 menu-item">
-                    <a href="@item.ImageFile" class="glightbox">
-                        <img src="@item.ImageFile" class="menu-img img-fluid" alt="@item.ProductTitle">
+                    <a href="@(apiBase + item.ImageFile)" class="glightbox">
+                        <img src="@(apiBase + item.ImageFile)" class="menu-img img-fluid" alt="@item.ProductTitle">
                     </a>
 
                     <h4>@item.ProductTitle</h4>
