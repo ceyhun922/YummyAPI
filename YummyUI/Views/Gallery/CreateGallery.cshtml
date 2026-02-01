@@ -247,15 +247,13 @@
                 <label class="label">Görsel</label>
 
                 <div class="row">
-                  @* Preset/path input *@
-                  @Html.TextBoxFor(x => x.GalleryImageUrl, new {
+                  @Html.HiddenFor(x => x.GalleryImageUrl, new {
                     @class="input",
                     id="GalImage",
                     placeholder="Örn: /Yummy/assets/img/gallery/g-1.jpg",
                     autocomplete="off"
                   })
 
-                  @* Upload input *@
                   <input type="file" name="file" id="GalImageFile" class="input" accept="image/*" />
 
                   <div class="previewBox" title="Canlı görsel">
@@ -263,16 +261,8 @@
                     <div class="ph" id="ImgPh">IMG</div>
                   </div>
                 </div>
-                <div class="thumbs" id="Thumbs">
-                  <div class="thumb" data-src="/Yummy/assets/img/gallery/g-1.jpg"><img src="/Yummy/assets/img/gallery/g-1.jpg" alt="g-1" /></div>
-                  <div class="thumb" data-src="/Yummy/assets/img/gallery/g-2.jpg"><img src="/Yummy/assets/img/gallery/g-2.jpg" alt="g-2" /></div>
-                  <div class="thumb" data-src="/Yummy/assets/img/gallery/g-3.jpg"><img src="/Yummy/assets/img/gallery/g-3.jpg" alt="g-3" /></div>
-                  <div class="thumb" data-src="/Yummy/assets/img/gallery/g-4.jpg"><img src="/Yummy/assets/img/gallery/g-4.jpg" alt="g-4" /></div>
-                </div> 
 
-                <div style="margin-top:.55rem; color: rgba(255,255,255,.70); font-weight:800; font-size:.92rem;">
-                  Resmi tıkla seç. Input’a yol otomatik yazılır və sağda preview yenilənir.
-                </div>
+                
               </div>
 
               <div class="group">

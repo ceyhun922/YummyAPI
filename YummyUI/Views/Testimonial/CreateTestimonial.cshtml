@@ -15,7 +15,7 @@
             </div>
             <div>
                 <h1 class="hero-title">Yeni Müşteri Görüşü</h1>
-                <p class="hero-subtitle">Başlıq, mesaj, şəkil və status əlavə edin.</p>
+                <p class="hero-subtitle">Başlık, mesaj, fotoğraf ve statüs ekleyin.</p>
             </div>
         </div>
 
@@ -31,7 +31,7 @@
         <!-- LEFT: FORM -->
         <div class="glass-card">
             <div class="glass-card-header">
-                <h3>Görüş əlavə etmə paneli</h3>
+                <h3>Müşteri Görüşü ekleme paneli</h3>
             </div>
 
             <div class="glass-card-body">
@@ -39,47 +39,35 @@
                     new { @class = "glass-form", autocomplete = "off", enctype = "multipart/form-data" }))
                 {
                     <div class="form-row">
-                        <label class="form-label">Müştəri adı</label>
-                        @Html.TextBoxFor(x => x.TestimonialName, new { @class = "glass-input", placeholder = "Örn: Elvin Məmmədov", id = "inpName" })
-                        <small class="form-hint">Siyahıda və saytda bu ad görünəcək.</small>
+                        <label class="form-label">Müşteri adı</label>
+                        @Html.TextBoxFor(x => x.TestimonialName, new { @class = "glass-input", placeholder = "Örn: Ali Kaya", id = "inpName" })
+                        <small class="form-hint">Listede və sitededa bu isim görünecek.</small>
                     </div>
 
                     <div class="form-row">
-                        <label class="form-label">Vəzifə / Başlıq</label>
-                        @Html.TextBoxFor(x => x.TestimonialTitle, new { @class = "glass-input", placeholder = "Örn: Müştəri / CEO / Menecer...", id = "inpTitle" })
+                        <label class="form-label">Görev</label>
+                        @Html.TextBoxFor(x => x.TestimonialTitle, new { @class = "glass-input", placeholder = "Örn: Müşteri / CEO / Menecer...", id = "inpTitle" })
                     </div>
 
                     <div class="form-row">
                         <label class="form-label">Mesaj</label>
-                        @Html.TextAreaFor(x => x.TestimonialMessage, new { @class = "glass-textarea", rows = "5", placeholder = "Müştərinin rəyi burada yazılacaq...", id = "inpMsg" })
-                    </div>
-
-                    @* ✅ URL opsionaldır (DTO-da TestimonialImage varsa saxla) *@
-                    <div class="form-row">
-                        <label class="form-label">Şəkil URL (opsional)</label>
-                        @Html.TextBoxFor(x => x.TestimonialImageUrl, new {
-                            @class = "glass-input",
-                            placeholder = "Örn: /Yummy/assets/img/testimonials/t-1.jpg",
-                            id = "inpImgUrl",
-                            autocomplete = "off"
-                        })
-                        <small class="form-hint">URL yazsan sağdakı önizləmədə görünəcək.</small>
+                        @Html.TextAreaFor(x => x.TestimonialMessage, new { @class = "glass-textarea", rows = "5", placeholder = "Müşterinin yorumu burada yazılacak...", id = "inpMsg" })
                     </div>
 
                     <div class="form-row">
-                        <label class="form-label">Şəkil Faylı</label>
+                        <label class="form-label">Fotoğrafı</label>
                         <input type="file"
                                name="file"
                                id="inpImgFile"
                                class="glass-input"
                                accept=".jpg,.jpeg,.png,.webp" />
-                        <small class="form-hint">Fayl seçsən canlı önizləmə dərhal yenilənəcək.</small>
+                        <small class="form-hint">Fotoğraf seçersen canlı önizleme hemen yenilenecek.</small>
                     </div>
 
                     <div class="form-row form-row-inline">
                         <div class="inline-left">
                             <label class="form-label">Status</label>
-                            <small class="form-hint">Pasif olan rəylər saytda görünməyə bilər.</small>
+                            <small class="form-hint">Pasif olan yorumlar sitede görünmeye bilir.</small>
                         </div>
 
                         <label class="switch">
@@ -91,7 +79,7 @@
                     <div class="form-actions">
                         <button class="btn-primary" type="submit">
                             <i class="fas fa-save"></i>
-                            Save
+                            Ekle
                         </button>
 
                         <button class="btn-secondary" type="button" id="btnClear">

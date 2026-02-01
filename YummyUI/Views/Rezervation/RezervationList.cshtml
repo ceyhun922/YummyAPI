@@ -6,10 +6,10 @@
   var all = Model ?? new List<ResultRezervationDto>();
 
   int CountStatus(int s) => all.Count(x => x.RezervationStatus == s);
-  var c0 = CountStatus(0); // Bekliyor
-  var c1 = CountStatus(1); // Beklet
-  var c2 = CountStatus(2); // Onaylandi
-  var c3 = CountStatus(3); // Iptal
+  var c0 = CountStatus(0); 
+  var c1 = CountStatus(1); 
+  var c2 = CountStatus(2); 
+  var c3 = CountStatus(3);
 
   string StatusText(int s) => s switch { 0 => "Bekliyor", 1 => "Beklet", 2 => "Onaylandı", 3 => "İptal", _ => "Bilinmiyor" };
   string StatusClass(int s) => s switch { 2 => "ok", 3 => "cancel", 1 => "hold", _ => "wait" };
@@ -630,7 +630,6 @@
             </select>
           </span>
 
-          <!-- Tarih aralığı -->
           <span class="chip" style="display:flex; align-items:center; gap:.55rem;">
             <i class="bi bi-calendar-event" style="opacity:.85"></i>
             <input id="dateFrom" type="date" />
@@ -640,7 +639,6 @@
           </span>
         </div>
 
-        <!-- ✅ Hızlı Tarih Presetleri -->
         <div class="presets" id="presets">
           <button type="button" class="ps" data-preset="today"><i class="bi bi-dot"></i> Bugün</button>
           <button type="button" class="ps" data-preset="tomorrow"><i class="bi bi-dot"></i> Yarın</button>
@@ -649,7 +647,6 @@
           <button type="button" class="ps" data-preset="all"><i class="bi bi-dot"></i> Tüm tarih</button>
         </div>
 
-        <!-- ✅ Status Chip Bar -->
         <div class="filterbar" id="filterbar">
           <button type="button" class="ft active" data-filter="all">Hamısı <span class="pill">@all.Count</span></button>
           <button type="button" class="ft" data-filter="0">Bekleyenler <span class="pill">@c0</span></button>
@@ -681,7 +678,6 @@
                 var cls = StatusClass(rez.RezervationStatus);
                 var st = StatusText(rez.RezervationStatus);
 
-                // ✅ ISO date for JS filter (yyyy-MM-dd)
                 var iso = "";
                 if (rez.RezervationDate != null)
                 {
