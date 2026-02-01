@@ -38,15 +38,17 @@ namespace YummyAPI.Controllers
                     ParticipationRate = x.GroupOrganization.ParticipationRate,
                     Date = x.GroupOrganization.Date,
                     Time = x.GroupOrganization.Time,
-                    GroupPriority = (int)x.GroupOrganization.GroupPriority
+                               GroupPriority = x.GroupOrganization.GroupPriority == 0 
+    ? 1 
+    : (int)x.GroupOrganization.GroupPriority
+
                 })
                 .ToListAsync();
 
 
-            var dto = _mapper.Map<List<ResultGroupOrganizationChefDto>>(data);
 
 
-            return Ok(dto);
+            return Ok(data);
         }
 
 

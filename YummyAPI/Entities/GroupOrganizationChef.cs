@@ -10,5 +10,7 @@ namespace YummyAPI.Entities
         public GroupOrganization GroupOrganization { get; set; } = null!;
         public int ChefId { get; set; }
         public Chef? Chef { get; set; }
+
+        public GroupPriority GroupPriority {get;set;}
     }
 }

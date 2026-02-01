@@ -296,7 +296,20 @@
               {
                 var first = item.First();
 
-                var pk = first.GroupPriority switch { 1 => "az", 2 => "orta", 3 => "yuksek", _ => "unk" };
+                string pk;
+                {
+                    var gp = first.GroupPriority;
+                    if (gp < 1 || gp > 3)
+                        throw new InvalidOperationException("Geçersiz GroupPriority: " + gp);
+
+                    pk = gp switch
+                    {
+                        1 => "az",
+                        2 => "orta",
+                        3 => "yuksek",
+                        _ => throw new InvalidOperationException()
+                    };
+                }
 
                 <tr class="go-row"
                     data-name="@first.OrganizationName"
@@ -348,8 +361,7 @@
                         <div class="badge badge-success">Yüksek</div>
                         break;
                       default:
-                        <div class="badge badge-secondary">Bilinmiyor (@first.GroupPriority)</div>
-                        break;
+                        throw new InvalidOperationException("Geçersiz GroupPriority: " + first.GroupPriority);
                     }
                   </td>
 
@@ -428,8 +440,9 @@
     if (v === 1) return "Az";
     if (v === 2) return "Orta";
     if (v === 3) return "Yüksek";
-    return "Bilinmiyor (" + v + ")";
+    throw new Error("Geçersiz GroupPriority: " + v);
   }
+
   function priorityClass(v){
     v = parseInt(v || "0");
     if (v === 1) return "az";

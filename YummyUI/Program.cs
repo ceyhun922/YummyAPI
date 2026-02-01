@@ -6,7 +6,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 
 builder.Services.Configure<OpenAISetting>(
-    builder.Configuration.GetSection("OpenAI"));
+    builder.Configuration.GetSection("OpenAISetting"));
 
 var app = builder.Build();
 

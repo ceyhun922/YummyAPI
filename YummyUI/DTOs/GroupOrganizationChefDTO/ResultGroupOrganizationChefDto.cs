@@ -19,6 +19,11 @@ namespace YummyUI.DTOs.GroupOrganizationChefDTO
         public int ParticipationRate { get; set; }
         public DateOnly Date { get; set; }
         public TimeOnly Time { get; set; }
+        
         public int GroupPriority { get; set; }
+
+        
     }
+
+ 
 }

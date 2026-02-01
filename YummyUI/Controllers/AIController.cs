@@ -127,7 +127,7 @@ public async Task<IActionResult> WorldFoods([FromQuery] int count = 4)
     var requestData = new
     {
         model = "gpt-4.1-mini",
-        response_format = new { type = "json_object" }, // ✅ JSON dışına çıkmayı çok azaltır
+        response_format = new { type = "json_object" }, 
         messages = new object[]
         {
             new {
